@@ -14,47 +14,47 @@ var textContent = document.createElement('div'); //creates vairable that is a di
 /* 1.1# VOLCANO VARABLE ARRAYS */
 //volcano titles
 var volcanoMarkerTitleArray = [
-    , //[0]  || AUCKLAND VOLCANIC FIELD
-    , //[1]  || KERMADEC ISLANDS
-    , //[2]  || MAYOR ISLAND
-    , //[3]  || NGAURUHOE
-    , //[4]  || NORTHLAND
-    , //[5]  || OKATAINA AKA MOUNT TARAWERA
-    , //[6]  || ROTORUA
-    , //[7]  || TAUPO
-    , //[8]  || TONGARIRO
-    , //[9]  || TARANAKI/EGMONT
+    , //[0]  || TARANAKI/EGMONT
+    , //[1]  || TONGARIRO
+    , //[2]  || TAUPO
+    , //[3]  || ROTORUA
+    , //[4]  || OKATAINA AKA MOUNT TARAWERA
+    , //[5]  || NORTHLAND
+    , //[6]  || NGAURUHOE
+    , //[7]  || MAYOR ISLAND
+    , //[8]  || KERMADEC ISLANDS
+    , //[9]  || AUCKLAND VOLCANIC FIELD
     , //[10] || WHITE ISLAND
     , //[11] || RUAPEHU
 ];
 
 //volcano levels
 var volcanoLevelArray = [
-    , //[0]  || AUCKLAND VOLCANIC FIELD
-    , //[1]  || KERMADEC ISLANDS
-    , //[2]  || MAYOR ISLAND
-    , //[3]  || NGAURUHOE
-    , //[4]  || NORTHLAND
-    , //[5]  || OKATAINA AKA MOUNT TARAWERA
-    , //[6]  || ROTORUA
-    , //[7]  || TAUPO
-    , //[8]  || TONGARIRO
-    , //[9]  || TARANAKI/EGMONT
+    , //[0]  || TARANAKI/EGMONT
+    , //[1]  || TONGARIRO
+    , //[2]  || TAUPO
+    , //[3]  || ROTORUA
+    , //[4]  || OKATAINA AKA MOUNT TARAWERA
+    , //[5]  || NORTHLAND
+    , //[6]  || NGAURUHOE
+    , //[7]  || MAYOR ISLAND
+    , //[8]  || KERMADEC ISLANDS
+    , //[9]  || AUCKLAND VOLCANIC FIELD
     , //[10] || WHITE ISLAND
     , //[11] || RUAPEHU
 ];
 //volcano activity
 var volcanoActivityArray = [
-    , //[0]  || AUCKLAND VOLCANIC FIELD
-    , //[1]  || KERMADEC ISLANDS
-    , //[2]  || MAYOR ISLAND
-    , //[3]  || NGAURUHOE
-    , //[4]  || NORTHLAND
-    , //[5]  || OKATAINA AKA MOUNT TARAWERA
-    , //[6]  || ROTORUA
-    , //[7]  || TAUPO
-    , //[8]  || TONGARIRO
-    , //[9]  || TARANAKI/EGMONT
+    , //[0]  || TARANAKI/EGMONT
+    , //[1]  || TONGARIRO
+    , //[2]  || TAUPO
+    , //[3]  || ROTORUA
+    , //[4]  || OKATAINA AKA MOUNT TARAWERA
+    , //[5]  || NORTHLAND
+    , //[6]  || NGAURUHOE
+    , //[7]  || MAYOR ISLAND
+    , //[8]  || KERMADEC ISLANDS
+    , //[9]  || AUCKLAND VOLCANIC FIELD
     , //[10] || WHITE ISLAND
     , //[11] || RUAPEHU
 ];
@@ -66,16 +66,16 @@ var volcanoInactiveArray = [
 
 //stores activtiy array
 var volcanoHazardsArray = [
-    , //[0]  || AUCKLAND VOLCANIC FIELD
-    , //[1]  || KERMADEC ISLANDS
-    , //[2]  || MAYOR ISLAND
-    , //[3]  || NGAURUHOE
-    , //[4]  || NORTHLAND
-    , //[5]  || OKATAINA AKA MOUNT TARAWERA
-    , //[6]  || ROTORUA
-    , //[7]  || TAUPO
-    , //[8]  || TONGARIRO
-    , //[9]  || TARANAKI/EGMONT
+    , //[0]  || TARANAKI/EGMONT
+    , //[1]  || TONGARIRO
+    , //[2]  || TAUPO
+    , //[3]  || ROTORUA
+    , //[4]  || OKATAINA AKA MOUNT TARAWERA
+    , //[5]  || NORTHLAND
+    , //[6]  || NGAURUHOE
+    , //[7]  || MAYOR ISLAND
+    , //[8]  || KERMADEC ISLANDS
+    , //[9]  || AUCKLAND VOLCANIC FIELD
     , //[10] || WHITE ISLAND
     , //[11] || RUAPEHU
 
@@ -154,7 +154,7 @@ function volJSON() {
 
         });
 
-        /* DEBUGGING  */
+        /* DEBUGGING */
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
@@ -162,10 +162,11 @@ function volJSON() {
         console.log('#3');
         console.log(volcanoActivityArray); //display value of activity array
         console.log('#4');
-        console.log(volcanoHazardsArray); //display value of hazard array */
+        console.log(volcanoHazardsArray); //display value of hazard array 
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
         /* DEBUGGING [END] */
-        volcanoMarkerCreateLoop(); //calls vol marker loop
+       volcanoMarkerCreateLoop(); //calls vol marker loop
+       console.log("3.1 volcanoMarkerCreate"); //debug volcano marker create
     });
 
 }
