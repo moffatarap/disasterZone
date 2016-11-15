@@ -1340,6 +1340,7 @@ b {
     }
     
     .infoWindow {
+        top: 20px;
         width: 90%;
         left: 5%;
     }
@@ -1354,6 +1355,104 @@ b {
         left: 5%;
     }
     
+    #fireKey {
+        position: absolute;
+        margin-left: 10%;
+        margin-top: 10px;
+        width: 80px;
+    }
+
+    #fireExp {
+        position: absolute;
+        margin-left: calc(10% + 80px);
+        margin-top: 25px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+
+    b {
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 14pt;
+        color: rgb(80,80,80);
+    }
+
+    #tornadoKey {
+        position: absolute;
+        margin-left: 10%;
+        margin-top: 100px;
+        width: 80px;
+    }
+
+    #tornadoExp {
+        position: absolute;
+        margin-left: calc(10% + 80px);
+        margin-top: 115px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+
+    #hurricaneKey {
+        position: absolute;
+        margin-left: 10%;
+        margin-top: 100px;
+        width: 80px;
+    }
+
+    #hurricaneExp {
+        position: absolute;
+        margin-left: calc(10% + 80px);
+        margin-top: 115px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+
+    #floodKey {
+        position: absolute;
+        margin-left: 50%;
+        margin-top: 100px;
+        width: 80px;
+    }
+
+    #floodExp {
+        position: absolute;
+        margin-left: calc(50% + 80px);
+        margin-top: 115px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+
+    #quakeKey {
+        position: absolute;
+        margin-left: 10%;
+        margin-top: 190px;
+        width: 80px;
+    }
+
+    #quakeExp {
+        position: absolute;
+        margin-left: calc(10% + 80px);
+        margin-top: 205px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+
+    #volcanoKey {
+        position: absolute;
+        margin-left: 50%;
+        margin-top: 190px;
+        width: 80px;
+    }
+
+    #volcanoExp {
+        position: absolute;
+        margin-left: calc(50% + 80px);
+        margin-top: 205px;
+        font-weight: 400;
+        font-size: 12pt;
+    }
+    
 }
 
 /* MOBILE STYLING */
@@ -1365,6 +1464,10 @@ b {
     }
     
     #eventsList-container {
+        width: 100%;
+    }
+    
+    .eventList-title {
         width: 100%;
     }
     

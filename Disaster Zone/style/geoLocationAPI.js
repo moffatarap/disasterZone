@@ -471,7 +471,7 @@ window.onload = function () {
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
         volJSON(); //Loads JSON Data volcanos geonet
         //earthJSON(); //Loads JSON data earthquakes goenet
-        phJSON();
+        //phJSON(); disabled to just show earthquakes
 
 
     }

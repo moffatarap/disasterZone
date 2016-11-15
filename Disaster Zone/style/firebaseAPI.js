@@ -1,17 +1,12 @@
-﻿/*Firebase API Disaster Zone MDDN352 P3 [2016] ZELLERPHOE */
+/*Firebase API Disaster Zone MDDN352 P3 [2016] ZELLERPHOE */
 //loaded into geoLocationAPI
 //TEMP DB loaded
 //ACTUAL DB: https://pbwoooo.firebaseio.com
 
 /* VARABLES */
-/*tracking people DB*/
-var latLngDB; //creates firebaseDB var
-latLngDB = new Firebase("<https://disasterzone.firebaseio.com/>");
-/*dumby events*/
-dummyDB = new Firebase("<https://disaster-zone-events.firebaseio.com/DumbyEvents/>");
-/*volcanoEvents*/ 
+var firebaseDB; //creates firebaseDB var
+firebaseDB = new Firebase("<https://pbwoooo.firebaseio.com/>");
 VolcanoDB = new Firebase("<https://disaster-zone-events.firebaseio.com/Volcano/>");
-/*earthquakeEvents*/
 var EarthquakeDB; //makes a path for earthquake testing
 EarthquakeDB = new Firebase("<https://disaster-zone-events.firebaseio.com/earthquake/>");
 var earthquakeID; // for loop for setting up DB
@@ -25,14 +20,44 @@ var currentDepth;
 /*** FUNCTION ***/
 function firebaseAPI() {
 
-/*this makes a very large DB that stores the location of all people that access the website*/
-    latLngDB.push({
+   /** firebaseDB.push({
         latLngUser: userLatLng.toString(), //latLng to db
         addressUser: document.getElementById("mapAddress").innerHTML, //formatted address to db from html
-        
+        geoLocateFail: document.getElementById("errorCantFind").innerHTML, //if fail save to db
+        alertEQ: document.getElementById("disasterAlert0").innerHTML, //ALERT EARTHQUAKE
+        alertFI: document.getElementById("disasterAlert1").innerHTML, //ALERT FIRE
+        alertFL: document.getElementById("disasterAlert2").innerHTML, //ALERT FLOOD
+        alertHUR: document.getElementById("disasterAlert3").innerHTML, //ALERT HURRICANE
+        alertTOR: document.getElementById("disasterAlert4").innerHTML, //ALERT TORNADO
+        alertFIT: document.getElementById("disasterAlert5").innerHTML, //ALERT FIRE TE ARO
 
-    }); 
+    }); **/
 
+  /**  firebaseDB.set({
+     Events:{
+EARTHQUAKE:{
+latLngUser: userLatLng.toString(),
+addressUser: document.getElementById("mapAddress").innerHTML
+},
+FIRE:{
+latLngUser: userLatLng.toString(),
+addressUser: document.getElementById("mapAddress").innerHTML
+},
+        FLOOD:{
+latLngUser: userLatLng.toString(),
+addressUser: document.getElementById("mapAddress").innerHTML
+},
+HURRICANE:{
+latLngUser: userLatLng.toString(),
+addressUser: document.getElementById("mapAddress").innerHTML
+},
+        TORNADO:{
+latLngUser: userLatLng.toString(),
+addressUser: document.getElementById("mapAddress").innerHTML
+}
+}
+
+    }); **/
 
 /*earthquake Database*/
 EarthquakeDB.remove();
@@ -73,26 +98,32 @@ volcanoActivityAndHazards:{
 }
 
 });
+        
 
-dummyDB.remove();
- for (var i = phPublicIdArray.length - 1; i >= 0; i--) {
- 			DummyID = phPublicIdArray[i];		
-			DummyLat = phLatArray[i];
-			DummyLng = phLngArray[i];
-			DummyLocation = phLocationName[i];
-			DummyDepth = phDepthArray[i];
-			DummyIntense = phIntensityArray[i];
-			dummyDB.push({
-				DummyEvents:{
-				DummyID,
-				DummyLat,
-				DummyLng,
-				DummyLocation,	
-				DummyDepth,
-				DummyIntense
-				}
 
-				});
- }
-         
+
+
+
+/** testing all of the DB things*/
+firebaseDB.set({
+
+Volcando:{ 
+	volActiveArray,
+	volcanoInactiveArray,
+	volcanoHazardsArray,
+	volcanoActivityArray,
+	volcanoMarkerTitleArray
+
+}, 
+EarthBeQuaking: {
+	earthQLatArray,
+	earthQLngArray,
+	earthQMagnitudeArray,
+	earthQDepthArray,
+	earthQIDNameArray
+}
+
+
+});
+    
 }
