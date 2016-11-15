@@ -1,6 +1,6 @@
 /* Geonet Volcano API Disaster Zone MDDN352 P3 12.7 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetVolcano = "https://json.ey.nz/api.geonet.org.nz/volcano/val"; //saves geonet url as var " ./json/geoNetVolcanoVal.json"
+var geonetVolcano = "http://json.ey.nz/api.geonet.org.nz/volcano/val"; //saves geonet url as var " ./json/geoNetVolcanoVal.json"
 var goenetVolcanoLocal = "./json/geoNetVolcanoVal.json";
 var volTitleLength = 12; //sets array length
 var volRadiusMulti = 10; //sets volcano alert radius to be multiplyed by this number original [5]
@@ -136,18 +136,6 @@ var eventTimeArray = [
 
 /* 2.0# ==- CSS VARABLE ARRAYS [END]-== */
 
-//document.getElementById("eventType").textContent = volUIVar;
-////SET EVENT LOCATION
-//document.getElementById("eventLocation").textContent = volcanoMarkerTitleArray[i];
-////SET EVENT HAZARDS
-//document.getElementById("eventRating").textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-////SET LAST CHECKED EVENT
-//document.getElementById("eventTime").textContent = date.toUTCString();
-
-//window.onload = function () {
-//    volJSON();
-//}
-
 // VOL JSON is called as a function in geolocationAPI
 function volJSON() {
     $.getJSON(geonetVolcano, function (data) {
@@ -166,7 +154,7 @@ function volJSON() {
 
         });
 
-        /* DEBUGGING  
+        /* DEBUGGING  */
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
@@ -200,47 +188,11 @@ function bindCircle() {
 
 /* 2.1# BIND CIRCLE TO MIDDLE MARKER [END]*/
 
-/* 2.1# ID FUNCTION [DISABLED]
-var idCount = 0;
-function idFunction() {
-    //if (i === )
-    
-    if (idCount < 1) {
-        for (i2 = 0; i2 < volActiveArray.length; i2++) {
-            if (volcanoLevelArray[i] === 1){
-    textContentArray[i] = document.createElement('div');
-    $(textContentArray[i]).addClass("dummyEvent");
-    textContentArray[i].innerHTML = '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.png"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>';
-
-    $(".eventsList").prepend(textContentArray[i]);
-    console.log('create')
-    /* 1.0# SET CONTENT
-    //SET EVENT TITLE
-    document.getElementById(eventTypeArray[idCount]).textContent = volUIVar;
-    //SET EVENT LOCATION
-    document.getElementById("eventLocation0").textContent = volcanoMarkerTitleArray[i2];
-    //SET EVENT HAZARDS
-    document.getElementById("eventRating0").textContent = volAlertLevelText + volcanoLevelArray[i2] + " " + volcanoActivityArray[i2];
-    //SET LAST CHECKED EVENT
-    document.getElementById("eventTime0").textContent = date.toUTCString();
-    /*  1.0# SET CONTENT 
-    console.log(idCount);
-    
-    console.log(idCount);
-            }
-        }
-    }
-
-    idCount++;
-}
-/* 2.1# ID FUNCTION [END]*/
-
-
 /* 2.3# ==-- VOLCANO MARKER LOOP --== */
 function volcanoMarkerCreateLoop() {
         for (i = 0; i < volcanoMarkerArray.length; i++) {
             //Loop until i = the length of MarkerArray
-            //console.log('markerCreate
+            //console.log('markerCreate)
 
             //VOL AlERT = 0 
             if (volcanoLevelArray[i] === 0) {

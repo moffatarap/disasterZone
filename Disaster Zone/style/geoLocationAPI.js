@@ -137,19 +137,6 @@ var disasterMarkerAY = [
 ];
 /* 3# === DISASTER MARKER ARRAY [END] === */
 
-/* 3.1# ===- DISASTER MARKER TITLE ARRAY -=== */
-//stores titles for each event in an array
-var disasterMarkerTitleArray = [
-    'Earthquake Paekakariki [SEVERE]',//[0] - EARTHQUAKE PAEK
-    'Fire Paekakariki [MODERATE]',//[1] - FIRE PAEK
-    'Flood Wellington [LIGHT]',//[2] - FLOOD WELL
-    'Hurricane Wellington [STRONG]',//[3] - HURRICANE WELL
-    'Tornado Wellington [WEAK]',//[4] - TORNADO WELL
-    'Fire Wellington [WEAK]',//[5] - FIRE TE ARO WELL
-
-];
-/* 3.1# ===- DISASTER MARKER TITLE ARRAY [END] -=== */
-
 /* 4# ==== DISASTER ICON ARRAY ==== */
 var iconArray = [
     // 4.0 EARTHQUAKE, Flood , Hurricane, Tornado , Fire , Volcano
@@ -272,11 +259,6 @@ var alertCircleColorArray = [
 ];
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY [END] ======*/
-
-/* 7# ======= ALERT CIRCLE RADUIS ARRAY =======*/
-
-
-/* 7# ======= ALERT CIRCLE RADUIS [END] =======*/
 
 /*=/ VARABLES END \=*/
 
@@ -474,22 +456,6 @@ var mapOptions = {
 
 };
 
-/* 0# == SORT UI ELEMENTS == 
-var count = 0;
-function sortDescending(a, b) {
-    var date1 = $(a).find(earthQEventTimeArray[count]).text();
-    date1 = date1.split('-');
-    date1 = new Date(date1[2], date1[1] - 1, date1[0]);
-
-    var date2 = $(b).find(".year").text();
-    date2 = date2.split('-');
-    date2 = new Date(date2[2], date2[1] - 1, date2[0]);
-    count++;
-    return date1;
-};*/
-
-/* 0 == SORT UI ELEMENTS == */
-
 /* 1# == ON LOAD SET STYLE MAP AND STARTING LOCATION ==*/
 window.onload = function () {
 
@@ -497,19 +463,15 @@ window.onload = function () {
     $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
     $("#errorCantFind").css({ "visibility": "visible" });
     geoLocateUser();
-    //sortDescending();
     /* DISPLAYS ERROR CANT FIND */
 
-
-
-
-    //on first loop create map
+   //on first loop create map
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
         volJSON(); //Loads JSON Data volcanos geonet
         //earthJSON(); //Loads JSON data earthquakes goenet
-        phJSON();
+        //phJSON(); disabled to just show earthquakes
 
 
     }
@@ -682,36 +644,17 @@ setInterval(function () {
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
 
         firebaseAPI(); //firebase function call from firebaseAPI scrypt
-
-
-
-        /* 6.3# ======--- GEOLOCATION ALERTS v2 ---====== [DISABLED]
-        //Trying using radius of circle to alert to events works on draggable marker 
-        var dragable_marker = new google.maps.Marker({
-            position: new google.maps.LatLng(-33.868625, 151.210274),
-            map: mapObject,
-            draggable: true
-        });
-
-        google.maps.event.addListener(dragable_marker, 'dragend', function (e) {
-            alert(alertCircleMarkerArray[0].getBounds().contains(dragable_marker.getPosition()));
-        }); 
-
-        /* 6.3# ======--- GEOLOCATION ALERTS v2 [END] ---====== */
+        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
         geoRefresh = 2; //reset value to 2
 
-        /* ADD IN REAL-TIME CHECKING OF EARTH AND VOL DATA */
-
-        /* ADD IN REAL-TIME CHECKING OF EARTH AND VOL DATA [END]*/
+        
     }
         //if geoRefresh var = > 10 then add 1 to geoRefresh 
     else {
 
         //console.log('ALERT: None'); debug
         if (geoRefresh === 1) {
-            //$("#inZone").css({ "margin-top": "50px" });
-
             earthJSON();
         }
 

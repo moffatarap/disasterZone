@@ -1,1 +1,160 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[174.77,-36.985]},"properties":{"volcanoID":"aucklandvolcanicfield","volcanoTitle":"Auckland Volcanic Field","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-177.914,-29.254]},"properties":{"volcanoID":"kermadecislands","volcanoTitle":"Kermadec Islands","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[176.251,-37.286]},"properties":{"volcanoID":"mayorisland","volcanoTitle":"Mayor Island","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[175.632,-39.156]},"properties":{"volcanoID":"ngauruhoe","volcanoTitle":"Ngauruhoe","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[173.63,-35.395]},"properties":{"volcanoID":"northland","volcanoTitle":"Northland","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[176.501,-38.119]},"properties":{"volcanoID":"okataina","volcanoTitle":"Okataina","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[176.281,-38.093]},"properties":{"volcanoID":"rotorua","volcanoTitle":"Rotorua","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[175.896,-38.784]},"properties":{"volcanoID":"taupo","volcanoTitle":"Taupo","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[175.641727,-39.133318]},"properties":{"volcanoID":"tongariro","volcanoTitle":"Tongariro","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[174.061,-39.298]},"properties":{"volcanoID":"taranakiegmont","volcanoTitle":"Taranaki/Egmont","level":0,"activity":"No volcanic unrest.","hazards":"Volcanic environment hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[177.183,-37.521]},"properties":{"volcanoID":"whiteisland","volcanoTitle":"White Island","level":1,"activity":"Minor volcanic unrest.","hazards":"Volcanic unrest hazards."}},{"type":"Feature","geometry":{"type":"Point","coordinates":[175.563,-39.281]},"properties":{"volcanoID":"ruapehu","volcanoTitle":"Ruapehu","level":2,"activity":"Moderate to heightened volcanic unrest.","hazards":"Volcanic unrest hazards, potential for eruption hazards."}}]}
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [174.77, -36.985]
+        },
+        "properties": {
+            "volcanoID": "aucklandvolcanicfield",
+            "volcanoTitle": "Auckland Volcanic Field",
+            "level": 5,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [-177.914, -29.254]
+        },
+        "properties": {
+            "volcanoID": "kermadecislands",
+            "volcanoTitle": "Kermadec Islands",
+            "level": 5,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.251, -37.286]
+        },
+        "properties": {
+            "volcanoID": "mayorisland",
+            "volcanoTitle": "Mayor Island",
+            "level": 3,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.632, -39.156]
+        },
+        "properties": {
+            "volcanoID": "ngauruhoe",
+            "volcanoTitle": "Ngauruhoe",
+            "level": 1,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [173.63, -35.395]
+        },
+        "properties": {
+            "volcanoID": "northland",
+            "volcanoTitle": "Northland",
+            "level": 4,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.501, -38.119]
+        },
+        "properties": {
+            "volcanoID": "okataina",
+            "volcanoTitle": "Okataina",
+            "level": 5,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.281, -38.093]
+        },
+        "properties": {
+            "volcanoID": "rotorua",
+            "volcanoTitle": "Rotorua",
+            "level": 2,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.896, -38.784]
+        },
+        "properties": {
+            "volcanoID": "taupo",
+            "volcanoTitle": "Taupo",
+            "level": 2,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.641727, -39.133318]
+        },
+        "properties": {
+            "volcanoID": "tongariro",
+            "volcanoTitle": "Tongariro",
+            "level": 1,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [174.061, -39.298]
+        },
+        "properties": {
+            "volcanoID": "taranakiegmont",
+            "volcanoTitle": "Taranaki/Egmont",
+            "level": 5,
+            "activity": "No volcanic unrest.",
+            "hazards": "Volcanic environment hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [177.183, -37.521]
+        },
+        "properties": {
+            "volcanoID": "whiteisland",
+            "volcanoTitle": "White Island",
+            "level": 1,
+            "activity": "Minor volcanic unrest.",
+            "hazards": "Volcanic unrest hazards."
+        }
+    }, {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.563, -39.281]
+        },
+        "properties": {
+            "volcanoID": "ruapehu",
+            "volcanoTitle": "Ruapehu",
+            "level": 2,
+            "activity": "Moderate to heightened volcanic unrest.",
+            "hazards": "Volcanic unrest hazards, potential for eruption hazards."
+        }
+    }]
+}

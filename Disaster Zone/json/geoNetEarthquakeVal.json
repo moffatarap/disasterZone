@@ -1,1 +1,550 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","id":"quake.2016p408314","geometry":{"type":"Point","coordinates":[167.40157,-45.17854]},"geometry_name":"origin_geom","properties":{"publicid":"2016p408314","origintime":"2016-05-31 01:50:12.402000","depth":97.60263,"magnitude":4.6175203,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-31 01:58:23.899000"}},{"type":"Feature","id":"quake.2016p405414","geometry":{"type":"Point","coordinates":[177.41434,-39.230095]},"geometry_name":"origin_geom","properties":{"publicid":"2016p405414","origintime":"2016-05-30 00:05:02.944000","depth":28.297138,"magnitude":3.7544062,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-30 06:04:41.033000"}},{"type":"Feature","id":"quake.2016p403752","geometry":{"type":"Point","coordinates":[173.59152,-39.611923]},"geometry_name":"origin_geom","properties":{"publicid":"2016p403752","origintime":"2016-05-29 09:19:05.692000","depth":21.40625,"magnitude":3.1605315,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 20:23:53.913000"}},{"type":"Feature","id":"quake.2016p403703","geometry":{"type":"Point","coordinates":[177.5318,-37.819412]},"geometry_name":"origin_geom","properties":{"publicid":"2016p403703","origintime":"2016-05-29 08:53:04.012000","depth":40.390625,"magnitude":3.6456292,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 20:17:02.485000"}},{"type":"Feature","id":"quake.2016p403463","geometry":{"type":"Point","coordinates":[172.74757,-43.511967]},"geometry_name":"origin_geom","properties":{"publicid":"2016p403463","origintime":"2016-05-29 06:45:29.135000","depth":17.421875,"magnitude":3.680555,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 20:15:10.450000"}},{"type":"Feature","id":"quake.2016p403045","geometry":{"type":"Point","coordinates":[166.9584,-45.218628]},"geometry_name":"origin_geom","properties":{"publicid":"2016p403045","origintime":"2016-05-29 03:02:49.979000","depth":16.26424,"magnitude":4.567203,"intensity":"strong","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 03:15:37.223000"}},{"type":"Feature","id":"quake.2016p402971","geometry":{"type":"Point","coordinates":[178.14061,-38.297165]},"geometry_name":"origin_geom","properties":{"publicid":"2016p402971","origintime":"2016-05-29 02:23:30.865000","depth":34.53125,"magnitude":3.2248049,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 20:21:51.096000"}},{"type":"Feature","id":"quake.2016p402935","geometry":{"type":"Point","coordinates":[172.09958,-43.236298]},"geometry_name":"origin_geom","properties":{"publicid":"2016p402935","origintime":"2016-05-29 02:03:59.277000","depth":10.390625,"magnitude":2.3446712,"intensity":"weak","status":"automatic","agency":"WEL(GNS_Primary)","updatetime":"2016-05-29 02:08:39.071000"}},{"type":"Feature","id":"quake.2016p401268","geometry":{"type":"Point","coordinates":[166.85385,-45.068314]},"geometry_name":"origin_geom","properties":{"publicid":"2016p401268","origintime":"2016-05-28 11:16:02.157000","depth":10.295346,"magnitude":4.0750914,"intensity":"moderate","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-28 17:56:32.397000"}},{"type":"Feature","id":"quake.2016p400487","geometry":{"type":"Point","coordinates":[178.47275,-38.125]},"geometry_name":"origin_geom","properties":{"publicid":"2016p400487","origintime":"2016-05-28 04:19:41.562000","depth":10.51738,"magnitude":2.3924139,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-28 18:05:17.271000"}},{"type":"Feature","id":"quake.2016p400484","geometry":{"type":"Point","coordinates":[178.39305,-38.18445]},"geometry_name":"origin_geom","properties":{"publicid":"2016p400484","origintime":"2016-05-28 04:17:54.445000","depth":11.949364,"magnitude":2.6717494,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-28 18:08:25.886000"}},{"type":"Feature","id":"quake.2016p400187","geometry":{"type":"Point","coordinates":[176.18419,-40.18046]},"geometry_name":"origin_geom","properties":{"publicid":"2016p400187","origintime":"2016-05-28 01:40:01.061000","depth":5.46875,"magnitude":2.4020028,"intensity":"weak","status":"automatic","agency":"WEL(GNS_Primary)","updatetime":"2016-05-28 01:42:56.542000"}},{"type":"Feature","id":"quake.2016p396967","geometry":{"type":"Point","coordinates":[172.69919,-43.50941]},"geometry_name":"origin_geom","properties":{"publicid":"2016p396967","origintime":"2016-05-26 21:04:23.766000","depth":2.7814975,"magnitude":2.1678545,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-27 18:44:00.744000"}},{"type":"Feature","id":"quake.2016p396369","geometry":{"type":"Point","coordinates":[172.69568,-43.52318]},"geometry_name":"origin_geom","properties":{"publicid":"2016p396369","origintime":"2016-05-26 15:45:53.461000","depth":4.070299,"magnitude":2.1590257,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-26 20:27:05.837000"}},{"type":"Feature","id":"quake.2016p395423","geometry":{"type":"Point","coordinates":[174.40968,-41.522785]},"geometry_name":"origin_geom","properties":{"publicid":"2016p395423","origintime":"2016-05-26 07:21:13.970000","depth":10.950197,"magnitude":4.2807994,"intensity":"strong","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-26 07:32:27.747000"}},{"type":"Feature","id":"quake.2016p394455","geometry":{"type":"Point","coordinates":[175.19186,-40.521553]},"geometry_name":"origin_geom","properties":{"publicid":"2016p394455","origintime":"2016-05-25 22:45:50.389000","depth":24.727192,"magnitude":3.1525493,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 23:40:55.492000"}},{"type":"Feature","id":"quake.2016p393292","geometry":{"type":"Point","coordinates":[172.78531,-43.49635]},"geometry_name":"origin_geom","properties":{"publicid":"2016p393292","origintime":"2016-05-25 12:25:59.480000","depth":12.265625,"magnitude":3.529233,"intensity":"moderate","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 19:28:53.999000"}},{"type":"Feature","id":"quake.2016p392477","geometry":{"type":"Point","coordinates":[176.62115,-40.373585]},"geometry_name":"origin_geom","properties":{"publicid":"2016p392477","origintime":"2016-05-25 05:11:55.908000","depth":17.91802,"magnitude":2.2628064,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 20:21:27.230000"}},{"type":"Feature","id":"quake.2016p392432","geometry":{"type":"Point","coordinates":[176.868,-39.418537]},"geometry_name":"origin_geom","properties":{"publicid":"2016p392432","origintime":"2016-05-25 04:48:04.069000","depth":11.85555,"magnitude":2.2036037,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 20:18:54.715000"}},{"type":"Feature","id":"quake.2016p392169","geometry":{"type":"Point","coordinates":[175.664,-39.664394]},"geometry_name":"origin_geom","properties":{"publicid":"2016p392169","origintime":"2016-05-25 02:28:02.472000","depth":8.676881,"magnitude":2.6154642,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 03:37:51.479000"}},{"type":"Feature","id":"quake.2016p391765","geometry":{"type":"Point","coordinates":[176.87558,-39.433437]},"geometry_name":"origin_geom","properties":{"publicid":"2016p391765","origintime":"2016-05-24 22:52:53.107000","depth":11.079594,"magnitude":2.5612576,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 03:35:47.396000"}},{"type":"Feature","id":"quake.2016p391755","geometry":{"type":"Point","coordinates":[176.88112,-39.439682]},"geometry_name":"origin_geom","properties":{"publicid":"2016p391755","origintime":"2016-05-24 22:47:29.140000","depth":9.770689,"magnitude":2.7560089,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-25 03:34:10.159000"}},{"type":"Feature","id":"quake.2016p391362","geometry":{"type":"Point","coordinates":[177.17236,-37.53665]},"geometry_name":"origin_geom","properties":{"publicid":"2016p391362","origintime":"2016-05-24 19:17:48.017000","depth":5.703125,"magnitude":2.7468324,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 20:00:11.940000"}},{"type":"Feature","id":"quake.2016p391304","geometry":{"type":"Point","coordinates":[176.8712,-39.441772]},"geometry_name":"origin_geom","properties":{"publicid":"2016p391304","origintime":"2016-05-24 18:47:10.950000","depth":11.241653,"magnitude":2.5926359,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 20:10:03.641000"}},{"type":"Feature","id":"quake.2016p390983","geometry":{"type":"Point","coordinates":[176.86212,-39.43454]},"geometry_name":"origin_geom","properties":{"publicid":"2016p390983","origintime":"2016-05-24 15:56:00.346000","depth":12.887326,"magnitude":2.1450193,"intensity":"weak","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 20:07:44.996000"}},{"type":"Feature","id":"quake.2016p390950","geometry":{"type":"Point","coordinates":[176.9066,-39.4634]},"geometry_name":"origin_geom","properties":{"publicid":"2016p390950","origintime":"2016-05-24 15:38:10.686000","depth":12.12499,"magnitude":4.2498064,"intensity":"moderate","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 15:51:12.861000"}},{"type":"Feature","id":"quake.2016p389885","geometry":{"type":"Point","coordinates":[172.72307,-43.48873]},"geometry_name":"origin_geom","properties":{"publicid":"2016p389885","origintime":"2016-05-24 06:11:10.488000","depth":10.15625,"magnitude":3.362537,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 20:01:35.621000"}},{"type":"Feature","id":"quake.2016p389405","geometry":{"type":"Point","coordinates":[176.61977,-39.95522]},"geometry_name":"origin_geom","properties":{"publicid":"2016p389405","origintime":"2016-05-24 01:55:11.694000","depth":15.3125,"magnitude":3.31498,"intensity":"light","status":"automatic","agency":"WEL(GNS_Primary)","updatetime":"2016-05-24 01:57:33.233000"}},{"type":"Feature","id":"quake.2016p388364","geometry":{"type":"Point","coordinates":[176.549,-39.780594]},"geometry_name":"origin_geom","properties":{"publicid":"2016p388364","origintime":"2016-05-23 16:40:30.078000","depth":17.421875,"magnitude":3.0050225,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-23 20:10:22.173000"}},{"type":"Feature","id":"quake.2016p387415","geometry":{"type":"Point","coordinates":[172.75375,-43.54887]},"geometry_name":"origin_geom","properties":{"publicid":"2016p387415","origintime":"2016-05-23 08:14:56.881000","depth":12.734375,"magnitude":3.0512254,"intensity":"light","status":"reviewed","agency":"WEL(GNS_Primary)","updatetime":"2016-05-23 20:08:59.663000"}}],"crs":{"type":"EPSG","properties":{"code":"4326"}}}
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "id": "quake.2016p364673",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [178.32216, -38.10124]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p364673",
+            "origintime": "2016-05-14 22:18:05.322000",
+            "depth": 9.6875,
+            "magnitude": 3.1,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 22:20:11.325000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p364232",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [173.02496, -42.290512]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p364232",
+            "origintime": "2016-05-14 18:23:03.629000",
+            "depth": 28.4375,
+            "magnitude": 3.9,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 18:26:47.767000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p363919",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.58743, -40.989525]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p363919",
+            "origintime": "2016-05-14 15:36:08.236000",
+            "depth": 24.21875,
+            "magnitude": 6.556293,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 15:38:48.322000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p363441",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.83887, -39.652695]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p363441",
+            "origintime": "2016-05-14 11:21:27.481000",
+            "depth": 24.453125,
+            "magnitude": 5.6245656,
+            "intensity": "moderate",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 11:23:34.835000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p363256",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [167.19496, -46.030518]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p363256",
+            "origintime": "2016-05-14 09:43:19.360000",
+            "depth": 58.4375,
+            "magnitude": 1,
+            "intensity": "strong",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 10:22:01.062000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p363116",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [172.70255, -43.478962]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p363116",
+            "origintime": "2016-05-14 08:28:22.876000",
+            "depth": 9.921875,
+            "magnitude": 4.6400044,
+            "intensity": "severe",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 08:31:53.405000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p362858",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [177.59795, -37.61821]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p362858",
+            "origintime": "2016-05-14 06:10:59.431000",
+            "depth": 9.921875,
+            "magnitude": 2.7576597,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 06:13:24.573000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p362173",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [172.47913, -43.60657]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p362173",
+            "origintime": "2016-05-14 00:06:15.168000",
+            "depth": 7.2265625,
+            "magnitude": 1,
+            "intensity": "light",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 00:24:45.068000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p361631",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [177.64078, -37.62704]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p361631",
+            "origintime": "2016-05-13 19:17:10.090000",
+            "depth": 19.0625,
+            "magnitude": 2.733803,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-13 19:19:08.573000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p361097",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.5033, -39.316734]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p361097",
+            "origintime": "2016-05-13 14:32:31.387000",
+            "depth": 14.4921875,
+            "magnitude": 1,
+            "intensity": "light",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-14 00:41:09.933000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p361045",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.5119, -40.381126]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p361045",
+            "origintime": "2016-05-13 14:04:53.950000",
+            "depth": 14.609375,
+            "magnitude": 2.2776039,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-13 14:06:50.448000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p360986",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.66922, -39.855724]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p360986",
+            "origintime": "2016-05-13 13:33:29.451000",
+            "depth": 49.765625,
+            "magnitude": 1,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-13 13:36:52.726000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p359572",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [177.66122, -37.962532]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p359572",
+            "origintime": "2016-05-13 01:00:32.018000",
+            "depth": 11.09375,
+            "magnitude": 6,
+            "intensity": "severe",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-13 01:03:06.676000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p358720",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [172.70226, -43.605835]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p358720",
+            "origintime": "2016-05-12 17:26:13.669000",
+            "depth": 11.328125,
+            "magnitude": 2.7125726,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-12 17:28:45.629000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p357830",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [167.98322, -44.638145]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p357830",
+            "origintime": "2016-05-12 09:32:12.065000",
+            "depth": 10.15625,
+            "magnitude": 1,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-12 09:35:52.581000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p357461",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.44981, -40.919163]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p357461",
+            "origintime": "2016-05-12 06:15:24.318000",
+            "depth": 25.039062,
+            "magnitude": 1,
+            "intensity": "light",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-12 07:10:45.120000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356580",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.46161, -40.922432]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356580",
+            "origintime": "2016-05-11 22:26:06.708000",
+            "depth": 27.96875,
+            "magnitude": 1,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 22:28:30.562000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356540",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.45306, -40.941353]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356540",
+            "origintime": "2016-05-11 22:04:46.781000",
+            "depth": 25.859375,
+            "magnitude": 2.9769464,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 22:07:15.632000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356487",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.45152, -40.929634]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356487",
+            "origintime": "2016-05-11 21:36:33.892000",
+            "depth": 23.984375,
+            "magnitude": 2.643405,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 21:39:24.263000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356457",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.49492, -40.94843]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356457",
+            "origintime": "2016-05-11 21:20:26.986000",
+            "depth": 28.4375,
+            "magnitude": 1,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 21:22:49.973000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356351",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.46599, -40.935898]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356351",
+            "origintime": "2016-05-11 20:24:02.317000",
+            "depth": 25.15625,
+            "magnitude": 2.904484,
+            "intensity": "weak",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 20:32:08.224000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356297",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.4226, -40.917103]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356297",
+            "origintime": "2016-05-11 19:55:18.243000",
+            "depth": 27.265625,
+            "magnitude": 5.162885,
+            "intensity": "strong",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 20:03:39.861000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356222",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [175.4242, -40.916733]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356222",
+            "origintime": "2016-05-11 19:15:32.224000",
+            "depth": 27.617188,
+            "magnitude": 4.6630716,
+            "intensity": "moderate",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 19:25:37.076000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p356205",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.90906, -38.38085]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p356205",
+            "origintime": "2016-05-11 19:06:12.853000",
+            "depth": 10.625,
+            "magnitude": 2.7528186,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 19:07:35.469000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p355601",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.59059, -38.489628]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p355601",
+            "origintime": "2016-05-11 13:44:23.813000",
+            "depth": 88.363815,
+            "magnitude": 5.150903,
+            "intensity": "light",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 13:53:58.423000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p355041",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [172.70204, -43.589134]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p355041",
+            "origintime": "2016-05-11 08:45:53.674000",
+            "depth": 6.640625,
+            "magnitude": 4.650387,
+            "intensity": "strong",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 08:55:17.398000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p354471",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [177.7942, -37.60599]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p354471",
+            "origintime": "2016-05-11 03:42:27.759000",
+            "depth": 9.921875,
+            "magnitude": 2.8815587,
+            "intensity": "light",
+            "status": "automatic",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 03:44:43.358000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p353919",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [176.35432, -40.646423]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p353919",
+            "origintime": "2016-05-10 22:48:27.525000",
+            "depth": 23.984375,
+            "magnitude": 2.9839609,
+            "intensity": "weak",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 03:10:04.119000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p352293",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [172.69347, -43.512093]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p352293",
+            "origintime": "2016-05-10 08:21:42.377000",
+            "depth": 11.328125,
+            "magnitude": 2.0373886,
+            "intensity": "weak",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 03:13:25.219000"
+        }
+    }, {
+        "type": "Feature",
+        "id": "quake.2016p350583",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [174.0998, -41.710693]
+        },
+        "geometry_name": "origin_geom",
+        "properties": {
+            "publicid": "2016p350583",
+            "origintime": "2016-05-09 17:11:05.429000",
+            "depth": 10.848805,
+            "magnitude": 1,
+            "intensity": "light",
+            "status": "reviewed",
+            "agency": "WEL(GNS_Primary)",
+            "updatetime": "2016-05-11 00:56:59.797000"
+        }
+    }],
+    "crs": {
+        "type": "EPSG",
+        "properties": {
+            "code": "4326"
+        }
+    }
+}
