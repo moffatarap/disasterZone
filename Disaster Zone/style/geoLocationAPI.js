@@ -12,7 +12,7 @@ var latitude; //lat for warning system, based off userLatLng var
 var longitude; //lng for warning system, based off userLatLng var
 var fourDPR = 10000;  //sets rounding var
 var alertCircleStrokeWeight = 2; //sets stroke weight for alert circle
-var showInactiveVol = 0; //show or hide inactive volcanos 0 to hide inactive volcano 1 to show
+var showInactiveVol = 1; //show or hide inactive volcanos 0 to hide inactive volcano 1 to show
 
 /* 1# = DISASTER WARNING LOCATION ARRAYS =*/
 //location warning LAT 
@@ -34,31 +34,31 @@ var disasterLocLngArray = [
 
 /* 1.1# VOLCANO WARNING LOCATION ARRAYS */
 var volcanoWarningLatArray = [
-    -36.9850, //[0]  - LAT || AUCKLAND VOLCANIC FIELD
-    -29.2540, //[1]  - LAT || KERMADEC ISLANDS
-    -37.2860, //[2]  - LAT || MAYOR ISLAND
-    -39.1560, //[3]  - LAT || NGAURUHOE
-    -35.3950, //[4]  - LAT || NORTHLAND
-    -38.1190, //[5]  - LAT || OKATAINA AKA MOUNT TARAWERA
-    -38.0930, //[6]  - LAT || ROTORUA
-    -38.7840, //[7]  - LAT || TAUPO
-    -39.1333, //[8]  - LAT || TONGARIRO
-    -39.2980, //[9]  - LAT || TARANAKI/EGMONT
+    -39.2980, //[0]  - LAT || TARANAKI/EGMONT
+	-39.1333, //[1]  - LAT || TONGARIRO
+	-38.7840, //[2]  - LAT || TAUPO
+	-38.0930, //[3]  - LAT || ROTORUA
+	-38.1190, //[4]  - LAT || OKATAINA AKA MOUNT TARAWERA
+	-35.3950, //[5]  - LAT || NORTHLAND
+	-39.1560, //[6]  - LAT || NGAURUHOE
+	-37.2860, //[7]  - LAT || MAYOR ISLAND
+	-29.2540, //[8]  - LAT || KERMADEC ISLANDS
+	-36.9850, //[9]  - LAT || AUCKLAND VOLCANIC FIELD
     -37.5210, //[10] - LAT || WHITE ISLAND
     -39.2810, //[11] - LAT || RUAPEHU
 ];
 
 var volcanoWarningLngArray = [
-    174.7700, //[0]  - LNG || AUCKLAND VOLCANIC FIELD
-    177.9167, //[1]  - LNG || KERMADEC ISLANDS
-    176.2510, //[2]  - LNG || MAYOR ISLAND
-    175.6320, //[3]  - LNG || NGAURUHOE
-    173.6300, //[4]  - LNG || NORTHLAND
-    176.5010, //[5]  - LNG || OKATAINA AKA MOUNT TARAWERA
-    176.2810, //[6]  - LNG || ROTORUA
-    175.8960, //[7]  - LNG || TAUPO
-    175.6417, //[8]  - LNG || TONGARIRO
-    174.0610, //[9]  - LNG || TARANAKI/EGMONT
+    174.0610, //[0]  - LNG || TARANAKI/EGMONT
+	175.6417, //[1]  - LNG || TONGARIRO
+	175.8960, //[2]  - LNG || TAUPO
+	176.2810, //[3]  - LNG || ROTORUA
+	176.5010, //[4]  - LNG || OKATAINA AKA MOUNT TARAWERA
+	173.6300, //[5]  - LNG || NORTHLAND
+	175.6320, //[6]  - LNG || NGAURUHOE
+	176.2510, //[7]  - LNG || MAYOR ISLAND
+	177.9167, //[8]  - LNG || KERMADEC ISLANDS
+	174.7700, //[9]  - LNG || AUCKLAND VOLCANIC FIELD
     177.1830, //[10] - LNG || WHITE ISLAND
     175.5630, //[11] - LNG || RUAPEHU
 
@@ -494,7 +494,7 @@ function writeAddressName(latLng) {
             //hides error message if postion found
             $("#errorCantFind").css({ "visibility": "hidden" });
             console.log('1 Geocoder Status OK')
-
+            
             document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
             //+= for debugging, to show all addresses = to just show one address at a time
 
@@ -622,14 +622,14 @@ setInterval(function () {
             //1# - inZone
             $("#inZone").css({ "margin-top": "50px" }); //display alert
             $("#floatingKey").css({ "margin-top": "110px" }); //set offset of key when disaster event shown
-            console.log('ALERT: FIRE'); //debug
+           // console.log('ALERT: FIRE'); //debug
         }
 
             //1# - out ofZone
         else {
             $("#inZone").css({ "margin-top": "-50px" }); //hide alert
             $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
-            console.log('ALERT: FIRE RESET'); //debug
+            //console.log('ALERT: FIRE RESET'); //debug
         };
 
         /* 6.3# ======--- GEOLOCATION ALERTS [END] ---====== */
@@ -644,6 +644,7 @@ setInterval(function () {
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
 
         firebaseAPI(); //firebase function call from firebaseAPI scrypt
+        console.log("firebaseDataPush")
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
         geoRefresh = 2; //reset value to 2
