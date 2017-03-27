@@ -1,4 +1,9 @@
 /*= MAIN CSS Disaster Zone MDDN352 P3 [2016] SCHULTZSTEF (300308218) =*/
+/* HIDE SCROLL BAR */
+::-webkit-scrollbar {
+display: none;
+} 
+
 html {
     max-width: 100%;
     overflow-x: hidden;

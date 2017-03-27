@@ -1,6 +1,6 @@
 /* Geonet Earthquake API Disaster Zone MDDN352 P3 13.1 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetEarthQuake = "http://json.ey.nz/www.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
+var geonetEarthQuake = "https://json.ey.nz/www.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
 var geonetEarthQuakeLocal = "./json/geoNetEarthquakeVal.json"
 var earthQEventLength = 10; //sets earthquake array max events
 var earthQRadiusMulti = 4; //sets earthquake alert radius to be multiplyed by
@@ -181,7 +181,7 @@ function earthJSON() {
 
         });
 
-        /* DEBUGGING 
+        /* DEBUGGING
         console.log('#1 Intensity');
         console.log(earthQIntesityArray); //display value of title array
         console.log('#2 Magitude');
@@ -194,11 +194,12 @@ function earthJSON() {
         console.log('5 Time');
         console.log(earthQTimeArray); //display value of time array
         console.log('6 ID')
-        console.log(earthQIDNameArray); //display value of name array */
+        console.log(earthQIDNameArray); //display value of name array  */
         
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
         earthQuakeMarkerCreateLoop(); //calls earthquake marker loop
+        console.log("3.2 earthquakeMarkerCreate"); //debug marker create
     });
 
 }
