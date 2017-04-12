@@ -32,42 +32,8 @@ var disasterLocLngArray = [
 ];
 /* 1# = DISASTER LOCATION ARRAYS [END] =*/
 
-/* 1.1# VOLCANO WARNING LOCATION ARRAYS */
-var volcanoWarningLatArray = [
-    -39.2980, //[0]  - LAT || TARANAKI/EGMONT
-	-39.1333, //[1]  - LAT || TONGARIRO
-	-38.7840, //[2]  - LAT || TAUPO
-	-38.0930, //[3]  - LAT || ROTORUA
-	-38.1190, //[4]  - LAT || OKATAINA AKA MOUNT TARAWERA
-	-35.3950, //[5]  - LAT || NORTHLAND
-	-39.1560, //[6]  - LAT || NGAURUHOE
-	-37.2860, //[7]  - LAT || MAYOR ISLAND
-	-29.2540, //[8]  - LAT || KERMADEC ISLANDS
-	-36.9850, //[9]  - LAT || AUCKLAND VOLCANIC FIELD
-    -37.5210, //[10] - LAT || WHITE ISLAND
-    -39.2810, //[11] - LAT || RUAPEHU
-];
 
-var volcanoWarningLngArray = [
-    174.0610, //[0]  - LNG || TARANAKI/EGMONT
-	175.6417, //[1]  - LNG || TONGARIRO
-	175.8960, //[2]  - LNG || TAUPO
-	176.2810, //[3]  - LNG || ROTORUA
-	176.5010, //[4]  - LNG || OKATAINA AKA MOUNT TARAWERA
-	173.6300, //[5]  - LNG || NORTHLAND
-	175.6320, //[6]  - LNG || NGAURUHOE
-	176.2510, //[7]  - LNG || MAYOR ISLAND
-	177.9167, //[8]  - LNG || KERMADEC ISLANDS
-	174.7700, //[9]  - LNG || AUCKLAND VOLCANIC FIELD
-    177.1830, //[10] - LNG || WHITE ISLAND
-    175.5630, //[11] - LNG || RUAPEHU
-
-];
-
-
-/* 1.1# VOLCANO WARNING LOCATION ARRAYS [END]*/
-
-/* 1.2# VOLCANO MARKER VAR ARRAY */
+/* 1.# VOLCANO MARKER VAR ARRAY */
 var volcanoMarkerArray = [
     , //[0]  || AUCKLAND VOLCANIC FIELD
     , //[1]  || KERMADEC ISLANDS
@@ -81,7 +47,6 @@ var volcanoMarkerArray = [
     , //[9]  || TARANAKI/EGMONT
     , //[10] || WHITE ISLAND
     , //[11] || RUAPEHU
-
 ];
 
 //STORES ACTIVE VOLCANOS || from lv 1 to 5
@@ -177,14 +142,7 @@ var iconArray = [
     './media/img/mapKeys/event/light/volcanoL.png',       //[28] LIGHT
     './media/img/mapKeys/event/weak/volcanoW.png',        //[29] WEAK
 ];
-var iconVolcanoArray = [
-    // 4.5 ===== VOLCANO =====
-    './media/img/mapKeys/event/severe/volcanoS.png',      //[0] SEVERE 
-    './media/img/mapKeys/event/strong/volcanoST.png',     //[1] STRONG
-    './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
-    './media/img/mapKeys/event/light/volcanoL.png',       //[3] LIGHT
-    './media/img/mapKeys/event/weak/volcanoW.png',        //[4] WEAK
-];
+
 /* 4# ==== DISASTER ICON ARRAY [END] ==== */
 
 /* 4.1# ==== DISASTER ICON STANDARD ARRAY ==== */
@@ -195,7 +153,7 @@ var disasterIconStandardArray = [
     './media/img/mapKeys/key/hurricane.png',  //[3] HURRICANE
     './media/img/mapKeys/key/tornado.png',    //[4] TORNADO
     './media/img/mapKeys/key/volcano.png',    //[5] VOLCANO
-    './media/img/mapKeys/key/user2.png',       //[6] USER
+    './media/img/mapKeys/key/user2.png',      //[6] USER
 ];
 
 /* 4.1# ==== DISASTER ICON STANDARD ARRAY [END] ==== */
@@ -618,7 +576,7 @@ setInterval(function () {
         /* 6.3# ======--- GEOLOCATION ALERTS PLACEHOLDER---====== [ENABLED] */
 
         /* 1# WELLINGTON FIRE TE PAPA || LIGHT */
-        if (latitude <= disasterLocLatArray[0] + disasterOffsetArray[4] && latitude >= disasterLocLatArray[0] - disasterOffsetArray[4] && longitude <= disasterLocLngArray[0] + disasterOffsetArray[5] && longitude >= disasterLocLngArray[0] - disasterOffsetArray[5]) {
+        if (latitude <= disasterLocLatArray[0] + disasterOffsetArray[8] && latitude >= disasterLocLatArray[0] - disasterOffsetArray[8] && longitude <= disasterLocLngArray[0] + disasterOffsetArray[9] && longitude >= disasterLocLngArray[0] - disasterOffsetArray[9]) {
 
             //1# - inZone
             $("#inZone").css({ "margin-top": "50px" }); //display alert
@@ -638,14 +596,15 @@ setInterval(function () {
 
     if (geoRefresh === 10) {
         geoLocateUser();
-        //console.log('geoLocateUser');writes to debug geoLocateUser
+        console.log('geoLocateUser'); //writes to debug geoLocateUser
+        
 
 
 
-        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
+        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE TEMP DISABLE]
 
         firebaseAPI(); //firebase function call from firebaseAPI scrypt
-        console.log("firebaseDataPush")
+        console.log("firebaseDataPush") */
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
         geoRefresh = 2; //reset value to 2
