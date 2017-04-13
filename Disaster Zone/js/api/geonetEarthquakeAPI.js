@@ -201,7 +201,7 @@ function earthJSON() {
         console.log(earthQTimeArray); //display value of time array
         console.log('6 ID')
         console.log(earthQIDNameArray); //display value of name array  
-        
+
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
         earthQuakeMarkerCreateLoop(); //calls earthquake marker loop
@@ -214,7 +214,7 @@ function earthJSON() {
 /* 3# BIND CIRCLE TO MIDDLE MARKER */
 function bindCircleEq() {
     earthQAlertCircleMarkerArray[i].bindTo('center', earthquakeMarkerArray[i], 'position'); //binds circle to location of marker
-} 
+}
 
 /* 3# BIND CIRCLE TO MIDDLE MARKER [END]*/
 
@@ -237,7 +237,7 @@ var earthQLatLng = { lat: parseFloat(earthQLatArray[0]), lng: parseFloat(earthQL
 function earthQuakeMarkerCreateLoop() {
     //geocodeLatLng();
     //writeEarthQAddress();
-    
+
     for (i = 0; i < earthQEventLength; i++) {
         //loop until i = earthQEventLength Var
         //Math.round
@@ -248,34 +248,29 @@ function earthQuakeMarkerCreateLoop() {
         var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
         var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1')); //replacing date format
         /* CONVERT JSON DATE TIME TO UTC [END]*/
-        /* CONVERT to TITLE CASE 
-        var earthQIntesityFormat = earthQIntesityArray[i]; //for formating to title case
-        var earthquakeIntensityFormat = ;
-        toTitleCase*/
 
-        /* CONVERT TO TITLE CASE [END] THIS WILL WORK*/
 
-      /*  6.4 - CONVERT TO TITLE CASE */
-       earthQTitleArray[i] = earthQIntesityArray[i] + '.' + earthQIDNameArray[i]; //merges eQI array and name into one array
-       console.log(earthQTitleArray);
-       
-       console.log(earthQTitleArray);
+        /*  6.4 - CONVERT TO TITLE CASE TOM THIS THING */
+        earthQTitleArray[i] = earthQIntesityArray[i] + '.' + earthQIDNameArray[i]; //merges eQI array and name into one array
+        console.log(earthQTitleArray); //should show array
+        //function or code to turn into title case of earthQTitleArray
+        console.log(earthQTitleArray); //log array after title cased
         /*  6.4 - CONVERT TO TITLE CASE [END] */
 
         //EARTHQUAKE SEVERITY WEAK
         if (earthQIntesityArray[i] === 'weak') {
             earthquakeMarkerArray[i] = new google.maps.Marker({
-               //create marker
+                //create marker
                 map: mapObject,
                 //title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
-                title: earthQTitleArray[i],
+                title: earthQTitleArray[i], //sets the title to i of the earthQTitleArray (in blue on google map)
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[4],
             });
 
             markerAnimaton(); //sets animation on markers
-            
-            
+            /* TOM THIS THING END */
+
 
             // circle alert create
             earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
@@ -287,7 +282,7 @@ function earthQuakeMarkerCreateLoop() {
             });
 
             bindCircleEq(); //binds circle to marker
-            
+
             /* 1# DISPLAY IN UI */
             //idFunction();
             earthQTextContentArray[i] = document.createElement('div');
@@ -295,8 +290,8 @@ function earthQuakeMarkerCreateLoop() {
             earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[0];
 
             $(".eventsList").prepend(earthQTextContentArray[i]);
-            
-            
+
+
             // 1.0# SET CONTENT
             //SET EVENT TITLE
             document.getElementById(earthQEventTypeArray[0]).textContent = earthUIVar;
@@ -333,7 +328,7 @@ function earthQuakeMarkerCreateLoop() {
 
             bindCircleEq(); //binds circle to marker
 
-           /* 2# DISPLAY IN UI */
+            /* 2# DISPLAY IN UI */
             earthQTextContentLightArray[earthQLightLoop] = document.createElement('div');
             $(earthQTextContentLightArray[earthQLightLoop]).addClass("dummyEvent");
             earthQTextContentLightArray[earthQLightLoop].innerHTML = earthQTextInnerHtmlLightArray[earthQLightLoop];
@@ -351,7 +346,7 @@ function earthQuakeMarkerCreateLoop() {
             /* 2# DISPLAY IN UI [END] */
 
             earthQLightLoop += 1;
-           
+
         }
 
         //EARTHQUAKE SEVERITY MODERATE
@@ -447,7 +442,7 @@ function earthQuakeMarkerCreateLoop() {
                 title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[0],
-                
+
             });
 
             markerAnimaton(); //sets animation on markers
