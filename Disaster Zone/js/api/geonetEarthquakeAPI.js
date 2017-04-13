@@ -186,7 +186,7 @@ function earthJSON() {
 
         });
 
-        /* DEBUGGING */
+        /* DEBUGGING 
         console.log('#1 Intensity');
         console.log(earthQIntesityArray); //display value of title array
         console.log('#2 Magitude');
@@ -200,7 +200,7 @@ function earthJSON() {
         console.log('5 Time');
         console.log(earthQTimeArray); //display value of time array
         console.log('6 ID')
-        console.log(earthQIDNameArray); //display value of name array  
+        console.log(earthQIDNameArray); //display value of name array   */
 
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
@@ -251,6 +251,7 @@ function earthQuakeMarkerCreateLoop() {
 
 
         /*  6.4 - CONVERT TO TITLE CASE TOM THIS THING */
+        /* Current out put = "weak.quake.2017p276170" wanted out put = "Weak.Quake.2017 P276170"*/
         earthQTitleArray[i] = earthQIntesityArray[i] + '.' + earthQIDNameArray[i]; //merges eQI array and name into one array
         console.log(earthQTitleArray); //should show array
         //function or code to turn into title case of earthQTitleArray
