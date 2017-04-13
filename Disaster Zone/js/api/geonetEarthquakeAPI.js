@@ -233,14 +233,6 @@ var earthQLatLng = { lat: parseFloat(earthQLatArray[0]), lng: parseFloat(earthQL
 
 /* 3.3# GEOCODER REVERSE [END]*/
 
-/* 3.4# TO PROPER CASE  [DISABLED] /*
-function toProperCase(earthQIntesityArray) {
-    return earthQIntesityArray.toLowerCase().replace(/^(.)|\s(.)/g,
-            function ($1) { return $1.toUpperCase(); });
-}
-
-/* 3.4# TO PROPER CASE [END]*/
-
 /* 4# ==== EARTHQUAKE MARKER LOOP ==== */
 function earthQuakeMarkerCreateLoop() {
     //geocodeLatLng();
@@ -260,11 +252,15 @@ function earthQuakeMarkerCreateLoop() {
         var earthQIntesityFormat = earthQIntesityArray[i]; //for formating to title case
         var earthquakeIntensityFormat = ;
         toTitleCase*/
+
         /* CONVERT TO TITLE CASE [END] THIS WILL WORK*/
 
-      
-       earthQTitleArray[i] = earthQIntesityArray[i] + earthQIDNameArray[i];
+      /*  6.4 - CONVERT TO TITLE CASE */
+       earthQTitleArray[i] = earthQIntesityArray[i] + '.' + earthQIDNameArray[i]; //merges eQI array and name into one array
        console.log(earthQTitleArray);
+       
+       console.log(earthQTitleArray);
+        /*  6.4 - CONVERT TO TITLE CASE [END] */
 
         //EARTHQUAKE SEVERITY WEAK
         if (earthQIntesityArray[i] === 'weak') {
@@ -272,7 +268,7 @@ function earthQuakeMarkerCreateLoop() {
                //create marker
                 map: mapObject,
                 //title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
-                title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
+                title: earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[4],
             });
