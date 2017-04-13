@@ -257,10 +257,10 @@ function earthQuakeMarkerCreateLoop() {
         var earthQIntesityFormat = earthQIntesityArray[i]; //for formating to title case
         var earthquakeIntensityFormat = ;
         toTitleCase*/
-        /* CONVERT TO TITLE CASE [END] */
+        /* CONVERT TO TITLE CASE [END] fixed*/
 
        // var titleWeak = earthQIntesityArray[i] + "." + earthQIDNameArray[i];
-        
+       
 
         //EARTHQUAKE SEVERITY WEAK
         if (earthQIntesityArray[i] === 'weak') {
