@@ -75,6 +75,9 @@ var earthQTextInnerHtmlLightArray = [
    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventTypeLight5"></h4><h6 id="earthQEventLocationLight5"></h6><h6 id="earthQEventRatingLight5"></h6><h6 id="earthQEventTimeLight5"></h6><div id="gradientL"></div>', //[0]
 
 ];
+//EARTHQUAKE TITLE CASE ARRAY 
+var earthQTitleArray = {
+};
 
 //EVENT TYPE
 var earthQEventTypeLightArray = [
@@ -259,14 +262,16 @@ function earthQuakeMarkerCreateLoop() {
         toTitleCase*/
         /* CONVERT TO TITLE CASE [END] THIS WILL WORK*/
 
-       // var titleWeak = earthQIntesityArray[i] + "." + earthQIDNameArray[i];
-       
+      
+       earthQTitleArray[i] = earthQIntesityArray[i] + earthQIDNameArray[i];
+       console.log(earthQTitleArray);
 
         //EARTHQUAKE SEVERITY WEAK
         if (earthQIntesityArray[i] === 'weak') {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                //create marker
                 map: mapObject,
+                //title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
                 title: earthQIntesityArray[i] + "." + earthQIDNameArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[4],
