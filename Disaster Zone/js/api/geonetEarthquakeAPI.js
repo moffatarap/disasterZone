@@ -257,7 +257,7 @@ function earthQuakeMarkerCreateLoop() {
         var earthQIntesityFormat = earthQIntesityArray[i]; //for formating to title case
         var earthquakeIntensityFormat = ;
         toTitleCase*/
-        /* CONVERT TO TITLE CASE [END] fixed*/
+        /* CONVERT TO TITLE CASE [END] THIS WILL WORK*/
 
        // var titleWeak = earthQIntesityArray[i] + "." + earthQIDNameArray[i];
        
