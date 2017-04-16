@@ -34,34 +34,33 @@ var disasterLocLngArray = [
 
 /* 1.1# VOLCANO WARNING LOCATION ARRAYS */
 var volcanoWarningLatArray = [
-    -39.2980, //[0]  - LAT || TARANAKI/EGMONT
-	-39.1333, //[1]  - LAT || TONGARIRO
-	-38.7840, //[2]  - LAT || TAUPO
-	-38.0930, //[3]  - LAT || ROTORUA
-	-38.1190, //[4]  - LAT || OKATAINA AKA MOUNT TARAWERA
-	-35.3950, //[5]  - LAT || NORTHLAND
-	-39.1560, //[6]  - LAT || NGAURUHOE
-	-37.2860, //[7]  - LAT || MAYOR ISLAND
-	-29.2540, //[8]  - LAT || KERMADEC ISLANDS
-	-36.9850, //[9]  - LAT || AUCKLAND VOLCANIC FIELD
-    -37.5210, //[10] - LAT || WHITE ISLAND
-    -39.2810, //[11] - LAT || RUAPEHU
+    -36.9850, //[0]  - LAT || AUCKLAND VOLCANIC FIELD
+    -29.2540, //[1]  - LAT || KERMADEC ISLANDS
+    -37.2860, //[2]  - LAT || MAYOR ISLAND
+    -39.1560, //[3]  - LAT || NGAURUHOE
+    -35.3950, //[4]  - LAT || NORTHLAND
+    -38.1190, //[5]  - LAT || OKATAINA AKA MOUNT TARAWERA
+    -38.0930, //[6]  - LAT || ROTORUA
+    -39.2810, //[7]  - LAT || RUAPEHU
+    -38.7840, //[8]  - LAT || TAUPO
+    -39.1333, //[9]  - LAT || TONGARIRO
+    -39.2980, //[10] - LAT || TARANAKI/EGMONT	
+    -37.5210, //[11] - LAT || WHITE ISLAND
 ];
 
 var volcanoWarningLngArray = [
-    174.0610, //[0]  - LNG || TARANAKI/EGMONT
-	175.6417, //[1]  - LNG || TONGARIRO
-	175.8960, //[2]  - LNG || TAUPO
-	176.2810, //[3]  - LNG || ROTORUA
-	176.5010, //[4]  - LNG || OKATAINA AKA MOUNT TARAWERA
-	173.6300, //[5]  - LNG || NORTHLAND
-	175.6320, //[6]  - LNG || NGAURUHOE
-	176.2510, //[7]  - LNG || MAYOR ISLAND
-	177.9167, //[8]  - LNG || KERMADEC ISLANDS
-	174.7700, //[9]  - LNG || AUCKLAND VOLCANIC FIELD
-    177.1830, //[10] - LNG || WHITE ISLAND
+    174.7700, //[9]  - LNG || AUCKLAND VOLCANIC FIELD
+    177.9167, //[8]  - LNG || KERMADEC ISLANDS
+    176.2510, //[7]  - LNG || MAYOR ISLAND
+    175.6320, //[6]  - LNG || NGAURUHOE
+    173.6300, //[5]  - LNG || NORTHLAND
+    176.5010, //[4]  - LNG || OKATAINA AKA MOUNT TARAWERA
+    176.2810, //[3]  - LNG || ROTORUA
     175.5630, //[11] - LNG || RUAPEHU
-
+    175.8960, //[2]  - LNG || TAUPO
+    175.6417, //[1]  - LNG || TONGARIRO
+    174.0610, //[0]  - LNG || TARANAKI/EGMONT
+	177.1830, //[10] - LNG || WHITE ISLAND
 ];
 
 
