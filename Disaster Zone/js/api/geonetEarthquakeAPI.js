@@ -33,7 +33,7 @@ var earthQLatArray = [
 var earthQLngArray = [
 ];
 
-//Earthquake ID || Geonets name for the eventgit
+//Earthquake ID
 var earthQIDNameArray = [
 ];
 
@@ -168,7 +168,7 @@ var earthQEventTimeArray = [
 function earthJSON() {
     $.getJSON(geonetEarthQuake, function (data) {
         $.each(data.features, function (i, eq) {
-            //data id displayed in table row || this one is volcano title
+            //data id displayed in table row || this one is earthquake title
             if (i < earthQEventLength) {
                 earthQIntensityArray[i] = eq.properties.intensity.toTitleCase();
                 earthQMagnitudeArray[i] = eq.properties.magnitude;
