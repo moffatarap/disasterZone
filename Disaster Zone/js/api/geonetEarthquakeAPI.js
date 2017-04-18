@@ -259,9 +259,13 @@ function earthQuakeMarkerCreateLoop() {
                 //create marker
                 map: mapObject,
 <<<<<<< HEAD
+<<<<<<< HEAD
                 title:earthQIntensityArray[i] + "." + earthQIDNameArray[i],
                 //title: earthQIntensityArray[i] + "." + earthQIDNameArray[i],
                 title: earthQTitleArray[i], //sets the title to i of the earthQTitleArray (in blue on google map)
+=======
+                title:earthQIntesityArray[i] + "." + earthQIDNameArray[i],
+>>>>>>> parent of 4477f46... ToTitleCase implementation and usage in Earthquake Name + Intensity
 =======
                 title:earthQIntesityArray[i] + "." + earthQIDNameArray[i],
 >>>>>>> parent of 4477f46... ToTitleCase implementation and usage in Earthquake Name + Intensity
