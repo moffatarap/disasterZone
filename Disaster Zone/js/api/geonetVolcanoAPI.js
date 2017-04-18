@@ -1,7 +1,7 @@
 /* Geonet Volcano API Disaster Zone MDDN352 P3 12.7 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetVolcano = "https://json.ey.nz/api.geonet.org.nz/volcano/val"; //saves geonet url as var " ./json/geoNetVolcanoVal.json"
-var goenetVolcanoLocal = "./json/geoNetVolcanoVal.json";
+var geonetVolcano = "https://json.ey.nz/api.geonet.org.nz/volcano/val"; //saves geonet url as var 
+var goenetVolcanoLocal = "./json/geoNetVolcanoVal.json"; //loads local JSON for testing only works if you open the INDEX not hosted on a local IP
 var volTitleLength = 12; //sets array length
 var volRadiusMulti = 10; //sets volcano alert radius to be multiplyed by this number original [5]
 var volUIVar = "Volcano"; //sets volcano title for UI
@@ -14,49 +14,49 @@ var textContent = document.createElement('div'); //creates vairable that is a di
 /* 1.1# VOLCANO VARABLE ARRAYS */
 //volcano titles
 var volcanoMarkerTitleArray = [
-    , //[0]  || TARANAKI/EGMONT
-    , //[1]  || TONGARIRO
-    , //[2]  || TAUPO
-    , //[3]  || ROTORUA
-    , //[4]  || OKATAINA AKA MOUNT TARAWERA
-    , //[5]  || NORTHLAND
-    , //[6]  || NGAURUHOE
-    , //[7]  || MAYOR ISLAND
-    , //[8]  || KERMADEC ISLANDS
-    , //[9]  || AUCKLAND VOLCANIC FIELD
-    , //[10] || WHITE ISLAND
-    , //[11] || RUAPEHU
+  , //[0]  || AUCKLAND VOLCANIC FIELD
+  , //[1]  || KERMADEC ISLANDS
+  , //[2]  || MAYOR ISLAND
+  , //[3]  || NGAURUHOE
+  , //[4]  || NORTHLAND
+  , //[5]  || OKATAINA AKA MOUNT TARAWERA
+  , //[6]  || ROTORUA
+  , //[7]  || RUAPEHU
+  , //[8]  || TAUPO
+  , //[9]  || TONGARIRO
+  , //[10] || TARANAKI/EGMONT	
+  , //[11] || WHITE ISLAND
 ];
 
 //volcano levels
 var volcanoLevelArray = [
-    , //[0]  || TARANAKI/EGMONT
-    , //[1]  || TONGARIRO
-    , //[2]  || TAUPO
-    , //[3]  || ROTORUA
-    , //[4]  || OKATAINA AKA MOUNT TARAWERA
-    , //[5]  || NORTHLAND
-    , //[6]  || NGAURUHOE
-    , //[7]  || MAYOR ISLAND
-    , //[8]  || KERMADEC ISLANDS
-    , //[9]  || AUCKLAND VOLCANIC FIELD
-    , //[10] || WHITE ISLAND
-    , //[11] || RUAPEHU
+  , //[0]  || AUCKLAND VOLCANIC FIELD
+  , //[1]  || KERMADEC ISLANDS
+  , //[2]  || MAYOR ISLAND
+  , //[3]  || NGAURUHOE
+  , //[4]  || NORTHLAND
+  , //[5]  || OKATAINA AKA MOUNT TARAWERA
+  , //[6]  || ROTORUA
+  , //[7]  || RUAPEHU
+  , //[8]  || TAUPO
+  , //[9]  || TONGARIRO
+  , //[10] || TARANAKI/EGMONT	
+  , //[11] || WHITE ISLAND
 ];
 //volcano activity
 var volcanoActivityArray = [
-    , //[0]  || TARANAKI/EGMONT
-    , //[1]  || TONGARIRO
-    , //[2]  || TAUPO
-    , //[3]  || ROTORUA
-    , //[4]  || OKATAINA AKA MOUNT TARAWERA
-    , //[5]  || NORTHLAND
-    , //[6]  || NGAURUHOE
-    , //[7]  || MAYOR ISLAND
-    , //[8]  || KERMADEC ISLANDS
-    , //[9]  || AUCKLAND VOLCANIC FIELD
-    , //[10] || WHITE ISLAND
-    , //[11] || RUAPEHU
+  , //[0]  || AUCKLAND VOLCANIC FIELD
+  , //[1]  || KERMADEC ISLANDS
+  , //[2]  || MAYOR ISLAND
+  , //[3]  || NGAURUHOE
+  , //[4]  || NORTHLAND
+  , //[5]  || OKATAINA AKA MOUNT TARAWERA
+  , //[6]  || ROTORUA
+  , //[7]  || RUAPEHU
+  , //[8]  || TAUPO
+  , //[9]  || TONGARIRO
+  , //[10] || TARANAKI/EGMONT	
+  , //[11] || WHITE ISLAND
 ];
 
 //volcano inactvity
@@ -66,18 +66,27 @@ var volcanoInactiveArray = [
 
 //stores activtiy array
 var volcanoHazardsArray = [
-    , //[0]  || TARANAKI/EGMONT
-    , //[1]  || TONGARIRO
-    , //[2]  || TAUPO
-    , //[3]  || ROTORUA
-    , //[4]  || OKATAINA AKA MOUNT TARAWERA
-    , //[5]  || NORTHLAND
-    , //[6]  || NGAURUHOE
-    , //[7]  || MAYOR ISLAND
-    , //[8]  || KERMADEC ISLANDS
-    , //[9]  || AUCKLAND VOLCANIC FIELD
-    , //[10] || WHITE ISLAND
-    , //[11] || RUAPEHU
+, //[0]  || AUCKLAND VOLCANIC FIELD
+, //[1]  || KERMADEC ISLANDS
+, //[2]  || MAYOR ISLAND
+, //[3]  || NGAURUHOE
+, //[4]  || NORTHLAND
+, //[5]  || OKATAINA AKA MOUNT TARAWERA
+, //[6]  || ROTORUA
+, //[7]  || RUAPEHU
+, //[8]  || TAUPO
+, //[9]  || TONGARIRO
+, //[10] || TARANAKI/EGMONT	
+, //[11] || WHITE ISLAND
+
+];
+
+//stores lat lng of volcanos in array
+var volcanonLatArray = [
+
+];
+
+var volcanonLngArray = [
 
 ];
 
@@ -87,11 +96,11 @@ var textContentArray = [
 
 //text inner html array
 var textInnerHtmlArray = [
-    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.png"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>', //[0]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.png"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>', //[1]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.png"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>', //[2]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.png"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.png"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>', //[4]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>', //[0]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>', //[1]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>', //[2]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>', //[4]
 
 ]
 /* 1.1# VOLCANO VARABLE ARRAY [END]*/
@@ -146,6 +155,8 @@ function volJSON() {
                 volcanoLevelArray[i] = vol.properties.level;
                 volcanoActivityArray[i] = vol.properties.activity;
                 volcanoHazardsArray[i] = vol.properties.hazards;
+                volcanonLatArray[i] = vol.geometry.coordinates[1]; //access first element
+                volcanonLngArray[i] = vol.geometry.coordinates[0]; //access second element
                 i++;
             }
             else {
@@ -154,7 +165,7 @@ function volJSON() {
 
         });
 
-        /* DEBUGGING */
+        /* DEBUGGING 
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
@@ -162,8 +173,12 @@ function volJSON() {
         console.log('#3');
         console.log(volcanoActivityArray); //display value of activity array
         console.log('#4');
-        console.log(volcanoHazardsArray); //display value of hazard array 
+        console.log(volcanoHazardsArray); //display value of hazard array
+        console.log(volcanonLatArray.toString()); //displays value of Lat Array VOL
+        console.log(volcanonLngArray.toString()); //displays value of Lng Array VOL
+        */
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
+       
         /* DEBUGGING [END] */
        volcanoMarkerCreateLoop(); //calls vol marker loop
        console.log("3.1 volcanoMarkerCreate"); //debug volcano marker create
@@ -210,8 +225,8 @@ function volcanoMarkerCreateLoop() {
                         //create marker
                         map: mapObject,
                         title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
-                        icon: iconVolcanoArray[4],
+                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                        icon: iconArray[29],
                     });
 
                     pushToArray(); //pushes active volcanos to array
@@ -256,8 +271,8 @@ function volcanoMarkerCreateLoop() {
                         //create marker
                         map: mapObject,
                         title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
-                        icon: iconVolcanoArray[3],
+                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                        icon: iconArray[28],
                     });
 
                     pushToArray(); //pushes active volcanos to array
@@ -300,8 +315,8 @@ function volcanoMarkerCreateLoop() {
                         //create marker
                         map: mapObject,
                         title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
-                        icon: iconVolcanoArray[2],
+                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                        icon: iconArray[27],
                     });
 
                     pushToArray(); //pushes active volcanos to array
@@ -343,8 +358,8 @@ function volcanoMarkerCreateLoop() {
                         //create marker
                         map: mapObject,
                         title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
-                        icon: iconVolcanoArray[1],
+                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                        icon: iconArray[26],
                     });
 
                     pushToArray(); //pushes active volcanos to array
@@ -386,8 +401,8 @@ function volcanoMarkerCreateLoop() {
                         //create marker
                         map: mapObject,
                         title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
-                        icon: iconVolcanoArray[0],
+                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                        icon: iconArray[25],
                     });
 
                     pushToArray(); //pushes active volcanos to array
@@ -425,18 +440,18 @@ function volcanoMarkerCreateLoop() {
 
            }
 
-            /* VOL ALERT = 0 Display Normal Icon*/
+            /* VOL ALERT = 0 Display Normal Icon BROKEN ATM 28/03/2017*/
             //if show inactive vol = 0 then show inactive volcanos
             if (showInactiveVol === 1){
                 volcanoMarkerArray[i] = new google.maps.Marker({
                     //create marker
                     map: mapObject,
                     title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                    position: { lat: volcanoWarningLatArray[i], lng: volcanoWarningLngArray[i] },
+                    position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
                     icon: disasterIconStandardArray[5],
                 }); 
                 
-                /*DEBUG Log Active Volcano
+                /*DEBUG Log Active Volcano 
                 console.log(volcanoMarkerTitleArray[i]); */
             }
                         

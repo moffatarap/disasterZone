@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
-<!--INDEX Disaster Zone MDDN352 P3 [2016] MOFFATARAP (300317288), SCHULTZSTEF (300308218), ZELLERPHOE -->
+<!--INDEX Disaster Zone [2016 - 2017] MOFFATARAP, SCHULTZSTEF, ZELLERPHOE, LEWISTOM -->
 
 <head>
     <title>Disaster Zone</title>
@@ -19,6 +19,7 @@
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900' rel='stylesheet' type='text/css'>
     
     <!-- -==== JavaScrypt ====- -->
+	<script type="text/javascript" src="./js/utility.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="./style/javaScryptCustom.js"></script>
     
@@ -63,7 +64,7 @@
         
         <!-- Navigation Bar -->
         <div class="navBar">
-            <img id="navLogo" src="./media/img/logo_white.png">
+            <img id="navLogo" src="./media/img/logo_white.svg">
             <h3 class="navTitle">Disaster Zone</h3>
             <div id="nav-discloseSidebar" class="tooltip">
                 <span class="tooltip-text">Show and hide the list of recent events.</span>
@@ -84,22 +85,22 @@
         <div id="floatingKey">
             <h4 id="floatingKey-title">KEY</h4>
             <div id="floatingKey-splitter"></div>
-            <img id="floatingKey-fireKey" src="./media/img/mapKeys/key/fire.png">
+            <img id="floatingKey-fireKey" src="./media/img/mapKeys/key/fire.svg">
             <h5 id="floatingKey-fireExp">Fire</h5>
-            <img id="floatingKey-tornadoKey" src="./media/img/mapKeys/key/tornado.png">
+            <img id="floatingKey-tornadoKey" src="./media/img/mapKeys/key/tornado.svg">
             <h5 id="floatingKey-tornadoExp">Tornado</h5>
-            <img id="floatingKey-hurricaneKey" src="./media/img/mapKeys/key/hurricane.png">
+            <img id="floatingKey-hurricaneKey" src="./media/img/mapKeys/key/hurricane.svg">
             <h5 id="floatingKey-hurricaneExp">Hurricane</h5>
-            <img id="floatingKey-floodKey" src="./media/img/mapKeys/key/flood.png">
+            <img id="floatingKey-floodKey" src="./media/img/mapKeys/key/flood.svg">
             <h5 id="floatingKey-floodExp">Flood</h5>
-            <img id="floatingKey-quakeKey" src="./media/img/mapKeys/key/earthquake.png">
+            <img id="floatingKey-quakeKey" src="./media/img/mapKeys/key/earthquake.svg">
             <h5 id="floatingKey-quakeExp">Earthquake</h5>
-            <img id="floatingKey-volcanoKey" src="./media/img/mapKeys/key/volcano.png">
+            <img id="floatingKey-volcanoKey" src="./media/img/mapKeys/key/volcano.svg">
             <h5 id="floatingKey-volcanoExp">Volcano</h5>
         </div>
         
         <div id="inZone">
-            <img id="inZone-icon" src="./media/img/inZoneIcon.png">
+            <img id="inZone-icon" src="./media/img/mapKeys/eventDetails/detailIconsEQEpicenter.svg">
             <h3 id="inZone-title">You appear to be in a disaster zone.</h3>
             <h5 id="inZone-sub">Get help and updates on this situation...</h5>
         </div>
@@ -119,7 +120,7 @@
                 <h4 id="detailCard-header-severity">LIGHT</h4>
                 <img id="detailCard-close" src="./media/img/closeIcon.png">
             </div>
-            <img id="detailCard-eventIcon" src="./media/img/mapKeys/event/light/floodL.png">
+            <img id="detailCard-eventIcon" src="./media/img/mapKeys/event/light/floodL.svg">
             <h3 id="detailCard-eventType">Flood</h3>
             <h5 id="detailCard-eventLocation">Wellington, NZ</h5>
         </div>
@@ -156,17 +157,17 @@
                     <h3 id="whatIcons-title">What's on the map?</h3>
                     
                     <p id="whatIcons-body">Each disaster type is represented by an icon on the map. These icons and the measured scales are explained below.<br/>At any time from the main screen, you can open the overlay key for a simpler explanation of the icons.</p>
-                        <img id="fireKey" src="./media/img/mapKeys/key/fire.png">
+                        <img id="fireKey" src="./media/img/mapKeys/key/fire.svg">
                         <h5 id="fireExp"><b>Fire</b><br/>Fire Danger Rating</h5>
-                        <img id="tornadoKey" src="./media/img/mapKeys/key/tornado.png">
+                        <img id="tornadoKey" src="./media/img/mapKeys/key/tornado.svg">
                         <h5 id="tornadoExp"><b>Tornado</b><br/>Enhanced Fujita Scale</h5>
-                        <img id="hurricaneKey" src="./media/img/mapKeys/key/hurricane.png">
+                        <img id="hurricaneKey" src="./media/img/mapKeys/key/hurricane.svg">
                         <h5 id="hurricaneExp"><b>Hurricane</b><br/>Saffir-Simpson Scale</h5>
-                        <img id="floodKey" src="./media/img/mapKeys/key/flood.png">
+                        <img id="floodKey" src="./media/img/mapKeys/key/flood.svg">
                         <h5 id="floodExp"><b>Flood</b><br/>Metres of Water</h5>
-                        <img id="quakeKey" src="./media/img/mapKeys/key/earthquake.png">
+                        <img id="quakeKey" src="./media/img/mapKeys/key/earthquake.svg">
                         <h5 id="quakeExp"><b>Earthquake</b><br/>Moment Magnitude Scale</h5>
-                        <img id="volcanoKey" src="./media/img/mapKeys/key/volcano.png">
+                        <img id="volcanoKey" src="./media/img/mapKeys/key/volcano.svg">
                         <h5 id="volcanoExp"><b>Volcano</b><br/>Geonet Volcanic Unrest Scale</h5>
                     
                     <h3 id="whatScale-title">What are the colours?</h3>
@@ -193,7 +194,7 @@
                 </div>
                 
                 <div id="infoWho">
-                    <img id="whoIcon" src="./media/img/logo_col.png">
+                    <img id="whoIcon" src="./media/img/logo_col.svg">
                     <h2 id="whoTitle">Disaster Zone</h2>
                     <h3 id="copyright">&copy; 2016, Arapaoa Moffat. All rights reserved.</h3>
                     <h4 id="uni">Produced for Project 3, MDDN 352, Victoria University of Wellington - School of Design</h4>
