@@ -180,19 +180,3 @@ Checks if the value of left operand is greater than the value of right operand, 
 /*= < =*/	(A < B) is true.
 
 Checks if the value of left operand is less than the value of right operand, if yes then condition becomes true.	
-
-/* # Current Vol order */
-Needs updating as keeps changing
-
-0 Auckland Volcanic Field
-1 Kermadec Islands
-2 Mayor Islands
-3 Ngauruhoe
-4 Northland
-5 Okataina
-6 Rotorua
-7 Ruapehu
-8 Taupo
-9 Tongariro
-10 Taranaki
-11 White Island
