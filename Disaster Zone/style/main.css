@@ -1,4 +1,9 @@
 /*= MAIN CSS Disaster Zone MDDN352 P3 [2016] SCHULTZSTEF (300308218) =*/
+/* HIDE SCROLL BAR */
+::-webkit-scrollbar {
+display: none;
+} 
+
 html {
     max-width: 100%;
     overflow-x: hidden;
@@ -55,13 +60,12 @@ body {
     
     z-index: 5;
     
-    /*background-image: url("./media/img/arrow.png");*/
-    background-image: url("http://i.imgur.com/1QOnQeN.png");
+    background-image: url("navArrow.svg"); /* MUST BE SAVED IN CSS FOLDER */
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
     
-    transform: rotate(180deg);
+    transform: rotate(180deg); 
     
     transition: 0.2s;
 }
@@ -74,8 +78,8 @@ body {
     margin-top: -59px;
     z-index: 4;
     
-    /*background-image: url("./media/img/infoIcon.png");*/
-    background-image:url("http://i.imgur.com/SgDJ0vp.png");
+    background-image: url("navQuestion.png");
+    /* background-image:url("http://i.imgur.com/SgDJ0vp.png"); */
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -251,6 +255,10 @@ body {
 #errorBody {
     margin-top: -20px;
     text-align: center;
+    /* text-align: justify;
+    -moz-text-align-last:center;
+    text-align-last:center;
+    */
     width: 60%;
     margin-left: calc(50% - 30%);
 }

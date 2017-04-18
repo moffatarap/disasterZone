@@ -41,27 +41,26 @@ var volcanoWarningLatArray = [
     -35.3950, //[4]  - LAT || NORTHLAND
     -38.1190, //[5]  - LAT || OKATAINA AKA MOUNT TARAWERA
     -38.0930, //[6]  - LAT || ROTORUA
-    -38.7840, //[7]  - LAT || TAUPO
-    -39.1333, //[8]  - LAT || TONGARIRO
-    -39.2980, //[9]  - LAT || TARANAKI/EGMONT
-    -37.5210, //[10] - LAT || WHITE ISLAND
-    -39.2810, //[11] - LAT || RUAPEHU
+    -39.2810, //[7]  - LAT || RUAPEHU
+    -38.7840, //[8]  - LAT || TAUPO
+    -39.1333, //[9]  - LAT || TONGARIRO
+    -39.2980, //[10] - LAT || TARANAKI/EGMONT	
+    -37.5210, //[11] - LAT || WHITE ISLAND
 ];
 
 var volcanoWarningLngArray = [
-    174.7700, //[0]  - LNG || AUCKLAND VOLCANIC FIELD
-    177.9167, //[1]  - LNG || KERMADEC ISLANDS
-    176.2510, //[2]  - LNG || MAYOR ISLAND
-    175.6320, //[3]  - LNG || NGAURUHOE
-    173.6300, //[4]  - LNG || NORTHLAND
-    176.5010, //[5]  - LNG || OKATAINA AKA MOUNT TARAWERA
-    176.2810, //[6]  - LNG || ROTORUA
-    175.8960, //[7]  - LNG || TAUPO
-    175.6417, //[8]  - LNG || TONGARIRO
-    174.0610, //[9]  - LNG || TARANAKI/EGMONT
-    177.1830, //[10] - LNG || WHITE ISLAND
+    174.7700, //[9]  - LNG || AUCKLAND VOLCANIC FIELD
+    177.9167, //[8]  - LNG || KERMADEC ISLANDS
+    176.2510, //[7]  - LNG || MAYOR ISLAND
+    175.6320, //[6]  - LNG || NGAURUHOE
+    173.6300, //[5]  - LNG || NORTHLAND
+    176.5010, //[4]  - LNG || OKATAINA AKA MOUNT TARAWERA
+    176.2810, //[3]  - LNG || ROTORUA
     175.5630, //[11] - LNG || RUAPEHU
-
+    175.8960, //[2]  - LNG || TAUPO
+    175.6417, //[1]  - LNG || TONGARIRO
+    174.0610, //[0]  - LNG || TARANAKI/EGMONT
+	177.1830, //[10] - LNG || WHITE ISLAND
 ];
 
 
@@ -494,7 +493,7 @@ function writeAddressName(latLng) {
             //hides error message if postion found
             $("#errorCantFind").css({ "visibility": "hidden" });
             console.log('1 Geocoder Status OK')
-
+            
             document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
             //+= for debugging, to show all addresses = to just show one address at a time
 
@@ -622,14 +621,14 @@ setInterval(function () {
             //1# - inZone
             $("#inZone").css({ "margin-top": "50px" }); //display alert
             $("#floatingKey").css({ "margin-top": "110px" }); //set offset of key when disaster event shown
-            console.log('ALERT: FIRE'); //debug
+           // console.log('ALERT: FIRE'); //debug
         }
 
             //1# - out ofZone
         else {
             $("#inZone").css({ "margin-top": "-50px" }); //hide alert
             $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
-            console.log('ALERT: FIRE RESET'); //debug
+            //console.log('ALERT: FIRE RESET'); //debug
         };
 
         /* 6.3# ======--- GEOLOCATION ALERTS [END] ---====== */
@@ -644,6 +643,7 @@ setInterval(function () {
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
 
         firebaseAPI(); //firebase function call from firebaseAPI scrypt
+        console.log("firebaseDataPush")
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
         geoRefresh = 2; //reset value to 2
