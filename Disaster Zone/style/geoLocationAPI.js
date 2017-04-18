@@ -267,11 +267,12 @@ var mapOptions = {
     zoom: 6, //sets zoom level
     draggable: true, //disable drag
     zoomControl: true, //disable or enable zoom
+    scaleControl: true, //disable or enable scale control
     zoomControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM
     },
-    disableDoubleClickZoom: true, //disables zoom
-    scrollwheel: false, //disables scroll wheel
+    disableDoubleClickZoom: true, //disables or enables zoom
+    scrollwheel: true, //enables scroll wheel
     disableDefaultUI: true, //disables UI
     center: userLatLng, //center map
 

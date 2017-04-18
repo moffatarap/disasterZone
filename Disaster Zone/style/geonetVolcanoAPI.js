@@ -154,7 +154,7 @@ function volJSON() {
 
         });
 
-        /* DEBUGGING 
+        /* DEBUGGING */
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
@@ -164,7 +164,7 @@ function volJSON() {
         console.log('#4');
         console.log(volcanoHazardsArray); //display value of hazard array 
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
-        /* DEBUGGING [END] */*/
+        /* DEBUGGING [END] */
        volcanoMarkerCreateLoop(); //calls vol marker loop
        console.log("3.1 volcanoMarkerCreate"); //debug volcano marker create
     });

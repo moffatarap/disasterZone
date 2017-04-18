@@ -37,8 +37,7 @@ $(document).ready(function () {
             var slideout = $('#eventsList-container');
             $("#nav-discloseSidebar").toggle(function () {
                 slideout.animate({
-                    right: '0px',
-                    
+                    right: '0px'
                 }, {
                     queue: false,
                     duration: 300
@@ -46,7 +45,6 @@ $(document).ready(function () {
             }, function () {      
                 slideout.animate({
                     right: '-400px'
-                    
                 }, {
                     queue: false,
                     duration: 300
