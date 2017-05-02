@@ -1,6 +1,6 @@
 /* Geonet Earthquake API Disaster Zone MDDN352 P3 13.1 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetEarthQuake = "https://json.ey.nz/www.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
+var geonetEarthQuake = "https://arapaoadesign.com/json/www.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
 var geonetEarthQuakeLocal = "./json/geoNetEarthquakeVal.json" //loads local JSON for testing only works if you open the INDEX not hosted on a local IP
 var earthQEventLength = 10; //sets earthquake array max events
 var earthQRadiusMulti = 4; //sets earthquake alert radius to be multiplyed by
@@ -33,7 +33,7 @@ var earthQLatArray = [
 var earthQLngArray = [
 ];
 
-//Earthquake ID || Geonets name for the eventgit
+//Earthquake ID
 var earthQIDNameArray = [
 ];
 
@@ -168,7 +168,7 @@ var earthQEventTimeArray = [
 function earthJSON() {
     $.getJSON(geonetEarthQuake, function (data) {
         $.each(data.features, function (i, eq) {
-            //data id displayed in table row || this one is volcano title
+            //data id displayed in table row || this one is earthquake title
             if (i < earthQEventLength) {
                 earthQIntensityArray[i] = eq.properties.intensity.toTitleCase();
                 earthQMagnitudeArray[i] = eq.properties.magnitude;
@@ -186,7 +186,7 @@ function earthJSON() {
 
         });
 
-        /* DEBUGGING */
+        /* DEBUGGING 
         console.log('#1 Intensity');
         console.log(earthQIntensityArray); //display value of title array
         console.log('#2 Magitude');
@@ -202,7 +202,7 @@ function earthJSON() {
         console.log('6 ID')
         console.log(earthQIDNameArray); //display value of name array  
         
-        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
+        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11]; */
 
         earthQuakeMarkerCreateLoop(); //calls earthquake marker loop
         console.log("3.2 earthquakeMarkerCreate"); //debug marker create
@@ -249,10 +249,8 @@ function earthQuakeMarkerCreateLoop() {
         var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1')); //replacing date format
         
       /*  6.4 - CONVERT TO TITLE CASE */
-       earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i]; //merges eQI array and name into one array
-       console.log(earthQTitleArray);
-       
-       console.log(earthQTitleArray);
+        earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i]; //merges EQ array and name into one array
+
         /*  6.4 - CONVERT TO TITLE CASE [END] */
 
         //EARTHQUAKE SEVERITY WEAK
@@ -260,12 +258,13 @@ function earthQuakeMarkerCreateLoop() {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                //create marker
                 map: mapObject,
-                title:earthQIntensityArray[i] + "." + earthQIDNameArray[i],
+                title:earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[4],
             });
 
             markerAnimaton(); //sets animation on markers
+            
             
             
 
@@ -307,7 +306,7 @@ function earthQuakeMarkerCreateLoop() {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                 //create marker
                 map: mapObject,
-                title: earthQIntensityArray[i] + "." + earthQIDNameArray[i],
+                title: earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[3],
             });
@@ -351,7 +350,7 @@ function earthQuakeMarkerCreateLoop() {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                 //create marker
                 map: mapObject,
-                title: earthQIntensityArray[i] + "." + earthQIDNameArray[i],
+                title: earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[2],
             });
@@ -394,7 +393,7 @@ function earthQuakeMarkerCreateLoop() {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                 //create marker
                 map: mapObject,
-                title: earthQIntensityArray[i] + "." + earthQIDNameArray[i],
+                title: earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[1],
             });
@@ -436,7 +435,7 @@ function earthQuakeMarkerCreateLoop() {
             earthquakeMarkerArray[i] = new google.maps.Marker({
                 //create marker
                 map: mapObject,
-                title: earthQIntensityArray[i] + "." + earthQIDNameArray[i],
+                title: earthQTitleArray[i],
                 position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
                 icon: iconArray[0],
                 
