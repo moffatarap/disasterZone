@@ -1,6 +1,6 @@
 /* Geonet Volcano API Disaster Zone MDDN352 P3 12.7 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetVolcano = "https://json.ey.nz/api.geonet.org.nz/volcano/val"; //saves geonet url as var 
+var geonetVolcano = "https://arapaoadesign.com/json/api.geonet.org.nz/volcano/val"; //saves geonet url as var 
 var goenetVolcanoLocal = "./json/geoNetVolcanoVal.json"; //loads local JSON for testing only works if you open the INDEX not hosted on a local IP
 var volTitleLength = 12; //sets array length
 var volRadiusMulti = 10; //sets volcano alert radius to be multiplyed by this number original [5]
