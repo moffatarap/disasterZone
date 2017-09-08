@@ -1,6 +1,6 @@
 /* Geonet Earthquake API Disaster Zone MDDN352 P3 13.1 - [2016] MOFFATARAP (300317288) */
 /*=/ VARABLES \=*/
-var geonetEarthQuake = "https://arapaoadesign.com/json/www.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
+var geonetEarthQuake = "https://api.geonet.org.nz/quakes/services/felt.json"; //saves goenet url as var
 var geonetEarthQuakeLocal = "./json/geoNetEarthquakeVal.json" //loads local JSON for testing only works if you open the INDEX not hosted on a local IP
 var earthQEventLength = 10; //sets earthquake array max events
 var earthQRadiusMulti = 4; //sets earthquake alert radius to be multiplyed by
