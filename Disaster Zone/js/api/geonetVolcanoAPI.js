@@ -147,7 +147,7 @@ var eventTimeArray = [
 
 // VOL JSON is called as a function in geolocationAPI
 function volJSON() {
-    $.getJSON(geonetVolcano, function (data) {
+    $.getJSON(goenetVolcanoLocal, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
             if (i < volTitleLength) {
@@ -203,6 +203,10 @@ function bindCircle() {
 }
 
 /* 2.1# BIND CIRCLE TO MIDDLE MARKER [END]*/
+var newFunction = 1;
+var alertVolcanosArray = []; //holds current volcaons on alert
+var alertVolIndex = 0; //sets alertvol array indext to zero for sorting
+var selectedIcon = 0; //sets icon to be used for each event
 
 /* 2.3# ==-- VOLCANO MARKER LOOP --== */
 function volcanoMarkerCreateLoop() {
@@ -210,8 +214,9 @@ function volcanoMarkerCreateLoop() {
     for (i = 0; i < volcanoMarkerArray.length; i++) {
             //Loop until i = the length of MarkerArray
             
-            console.log(i + '_Loop Count');
+        console.log(i + '_Loop Count');
 
+       
             //VOL AlERT = 0 NO ACTIVITY 
             if (volcanoLevelArray[i] === 0) {
                 volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);
@@ -221,15 +226,81 @@ function volcanoMarkerCreateLoop() {
                 if (i === 11) {
                     console.log(volcanoLevelArray);
                 }
-                
+
 
             }
+
+            if (newFunction === 1) {
+                //IF BOTH VOLCANO LEVEL ARRAY IS LARGER THAN 0 RUN FUNCTION
+                if (volcanoLevelArray[i] > 0) {
+                    console.log('ALERT VOL')
+
+                     //SETS ALERT LEVEL TO NEW ARRAY FOR SORTING OF ICONS
+                        alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
+                        console.log(alertVolcanosArray);
+                        console.log('ALERT INDEX_' + alertVolIndex);
+                        
+
+                        
+                        console.log(selectedIcon);
+
+                    //SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
+
+                        if (alertVolcanosArray[i] === 0) {
+                            selectedIcon = 0;                                                   
+                        }
+
+                        else if (alertVolcanosArray[i] === 1) {
+                            selectedIcon = 1
+                        }
+
+                        else if (alertVolcanosArray[i] === 2) {
+                            selectedIcon = 2
+                        }
+
+                        else if (alertVolcanosArray[i] === 3) {
+                            selectedIcon = 3
+                        }
+                        else if (alertVolcanosArray[i] === 4) {
+                            selectedIcon = 4
+                        }
+
+                       
+
+                        alertVolIndex++; //increments count each loop
+                        console.log('ALERT INDEX_' + alertVolIndex);
+
+                        volcanoMarkerArray[i] = new google.maps.Marker({
+                            //create marker
+                            map: mapObject,
+                            title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+                            position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                            icon: newIconVolcanoArray[selectedIcon],
+                        });
+                        
+
+
+                }
+
+
+            }
+
+            else {
             //IV LARGER THAN 0 MAKE MARKERS
             if (volcanoLevelArray[i] > 0) {
-                //IF volcano alert level is larger than 0 make markers
+                //IF volcano alert level is larger than 0 based off i then make markers
                 console.log('does this loop')
 
-               
+                volcanoMarkerArray[i] = new google.maps.Marker({
+                    //create marker
+                    map: mapObject,
+                    title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+                    position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+                    icon: iconArray[29],
+                });
+
+
+
                 //VOL ALERT = 1
                 if (volcanoLevelArray[i] === 1) {
                     volcanoMarkerArray[i] = new google.maps.Marker({
@@ -253,7 +324,7 @@ function volcanoMarkerCreateLoop() {
 
                     bindCircle(); //binds circle to marker
 
-                    
+
 
                     /* 1# DISPLAY IN UI */
                     //idFunction();
@@ -272,9 +343,13 @@ function volcanoMarkerCreateLoop() {
                     document.getElementById(eventRatingArray[0]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
                     //SET LAST CHECKED EVENT
                     document.getElementById(eventTimeArray[0]).textContent = date.toUTCString();
-                   /* DISPLAY IN UI [END] */
-                    
+                    /* DISPLAY IN UI [END] */
+
                 }
+
+        }
+
+            
                     
            //     //VOL ALERT = 2
            //     if (volcanoLevelArray[i] === 2) {

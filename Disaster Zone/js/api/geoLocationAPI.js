@@ -658,7 +658,7 @@ setInterval(function () {
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
 
         firebaseAPI(); //firebase function call from firebaseAPI scrypt
-        console.log("firebaseDataPush")
+        //[TEMP]console.log("firebaseDataPush")
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
         geoRefresh = 2; //reset value to 2
