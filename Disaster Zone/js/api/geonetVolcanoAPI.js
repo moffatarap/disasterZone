@@ -8,6 +8,7 @@ var volUIVar = "Volcano"; //sets volcano title for UI
 var volAlertLevelText = "Alert Level "; //alert level var
 var date = new Date(); //gets the date and time
 var textContent = document.createElement('div'); //creates vairable that is a div
+var debugEnabled = 1;
 
 /*== ARRAYS ==*/
 
@@ -147,7 +148,7 @@ var eventTimeArray = [
 
 // VOL JSON is called as a function in geolocationAPI
 function volJSON() {
-    $.getJSON(goenetVolcanoLocal, function (data) {
+    $.getJSON(geonetVolcano, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
             if (i < volTitleLength) {
@@ -166,18 +167,24 @@ function volJSON() {
         });
 
         /* DEBUGGING */
-        console.log('#1');
-        console.log(volcanoMarkerTitleArray); //display value of title array
-        console.log('#2');
-        console.log(volcanoLevelArray.toString() + " _ALERT LEVELS"); //display value of level array
-        console.log('#3');
-        console.log(volcanoActivityArray); //display value of activity array
-        console.log('#4');
-        console.log(volcanoHazardsArray); //display value of hazard array
-        console.log(volcanonLatArray.toString()); //displays value of Lat Array VOL
-        console.log(volcanonLngArray.toString()); //displays value of Lng Array VOL
+       if (debugEnabled === 1) {
+           console.log('#1 Vol Title');
+           console.log(volcanoMarkerTitleArray); //display value of title array
+           console.log('#2 Vol Alert Level');
+           console.log(volcanoLevelArray); //display value of level array
+           console.log('#3 Vol Activity');
+           console.log(volcanoActivityArray); //display value of activity array
+           console.log('#4 Vol Hazards');
+           console.log(volcanoHazardsArray); //display value of hazard array
+           console.log('#5 Vol Lat');
+           console.log(volcanonLatArray); //displays value of Lat Array VOL
+           console.log('#6 Vol Lng');
+           console.log(volcanonLngArray); //displays value of Lng Array VOL
+           //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
+       }
         
-        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
+        
+        
        
         /* DEBUGGING [END] */
        volcanoMarkerCreateLoop(); //calls vol marker loop
@@ -219,9 +226,10 @@ function volcanoMarkerCreateLoop() {
                 volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);                
             }           
                 //IF BOTH VOLCANO LEVEL ARRAY IS LARGER THAN 0 RUN FUNCTION
-                if (volcanoLevelArray[i] > 0) {
+            if (volcanoLevelArray[i] > 0) {
+                if (i === 1) {
                     console.log('VOLCANO ALERT ACTIVE')
-
+                }
                      /*= SETS ALERT LEVEL TO NEW ARRAY FOR SORTING OF ICONS =*/
                         alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
                         console.log(alertVolcanosArray);
