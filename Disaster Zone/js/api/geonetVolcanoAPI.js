@@ -165,7 +165,7 @@ function volJSON() {
 
         });
 
-        /* DEBUGGING 
+        /* DEBUGGING */
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
@@ -176,7 +176,7 @@ function volJSON() {
         console.log(volcanoHazardsArray); //display value of hazard array
         console.log(volcanonLatArray.toString()); //displays value of Lat Array VOL
         console.log(volcanonLngArray.toString()); //displays value of Lng Array VOL
-        */
+        
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
        
         /* DEBUGGING [END] */
