@@ -260,6 +260,14 @@ var alertCirlceRadiusArray = [
     1500,//[4] WEAK      || 1.5km
 ];
 
+var newAlertCirlceRadiusArray = [
+    1500,//[0] WEAK      || 1.5km
+    5000,//[1] LIGHT     || 5km
+    20000,//[2] MODERATE || 20km
+    40000,//[3] STRONG   || 40km
+    50000,//[4] SEVERE   || 50km    
+];
+
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY ======*/
@@ -269,7 +277,14 @@ var alertCircleColorArray = [
     '#f2c92d',//[2] MODERATE
     '#31c95c',//[3] LIGHT
     '#4ecbf2',//[4]  WEAK
+];
 
+var newAlertCircleColorArray = [
+    '#4ecbf2',//[0]  WEAK
+    '#31c95c',//[1] LIGHT
+    '#f2c92d',//[2] MODERATE
+    '#f68824',//[3] STRONG
+    '#e52419',//[4] SEVERE
 ];
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY [END] ======*/
