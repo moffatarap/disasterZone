@@ -239,36 +239,34 @@ function volcanoMarkerCreateLoop() {
                         alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
                         console.log(alertVolcanosArray);
                         console.log('ALERT INDEX_' + alertVolIndex);
-                        
-
-                        
                         console.log(selectedIcon);
 
-                    //SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
+                        alertVolIndex++; //increments count each loop for what in
+                        console.log('ALERT INDEX_' + alertVolIndex);
 
-                        if (alertVolcanosArray[i] === 0) {
-                            selectedIcon = 0;                                                   
-                        }
+                    /** SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
+                    THE ALERT LEVEL NEEDS TO BE SET TO PLUS ONE OF THE ICON INDEX DUE TO ICON STARTING AT 0 
+                    AND ALERT STARTING AT 1 **/
 
-                        else if (alertVolcanosArray[i] === 1) {
-                            selectedIcon = 1
+                        if (alertVolcanosArray[i] === 1) {
+                            selectedIcon = 0; //SELECTS WEAK ICON FROM geoLocationAPI                                                  
                         }
 
                         else if (alertVolcanosArray[i] === 2) {
-                            selectedIcon = 2
+                            selectedIcon = 1 //SELECTS LIGHT ICON FROM geoLocationAPI  
                         }
 
                         else if (alertVolcanosArray[i] === 3) {
-                            selectedIcon = 3
+                            selectedIcon = 2 //SELECTS MODERATE ICON FROM geoLocationAPI  
                         }
+
                         else if (alertVolcanosArray[i] === 4) {
-                            selectedIcon = 4
+                            selectedIcon = 3 //SELECTS STRONG ICON FROM geoLocationAPI  
                         }
-
-                       
-
-                        alertVolIndex++; //increments count each loop
-                        console.log('ALERT INDEX_' + alertVolIndex);
+                        else if (alertVolcanosArray[i] === 5) {
+                            selectedIcon = 4 //SELECTS SEVERE ICON FROM geoLocationAPI  
+                        }
+                        
 
                         volcanoMarkerArray[i] = new google.maps.Marker({
                             //create marker
