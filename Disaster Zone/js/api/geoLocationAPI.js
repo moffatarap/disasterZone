@@ -183,6 +183,21 @@ var iconVolcanoArray = [
     './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
     './media/img/mapKeys/event/light/volcanoL.png',       //[3] LIGHT
     './media/img/mapKeys/event/weak/volcanoW.png',        //[4] WEAK
+
+   
+];
+
+var newIconVolcanoArray = [
+    './media/img/mapKeys/event/weak/volcanoW.png',        //[0] WEAK
+    './media/img/mapKeys/event/light/volcanoL.png',       //[1] LIGHT
+    './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
+    './media/img/mapKeys/event/strong/volcanoST.png',     //[3] STRONG
+    './media/img/mapKeys/event/severe/volcanoS.png',      //[4] SEVERE 
+    
+    
+    
+    
+
 ];
 /* 4# ==== DISASTER ICON ARRAY [END] ==== */
 
@@ -492,7 +507,7 @@ function writeAddressName(latLng) {
             //formatted address from latLng
             //hides error message if postion found
             $("#errorCantFind").css({ "visibility": "hidden" });
-            console.log('1 Geocoder Status OK')
+            //[TEMP]console.log('1 Geocoder Status OK')
             
             document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
             //+= for debugging, to show all addresses = to just show one address at a time
@@ -503,7 +518,7 @@ function writeAddressName(latLng) {
             //if address cant be found show error code
             //shows error message if postion found
             $("#errorCantFind").css({ "visibility": "visible" });
-        console.log('2 Geocoder Status Fail')
+        //[TEMP]console.log('2 Geocoder Status Fail')
         document.getElementById("errorCantFind").innerHTML = "No address found" + "<br />";
     });
 
@@ -655,7 +670,7 @@ setInterval(function () {
 
         //console.log('ALERT: None'); debug
         if (geoRefresh === 1) {
-            earthJSON();
+            //earthJSON();
         }
 
         geoRefresh += 1;

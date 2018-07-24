@@ -164,7 +164,7 @@ var earthQEventTimeArray = [
 /* 2.1# ==- CSS VARABLE ARRAYS [END]-== */
 
 /* 2# EARTHQUAKE FUNCTION */
-// earthJSON is called as a function in geolocationAPI
+// earthJSON is called as a function in geolocationAPI under geoRefresh
 function earthJSON() {
     $.getJSON(geonetEarthQuake, function (data) {
         $.each(data.features, function (i, eq) {

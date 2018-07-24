@@ -169,7 +169,7 @@ function volJSON() {
         console.log('#1');
         console.log(volcanoMarkerTitleArray); //display value of title array
         console.log('#2');
-        console.log(volcanoLevelArray.toString()); //display value of level array
+        console.log(volcanoLevelArray.toString() + " _ALERT LEVELS"); //display value of level array
         console.log('#3');
         console.log(volcanoActivityArray); //display value of activity array
         console.log('#4');
@@ -186,7 +186,7 @@ function volJSON() {
 
 }
 
-/* 2.0# PUSH ACTIVE VOLCANO DATA TO ARRAY */
+/* 2.0# PUSH ACTIVE VOLCANO DATA TO ARRAY FOR DISPLAY IN UI*/
 function pushToArray() {
     //Add active volcano to array
     volActiveArray.push('Alert Level ' + volcanoLevelArray[i] + ' ' + volcanoMarkerTitleArray[i]);
@@ -206,18 +206,29 @@ function bindCircle() {
 
 /* 2.3# ==-- VOLCANO MARKER LOOP --== */
 function volcanoMarkerCreateLoop() {
-        for (i = 0; i < volcanoMarkerArray.length; i++) {
+    console.log('vol_markerCreate_CALLED');
+    for (i = 0; i < volcanoMarkerArray.length; i++) {
             //Loop until i = the length of MarkerArray
-            //console.log('markerCreate)
+            
+            console.log(i + '_Loop Count');
 
-            //VOL AlERT = 0 
+            //VOL AlERT = 0 NO ACTIVITY 
             if (volcanoLevelArray[i] === 0) {
                 volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);
-               // console.log(volcanoInactiveArray);
+                // console.log(volcanoInactiveArray);
+                //console.log(volcanoInactiveArray.length + "_Inactive_Count"); //list inactive volcanos
+
+                if (i === 11) {
+                    console.log(volcanoLevelArray);
+                }
+                
 
             }
+            //IV LARGER THAN 0 MAKE MARKERS
             if (volcanoLevelArray[i] > 0) {
                 //IF volcano alert level is larger than 0 make markers
+                console.log('does this loop')
+
                
                 //VOL ALERT = 1
                 if (volcanoLevelArray[i] === 1) {
@@ -265,178 +276,178 @@ function volcanoMarkerCreateLoop() {
                     
                 }
                     
-                //VOL ALERT = 2
-                if (volcanoLevelArray[i] === 2) {
-                    volcanoMarkerArray[i] = new google.maps.Marker({
-                        //create marker
-                        map: mapObject,
-                        title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-                        icon: iconArray[28],
-                    });
+           //     //VOL ALERT = 2
+           //     if (volcanoLevelArray[i] === 2) {
+           //         volcanoMarkerArray[i] = new google.maps.Marker({
+           //             //create marker
+           //             map: mapObject,
+           //             title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+           //             position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+           //             icon: iconArray[28],
+           //         });
 
-                    pushToArray(); //pushes active volcanos to array
+           //         pushToArray(); //pushes active volcanos to array
 
-                    // circle alert create
-                    volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
-                        map: mapObject,
-                        radius: alertCirlceRadiusArray[3] * volRadiusMulti, // sets alert radius from array 
-                        fillColor: alertCircleColorArray[3], //sets color of fill from array
-                        strokeColor: alertCircleColorArray[3], //sets stroke color from array
-                        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-                    });
+           //         // circle alert create
+           //         volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
+           //             map: mapObject,
+           //             radius: alertCirlceRadiusArray[3] * volRadiusMulti, // sets alert radius from array 
+           //             fillColor: alertCircleColorArray[3], //sets color of fill from array
+           //             strokeColor: alertCircleColorArray[3], //sets stroke color from array
+           //             strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+           //         });
 
-                    bindCircle(); //binds circle to marker
+           //         bindCircle(); //binds circle to marker
 
-                    /* 2# DISPLAY IN UI */
-                    //idFunction();
-                    textContentArray[i] = document.createElement('div');
-                    $(textContentArray[i]).addClass("dummyEvent");
-                    textContentArray[i].innerHTML = textInnerHtmlArray[1];
+           //         /* 2# DISPLAY IN UI */
+           //         //idFunction();
+           //         textContentArray[i] = document.createElement('div');
+           //         $(textContentArray[i]).addClass("dummyEvent");
+           //         textContentArray[i].innerHTML = textInnerHtmlArray[1];
 
-                    $(".eventsList").prepend(textContentArray[i]);
+           //         $(".eventsList").prepend(textContentArray[i]);
 
-                    // 2.0# SET CONTENT
-                    //SET EVENT TITLE
-                    document.getElementById(eventTypeArray[1]).textContent = volUIVar;
-                    //SET EVENT LOCATION
-                    document.getElementById(eventLocationArray[1]).textContent = volcanoMarkerTitleArray[i];
-                    //SET EVENT HAZARDS
-                    document.getElementById(eventRatingArray[1]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-                    //SET LAST CHECKED EVENT
-                    document.getElementById(eventTimeArray[1]).textContent = date.toUTCString();
-                    /* 2# DISPLAY IN UI [END] */
-                }
+           //         // 2.0# SET CONTENT
+           //         //SET EVENT TITLE
+           //         document.getElementById(eventTypeArray[1]).textContent = volUIVar;
+           //         //SET EVENT LOCATION
+           //         document.getElementById(eventLocationArray[1]).textContent = volcanoMarkerTitleArray[i];
+           //         //SET EVENT HAZARDS
+           //         document.getElementById(eventRatingArray[1]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+           //         //SET LAST CHECKED EVENT
+           //         document.getElementById(eventTimeArray[1]).textContent = date.toUTCString();
+           //         /* 2# DISPLAY IN UI [END] */
+           //     }
 
 
-                //VOL ALERT = 3
-                if (volcanoLevelArray[i] === 3) {
-                    volcanoMarkerArray[i] = new google.maps.Marker({
-                        //create marker
-                        map: mapObject,
-                        title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-                        icon: iconArray[27],
-                    });
+           //     //VOL ALERT = 3
+           //     if (volcanoLevelArray[i] === 3) {
+           //         volcanoMarkerArray[i] = new google.maps.Marker({
+           //             //create marker
+           //             map: mapObject,
+           //             title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+           //             position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+           //             icon: iconArray[27],
+           //         });
 
-                    pushToArray(); //pushes active volcanos to array
+           //         pushToArray(); //pushes active volcanos to array
 
-                    // circle alert create
-                    volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
-                        map: mapObject,
-                        radius: alertCirlceRadiusArray[2] * volRadiusMulti, // sets alert radius from array 
-                        fillColor: alertCircleColorArray[2], //sets color of fill from array
-                        strokeColor: alertCircleColorArray[2], //sets stroke color from array
-                        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-                    });
+           //         // circle alert create
+           //         volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
+           //             map: mapObject,
+           //             radius: alertCirlceRadiusArray[2] * volRadiusMulti, // sets alert radius from array 
+           //             fillColor: alertCircleColorArray[2], //sets color of fill from array
+           //             strokeColor: alertCircleColorArray[2], //sets stroke color from array
+           //             strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+           //         });
 
-                    bindCircle(); //binds circle to marker
+           //         bindCircle(); //binds circle to marker
 
-                    /* 3# DISPLAY IN UI */
-                    //idFunction();
-                    textContentArray[i] = document.createElement('div');
-                    $(textContentArray[i]).addClass("dummyEvent");
-                    textContentArray[i].innerHTML = textInnerHtmlArray[2];
+           //         /* 3# DISPLAY IN UI */
+           //         //idFunction();
+           //         textContentArray[i] = document.createElement('div');
+           //         $(textContentArray[i]).addClass("dummyEvent");
+           //         textContentArray[i].innerHTML = textInnerHtmlArray[2];
 
-                    $(".eventsList").prepend(textContentArray[i]);
+           //         $(".eventsList").prepend(textContentArray[i]);
 
-                    // 2.0# SET CONTENT
-                    //SET EVENT TITLE
-                    document.getElementById(eventTypeArray[2]).textContent = volUIVar;
-                    //SET EVENT LOCATION
-                    document.getElementById(eventLocationArray[2]).textContent = volcanoMarkerTitleArray[i];
-                    //SET EVENT HAZARDS
-                    document.getElementById(eventRatingArray[2]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-                    //SET LAST CHECKED EVENT
-                    document.getElementById(eventTimeArray[2]).textContent = date.toUTCString();
-                    /* 3# DISPLAY IN UI [END] */
-                }
+           //         // 2.0# SET CONTENT
+           //         //SET EVENT TITLE
+           //         document.getElementById(eventTypeArray[2]).textContent = volUIVar;
+           //         //SET EVENT LOCATION
+           //         document.getElementById(eventLocationArray[2]).textContent = volcanoMarkerTitleArray[i];
+           //         //SET EVENT HAZARDS
+           //         document.getElementById(eventRatingArray[2]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+           //         //SET LAST CHECKED EVENT
+           //         document.getElementById(eventTimeArray[2]).textContent = date.toUTCString();
+           //         /* 3# DISPLAY IN UI [END] */
+           //     }
 
-                //VOL ALERT = 4
-                if (volcanoLevelArray[i] === 4) {
-                    volcanoMarkerArray[i] = new google.maps.Marker({
-                        //create marker
-                        map: mapObject,
-                        title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-                        icon: iconArray[26],
-                    });
+           //     //VOL ALERT = 4
+           //     if (volcanoLevelArray[i] === 4) {
+           //         volcanoMarkerArray[i] = new google.maps.Marker({
+           //             //create marker
+           //             map: mapObject,
+           //             title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+           //             position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+           //             icon: iconArray[26],
+           //         });
 
-                    pushToArray(); //pushes active volcanos to array
+           //         pushToArray(); //pushes active volcanos to array
 
-                    // circle alert create
-                    volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
-                        map: mapObject,
-                        radius: alertCirlceRadiusArray[1] * volRadiusMulti, // sets alert radius from array 
-                        fillColor: alertCircleColorArray[1], //sets color of fill from array
-                        strokeColor: alertCircleColorArray[1], //sets stroke color from array
-                        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-                    });
+           //         // circle alert create
+           //         volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
+           //             map: mapObject,
+           //             radius: alertCirlceRadiusArray[1] * volRadiusMulti, // sets alert radius from array 
+           //             fillColor: alertCircleColorArray[1], //sets color of fill from array
+           //             strokeColor: alertCircleColorArray[1], //sets stroke color from array
+           //             strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+           //         });
 
-                    bindCircle(); //binds circle to marker
+           //         bindCircle(); //binds circle to marker
 
-                    /* 4# DISPLAY IN UI */
-                    //idFunction();
-                    textContentArray[i] = document.createElement('div');
-                    $(textContentArray[i]).addClass("dummyEvent");
-                    textContentArray[i].innerHTML = textInnerHtmlArray[3];
+           //         /* 4# DISPLAY IN UI */
+           //         //idFunction();
+           //         textContentArray[i] = document.createElement('div');
+           //         $(textContentArray[i]).addClass("dummyEvent");
+           //         textContentArray[i].innerHTML = textInnerHtmlArray[3];
 
-                    $(".eventsList").prepend(textContentArray[i]);
+           //         $(".eventsList").prepend(textContentArray[i]);
 
-                    // 4.0# SET CONTENT
-                    //SET EVENT TITLE
-                    document.getElementById(eventTypeArray[3]).textContent = volUIVar;
-                    //SET EVENT LOCATION
-                    document.getElementById(eventLocationArray[3]).textContent = volcanoMarkerTitleArray[i];
-                    //SET EVENT HAZARDS
-                    document.getElementById(eventRatingArray[3]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-                    //SET LAST CHECKED EVENT
-                    document.getElementById(eventTimeArray[3]).textContent = date.toUTCString();
-                    /* 4# DISPLAY IN UI [END] */
-                }
+           //         // 4.0# SET CONTENT
+           //         //SET EVENT TITLE
+           //         document.getElementById(eventTypeArray[3]).textContent = volUIVar;
+           //         //SET EVENT LOCATION
+           //         document.getElementById(eventLocationArray[3]).textContent = volcanoMarkerTitleArray[i];
+           //         //SET EVENT HAZARDS
+           //         document.getElementById(eventRatingArray[3]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+           //         //SET LAST CHECKED EVENT
+           //         document.getElementById(eventTimeArray[3]).textContent = date.toUTCString();
+           //         /* 4# DISPLAY IN UI [END] */
+           //     }
 
-                //VOL ALERT = 5
-                if (volcanoLevelArray[i] === 5) {
-                    volcanoMarkerArray[i] = new google.maps.Marker({
-                        //create marker
-                        map: mapObject,
-                        title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-                        icon: iconArray[25],
-                    });
+           //     //VOL ALERT = 5
+           //     if (volcanoLevelArray[i] === 5) {
+           //         volcanoMarkerArray[i] = new google.maps.Marker({
+           //             //create marker
+           //             map: mapObject,
+           //             title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+           //             position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+           //             icon: iconArray[25],
+           //         });
 
-                    pushToArray(); //pushes active volcanos to array
+           //         pushToArray(); //pushes active volcanos to array
 
-                    // circle alert create
-                    volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
-                        map: mapObject,
-                        radius: alertCirlceRadiusArray[0] * volRadiusMulti, // sets alert radius from array 
-                        fillColor: alertCircleColorArray[0], //sets color of fill from array
-                        strokeColor: alertCircleColorArray[0], //sets stroke color from array
-                        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-                    });
+           //         // circle alert create
+           //         volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
+           //             map: mapObject,
+           //             radius: alertCirlceRadiusArray[0] * volRadiusMulti, // sets alert radius from array 
+           //             fillColor: alertCircleColorArray[0], //sets color of fill from array
+           //             strokeColor: alertCircleColorArray[0], //sets stroke color from array
+           //             strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+           //         });
 
-                    bindCircle(); //binds circle to marker
+           //         bindCircle(); //binds circle to marker
 
-                    /* 5# DISPLAY IN UI */
-                    //idFunction();
-                    textContentArray[i] = document.createElement('div');
-                    $(textContentArray[i]).addClass("dummyEvent");
-                    textContentArray[i].innerHTML = textInnerHtmlArray[4];
+           //         /* 5# DISPLAY IN UI */
+           //         //idFunction();
+           //         textContentArray[i] = document.createElement('div');
+           //         $(textContentArray[i]).addClass("dummyEvent");
+           //         textContentArray[i].innerHTML = textInnerHtmlArray[4];
 
-                    $(".eventsList").prepend(textContentArray[i]);
+           //         $(".eventsList").prepend(textContentArray[i]);
 
-                    // 5.0# SET CONTENT
-                    //SET EVENT TITLE
-                    document.getElementById(eventTypeArray[4]).textContent = volUIVar;
-                    //SET EVENT LOCATION
-                    document.getElementById(eventLocationArray[4]).textContent = volcanoMarkerTitleArray[i];
-                    //SET EVENT HAZARDS
-                    document.getElementById(eventRatingArray[4]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-                    //SET LAST CHECKED EVENT
-                    document.getElementById(eventTimeArray[4]).textContent = date.toUTCString();
-                    /* 5# DISPLAY IN UI [END] */
-                }
+           //         // 5.0# SET CONTENT
+           //         //SET EVENT TITLE
+           //         document.getElementById(eventTypeArray[4]).textContent = volUIVar;
+           //         //SET EVENT LOCATION
+           //         document.getElementById(eventLocationArray[4]).textContent = volcanoMarkerTitleArray[i];
+           //         //SET EVENT HAZARDS
+           //         document.getElementById(eventRatingArray[4]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+           //         //SET LAST CHECKED EVENT
+           //         document.getElementById(eventTimeArray[4]).textContent = date.toUTCString();
+           //         /* 5# DISPLAY IN UI [END] */
+           //     }
 
            }
 
