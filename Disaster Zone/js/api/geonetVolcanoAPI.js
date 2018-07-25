@@ -9,7 +9,7 @@ var volAlertLevelText = "Alert Level "; //alert level var
 var date = new Date(); //gets the date and time
 var textContent = document.createElement('div'); //creates vairable that is a div
 var debugEnabled = 1;
-var showInactiveVol = 0;
+var showInactiveVol = 1;
 
 /*== ARRAYS ==*/
 
@@ -103,6 +103,7 @@ var textInnerHtmlArray = [
     '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>', //[2]
     '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
     '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>', //[4]
+    '<img id="eventIcon" src="./media/img/mapKeys/key/volcano.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>', //[5]
 
 ]
 /* 1.1# VOLCANO VARABLE ARRAY [END]*/
@@ -116,6 +117,7 @@ var eventTypeArray = [
     "eventType2", //[2]
     "eventType3", //[3]
     "eventType4", //[4]
+    "eventType5", //[5]
 ];
 
 //EVENT LOCATION
@@ -125,6 +127,7 @@ var eventLocationArray = [
     "eventLocation2", //[2]
     "eventLocation3", //[3]
     "eventLocation4", //[4]
+    "eventLocation5", //[4]
 ];
 
 //EVENT RATING
@@ -134,6 +137,7 @@ var eventRatingArray = [
     "eventRating2", //[2]
     "eventRating3", //[3]
     "eventRating4", //[4]
+    "eventRating5", //[4]
 ];
 
 //EVENT TIME
@@ -143,6 +147,7 @@ var eventTimeArray = [
     "eventTime2", //[2]
     "eventTime3", //[3]
     "eventTime4", //[4]
+    "eventTime5", //[4]
 ];
 
 /* 2.0# ==- CSS VARABLE ARRAYS [END]-== */
@@ -298,45 +303,70 @@ function VolAlertMarketCreate() {
     bindCircle(); //binds circle to marker
 };
 
+function VolInactiveShowMethod() {
+
+    
+
+    textContentArray[i] = document.createElement('div');
+    $(textContentArray[i]).addClass("dummyEvent");
+    textContentArray[i].innerHTML = textInnerHtmlArray[5];
+
+    $(".eventsList").prepend(textContentArray[i]);
+
+    // 1.0# SET CONTENT
+    //SET EVENT TITLE
+    document.getElementById(eventTypeArray[5]).textContent = volUIVar;
+    //SET EVENT LOCATION
+    document.getElementById(eventLocationArray[5]).textContent = volcanoMarkerTitleArray[i];
+    //SET EVENT HAZARDS
+    document.getElementById(eventRatingArray[5]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+    //SET LAST CHECKED EVENT
+    document.getElementById(eventTimeArray[5]).textContent = date.toUTCString();
+
+
+    volcanoMarkerArray[i] = new google.maps.Marker({
+        //create marker
+        map: mapObject,
+        title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+        position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+        icon: disasterIconStandardArray[5],
+
+    });
+    
+
+};
+
 /* 4.1# ==-- VOLCANO MARKER LOOP --== */
 function volcanoMarkerCreateLoop() {
     console.log('vol_markerCreate_CALLED');
     for (i = 0; i < volcanoMarkerArray.length; i++) {
                       
-            //VOL AlERT = 0 NO ACTIVITY 
-            if (volcanoLevelArray[i] === 0) {
-                volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);                
-            }
-
-            //VOL ALERT LARGER THAN 0 ACTIVITY
-            if (volcanoLevelArray[i] > 0) {
-                if (i === 1) {
-                    console.log('VOLCANO ALERT ACTIVE')
-                }
-
-                VolAlertMarketCreate();
-                console.log('VolAlertMarketCreate_METHOD ACTIVE');
-            }
-
-        /* VOL ALERT = 0 Display Normal Icon BROKEN ATM 28/03/2017*/
-        //NOTE MAKE ARRAY OF INACTIVE VOLCANOS THEN ONLY BUILD THOSE
-            //if show inactive vol = 0 then show inactive volcanos
-            if (showInactiveVol === 1){
-                volcanoMarkerArray[i] = new google.maps.Marker({
-                    //create marker
-                    map: mapObject,
-                    title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-                    position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-                    icon: disasterIconStandardArray[5],
-                }); 
-                
-                /*DEBUG Log Active Volcano 
-                console.log(volcanoMarkerTitleArray[i]); */
-            }
-                        
+        //VOL AlERT = 0 NO ACTIVITY 
+        if (volcanoLevelArray[i] === 0) {
+            volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);                
         }
 
-    };
+        //VOL ALERT LARGER THAN 0 ACTIVITY
+        if (volcanoLevelArray[i] > 0) {
+            if (i === 1) {
+                console.log('VOLCANO ALERT ACTIVE')
+            }
+
+            VolAlertMarketCreate();
+            console.log('VolAlertMarketCreate_CALLED');
+        }
+
+       //VOL ALERT = 0 AND IF SHOW INACTIVE VOLCAN VAR SET TO 1 THEN SHOW INACTIVE VOLCANOS ON MAP
+        if (showInactiveVol === 1 && volcanoLevelArray[i] === 0) {
+            VolInactiveShowMethod();
+            console.log('VolInactiveShowMethod_CALLED')
+        } 
+                
+    }
+                        
+};
+
+  
 
 /* 4.1 # ==-- VOLCANO MARKER LOOP [END] --== */
 
