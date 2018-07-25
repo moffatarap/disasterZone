@@ -98,12 +98,12 @@ var textContentArray = [
 
 //text inner html array
 var textInnerHtmlArray = [
-    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>', //[0]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>', //[1]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>', //[2]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>', //[4]
-    '<img id="eventIcon" src="./media/img/mapKeys/key/volcano.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>', //[5]
+    '<img id="eventIcon" src="./media/img/mapKeys/key/volcano.svg"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>',             //[0]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>',     //[1]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>',    //[2]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>',  //[4]
+    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>',   //[5]
 
 ]
 /* 1.1# VOLCANO VARABLE ARRAY [END]*/
@@ -221,64 +221,9 @@ var alertVolIndex = 0; //sets alertvol array indext to zero for sorting
 var selectedIcon = 0; //sets icon to be used for each event
 var selectedCircle = 0; // sets the color of circle to be used and the radius
 
-/*3.1# CREATE VOL ALERT MARKERS */
 
-function VolAlertMarketCreate() {
-
-    /*= SETS ALERT LEVEL TO NEW ARRAY FOR SORTING OF ICONS =*/
-    alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
-    console.log(alertVolcanosArray);
-    //console.log('ALERT INDEX_' + alertVolIndex);
-    //console.log(selectedIcon);
-
-    alertVolIndex++; //increments count if a alert has been triggered
-    //console.log('ALERT INDEX_' + alertVolIndex);                    
-
-    /**== SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
-    THE ALERT LEVEL NEEDS TO BE SET TO PLUS ONE OF THE ICON INDEX DUE TO ICON STARTING AT 0 
-    AND ALERT STARTING AT 1 ==**/                        
-
-    if (alertVolcanosArray[i] === 1) {
-        selectedIcon = 0; //SELECTS WEAK ICON FROM geoLocationAPI
-        selectedCircle = 0; //SELECTS WEAK CIRCLE FROM geoLocationAPI
-    }
-
-    else if (alertVolcanosArray[i] === 2) {
-        selectedIcon = 1; //SELECTS LIGHT ICON FROM geoLocationAPI
-        selectedCircle = 1;                                                       
-    }
-
-    else if (alertVolcanosArray[i] === 3) {
-        selectedIcon = 2; //SELECTS MODERATE ICON FROM geoLocationAPI
-        selectedCircle = 2;                                                       
-    }
-
-    else if (alertVolcanosArray[i] === 4) {
-        selectedIcon = 3; //SELECTS STRONG ICON FROM geoLocationAPI
-        selectedCircle = 3;                                                      
-    }
-
-    else if (alertVolcanosArray[i] === 5) {
-        selectedIcon = 4; //SELECTS SEVERE ICON FROM geoLocationAPI
-        selectedCircle = 4;                                                       
-    }
-
-    /*=== TAKES CONTENT FROM JSON AND DISPLAYS IN UI  ===*/
-    textContentArray[i] = document.createElement('div');
-    $(textContentArray[i]).addClass("dummyEvent");
-    textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon];
-
-    $(".eventsList").prepend(textContentArray[i]);
-
-    // 1.0# SET CONTENT
-    //SET EVENT TITLE
-    document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
-    //SET EVENT LOCATION
-    document.getElementById(eventLocationArray[selectedIcon]).textContent = volcanoMarkerTitleArray[i];
-    //SET EVENT HAZARDS
-    document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
-    //SET LAST CHECKED EVENT
-    document.getElementById(eventTimeArray[selectedIcon]).textContent = date.toUTCString();
+/*3.0 */
+function VolCreateCircle() {
 
     /*==== CREATE GOOGLE MAPS MARKER ====*/
     volcanoMarkerArray[i] = new google.maps.Marker({
@@ -288,7 +233,7 @@ function VolAlertMarketCreate() {
         position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
         icon: newIconVolcanoArray[selectedIcon],
     });
-                        
+
     pushToArray(); //pushes active volcanos to array
 
     /*===== CREATE GOOGLE MAPS CIRCLE ALERT  =====*/
@@ -301,27 +246,86 @@ function VolAlertMarketCreate() {
     });
 
     bindCircle(); //binds circle to marker
+
+};
+
+
+/*3.1# CREATE VOL ALERT MARKERS */
+
+function VolAlertMarkerCreate() {
+    for (i = 0; i < volcanoLevelArray.length; i++) {
+    /*= SETS ALERT LEVEL TO NEW ARRAY FOR SORTING OF ICONS =*/
+    alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
+    console.log(alertVolcanosArray);
+    //console.log('ALERT INDEX_' + alertVolIndex);
+    //console.log(selectedIcon);
+    console.log('F');
+    alertVolIndex++; //increments count if a alert has been triggered
+    //console.log('ALERT INDEX_' + alertVolIndex);                    
+
+    /**== SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
+    THE ALERT LEVEL NEEDS TO BE SET TO PLUS ONE OF THE ICON INDEX DUE TO ICON STARTING AT 0 
+    AND ALERT STARTING AT 1 ==**/
+
+    if (alertVolcanosArray[i] === 1) {
+        selectedIcon = 1; //SELECTS WEAK ICON FROM geoLocationAPI
+        selectedCircle = 1; //SELECTS WEAK CIRCLE FROM geoLocationAPI
+        VolCreateCircle();
+        console.log('VOL_WEAK_ALERT');
+
+    }
+
+    else if (alertVolcanosArray[i] === 2) {
+        selectedIcon = 2; //SELECTS LIGHT ICON FROM geoLocationAPI
+        selectedCircle = 2;
+        console.log('VOL_LIGHT_ALERT');
+    }
+
+    else if (alertVolcanosArray[i] === 3) {
+        selectedIcon = 3; //SELECTS MODERATE ICON FROM geoLocationAPI
+        selectedCircle = 3;
+        console.log('VOL_MODERATE_ALERT');
+    }
+
+    else if (alertVolcanosArray[i] === 4) {
+        selectedIcon = 4; //SELECTS STRONG ICON FROM geoLocationAPI
+        selectedCircle = 4;
+        console.log('VOL_STRONG_ALERT');
+    }
+
+    else if (alertVolcanosArray[i] === 5) {
+        selectedIcon = 5; //SELECTS SEVERE ICON FROM geoLocationAPI
+        selectedCircle = 5;
+        console.log('VOL_SEVERE_ALERT');
+    }
+
+    console.log(selectedCircle + "_CIRCLE");
+    console.log(selectedIcon) + "_ICON";
+    console.trace(selectedCircle);
+    console.log(alertVolcanosArray.toString());
+    }
+    
 };
 
 function VolInactiveShowMethod() {
-
+    console.log("VolInactiveShowMethod_Called");
     
 
     textContentArray[i] = document.createElement('div');
     $(textContentArray[i]).addClass("dummyEvent");
-    textContentArray[i].innerHTML = textInnerHtmlArray[5];
+    textContentArray[i].innerHTML = textInnerHtmlArray[1];
 
     $(".eventsList").prepend(textContentArray[i]);
 
     // 1.0# SET CONTENT
     //SET EVENT TITLE
-    document.getElementById(eventTypeArray[5]).textContent = volUIVar;
+    document.getElementById(eventTypeArray[1]).textContent = volUIVar;
     //SET EVENT LOCATION
-    document.getElementById(eventLocationArray[5]).textContent = volcanoMarkerTitleArray[i];
+    document.getElementById(eventLocationArray[1]).textContent = volcanoMarkerTitleArray[i];
     //SET EVENT HAZARDS
-    document.getElementById(eventRatingArray[5]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+    document.getElementById(eventRatingArray[1]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
-    document.getElementById(eventTimeArray[5]).textContent = date.toUTCString();
+    document.getElementById(eventTimeArray[1]).textContent = date.toUTCString();
 
 
     volcanoMarkerArray[i] = new google.maps.Marker({
@@ -349,15 +353,15 @@ function volcanoMarkerCreateLoop() {
         //VOL ALERT LARGER THAN 0 ACTIVITY
         if (volcanoLevelArray[i] > 0) {
             if (i === 1) {
-                console.log('VOLCANO ALERT ACTIVE')
+                console.log('VOLCANO_ALERT_ACTIVE')
             }
 
-            VolAlertMarketCreate();
-            console.log('VolAlertMarketCreate_CALLED');
+            VolAlertMarkerCreate();
+            console.log('VolAlertMarkerCreate_CALLED');
         }
 
        //VOL ALERT = 0 AND IF SHOW INACTIVE VOLCAN VAR SET TO 1 THEN SHOW INACTIVE VOLCANOS ON MAP
-        if (showInactiveVol === 1 && volcanoLevelArray[i] === 0) {
+        if (showInactiveVol === 0 && volcanoLevelArray[i] === 0) {
             VolInactiveShowMethod();
             console.log('VolInactiveShowMethod_CALLED')
         } 
