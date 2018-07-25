@@ -563,7 +563,7 @@ body {
 }
 
 /* L ALERT LEVEL 5*/
-#eventType4 {
+#eventType5 {
     position: absolute;
     margin-top: 10px;
     margin-left: 60px;
@@ -572,15 +572,15 @@ body {
     font-size: 16pt;
 }
 
-#eventLocation4 {
+#eventLocation5 {
     margin-top: 35px;
 }
 
-#eventRating4 {
+#eventRating5 {
     margin-top: 50px;
 }
 
-#eventTime4 {
+#eventTime5 {
     margin-top: 68px;
 }
 
