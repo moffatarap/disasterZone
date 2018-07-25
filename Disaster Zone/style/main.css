@@ -584,28 +584,6 @@ body {
     margin-top: 68px;
 }
 
-/* L ALERT LEVEL 6*/
-#eventType5 {
-    position: absolute;
-    margin-top: 10px;
-    margin-left: 60px;
-    color: white;
-    font-weight: 300;
-    font-size: 16pt;
-}
-
-#eventLocation5 {
-    margin-top: 35px;
-}
-
-#eventRating5 {
-    margin-top: 50px;
-}
-
-#eventTime5 {
-    margin-top: 68px;
-}
-
 /* EARTH ALERT LEVEL 1*/
 #earthQEventType0 {
     position: absolute;
