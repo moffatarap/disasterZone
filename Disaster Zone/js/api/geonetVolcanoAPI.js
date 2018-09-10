@@ -110,8 +110,6 @@ var textInnerHtmlArray = [
     '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>',
     //[2] LEVEL 5 SEVERE ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>',
-    
-
 ]
 
 /* VOL ALERT MARKET CREATE VAR */
@@ -169,7 +167,7 @@ var eventTimeArray = [
 
 // VOL JSON is called as a function in geolocationAPI
 function volJSON() {
-    $.getJSON(geonetVolcano, function (data) {
+    $.getJSON(goenetVolcanoLocal, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
             if (i < volTitleLength) {
@@ -204,8 +202,8 @@ function volJSON() {
            //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
        }
         /* DEBUGGING [END] */
+       console.log("3.1 volcanoMarkerCreateLoop"); //debug volcano marker create
        volcanoMarkerCreateLoop(); //calls vol marker loop
-       console.log("3.1 volcanoMarkerCreate"); //debug volcano marker create
     });
 
 }
@@ -213,17 +211,13 @@ function volJSON() {
 
 /* 4.1# ==-- VOLCANO MARKER LOOP --== */
 function volcanoMarkerCreateLoop() {
+    
     console.log('vol_markerCreate_CALLED');
     for (i = 0; i < volcanoMarkerArray.length; i++) {
 
         //VOL AlERT = 0 NO ACTIVITY 
         if (volcanoLevelArray[i] === 0) {
             volcanoInactiveArray.push(volcanoMarkerTitleArray[i]);
-
-            if (showInactiveVol === 1) {
-                VolInactiveShow();
-            }
-
         }
 
         //VOL ALERT LARGER THAN 0 ACTIVITY
@@ -231,25 +225,32 @@ function volcanoMarkerCreateLoop() {
             if (i === 1) {
                 console.log('VOLCANO ALERT ACTIVE')
             }
-
-            VolAlertMarkerCreate();
+            alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
+            //console.log(alertVolcanosArray);
+            alertVolIndex++;
+            //console.log(alertVolIndex);
             console.log('VolAlertMarkerCreate_METHOD ACTIVE');
         }
     }
+
+    if (showInactiveVol === 1 && i === volcanoLevelArray.length) {
+        console.log("INACTIVE VOL FINISHED");
+        VolInactiveShow();
+    }
+
+    console.log("VOL LOOP FINISHED");
+    VolAlertMarkerCreate();
 
 };
 
 /* 4.1 # ==-- VOLCANO MARKER LOOP [END] --== */
 
 function VolAlertMarkerCreate() {
-
+    
     /*= SETS ALERT LEVEL TO NEW ARRAY FOR SORTING OF ICONS =*/
-    alertVolcanosArray[alertVolIndex] =+ volcanoLevelArray[i]; //adds volcanoLevelArray to alertVolcanos
+    
     console.log(alertVolcanosArray);
-    console.log('ALERT INDEX_' + alertVolIndex);
-    console.log(selectedIcon + "_SELECTED ICON");
-    console.log("VOL CREATE CALLED");
-
+    
      //increments count if a alert has been triggered
     //console.log('ALERT INDEX_' + alertVolIndex);                    
 
@@ -257,80 +258,86 @@ function VolAlertMarkerCreate() {
     THE ALERT LEVEL NEEDS TO BE SET TO PLUS ONE OF THE ICON INDEX DUE TO ICON STARTING AT 0 
     AND ALERT STARTING AT 1 ==**/
 
+    for (i = 0; i < alertVolcanosArray.length; i++) {
+
+        console.log('ALERT INDEX_' + alertVolIndex);
+        console.log("VOL CREATE CALLED");
+        console.log(selectedIcon);
+
     if (alertVolcanosArray[volCount] === 0 && showInactiveVol === 1) {
         selectedIcon = 0; //SELECTS STANDARD ICON FROM geoLocationAPI
         selectedCircle = 0; //SELECTS STANDARD CIRCLE FROM geoLocationAPI
-        CreateVolIcons();
     }
 
-    if (alertVolcanosArray[volCount] === 1) {
-        selectedIcon = 1; //SELECTS WEAK ICON FROM geoLocationAPI
-        selectedCircle = 1; //SELECTS WEAK CIRCLE FROM geoLocationAPI
-        CreateVolIcons();
-        alertVolIndex++;
-        console.log("EVENT_1_WEAK_" + selectedIcon);
+
+    if (alertVolcanosArray[volCount] === i ) {
+        selectedIcon = alertVolcanosArray[i]; //SELECTS WEAK ICON FROM geoLocationAPI
+        selectedCircle = alertVolcanosArray[i]; //SELECTS WEAK CIRCLE FROM geoLocationAPI
+        console.log("EVENT_1_WEAK_" + selectedIcon + "_ICON");
     }
 
-    else if (alertVolcanosArray[volCount] === 2) {
+    /*THIS IS BROKEN NEED TO DEBUG 
+    [THIS WORKS FINE NEED TO CHECK WHAT EACH VAR DOES]
+    if (alertVolcanosArray[volCount] === 2) {
         selectedIcon = 2; //SELECTS LIGHT ICON FROM geoLocationAPI
-        selectedCircle = 2;
-        CreateVolIcons();
-        alertVolIndex++;
-        console.log("EVENT_2_LIGHT_" + selectedIcon);
+        selectedCircle = 2; //SELECTS LIGHT ICON FROM geoLocationAPI
+        console.log("EVENT_2_LIGHT_" + selectedIcon + "_ICON");
     }
-
-    else if (alertVolcanosArray[volCount] === 3) {
+    
+    if (alertVolcanosArray[volCount] === 3) {
         selectedIcon = 3; //SELECTS MODERATE ICON FROM geoLocationAPI
-        selectedCircle = 3;
-        CreateVolIcons();
-        alertVolIndex++;
-        console.log("EVENT_3_MODERATE_" + selectedIcon);
+        selectedCircle = 3
+        console.log("EVENT_3_MODERATE_" + selectedIcon + "_ICON");
     }
 
-    else if (alertVolcanosArray[volCount] === 4) {
+    if (alertVolcanosArray[volCount] === 4) {
         selectedIcon = 4; //SELECTS STRONG ICON FROM geoLocationAPI
         selectedCircle = 4;
-        CreateVolIcons();
-        alertVolIndex++;
-        console.log("EVENT_4_STRONG_" + selectedIcon);
+        console.log("EVENT_4_STRONG_" + selectedIcon + "_ICON");
     }
 
-    else if (alertVolcanosArray[volCount] === 5) {
+    if (alertVolcanosArray[volCount] === 5) {
         selectedIcon = 5; //SELECTS SEVERE ICON FROM geoLocationAPI
         selectedCircle = 5;
-        CreateVolIcons();
-        alertVolIndex++;
-        console.log("EVENT_5_SEVERE_" + selectedIcon);
-    }
-
+        console.log("EVENT_5_SEVERE_" + selectedIcon + "_ICON");
+    } */
     volCount++;
+    console.log(volCount + "_VOLCOUNT");
+    CreateVolIcons();
+    }
 };
-
-
-
-
-
 
 /*3.1# CREATE VOL ALERT MARKERS */
 
 
 function CreateVolIcons() {
+    //alertVolIndex++;
+    
+    console.log("VOL CREATE ENDED");
+
     /*=== TAKES CONTENT FROM JSON AND DISPLAYS IN UI  ===*/
     textContentArray[i] = document.createElement('div');
     $(textContentArray[i]).addClass("dummyEvent");
-    textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon];
+    textContentArray[i].innerHTML = textInnerHtmlArray[i];
+    console.log(textContentArray[i]);
+    console.log(textInnerHtmlArray[i]);
+    
+    console.log(selectedIcon);
 
     $(".eventsList").prepend(textContentArray[i]);
 
     //// 1.0# SET CONTENT
     //SET EVENT TITLE
+    console.log(eventTypeArray[selectedIcon].toString());
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
+    console.log(eventTypeArray.toString());
     //SET EVENT LOCATION
     document.getElementById(eventLocationArray[selectedIcon]).textContent = volcanoMarkerTitleArray[i];
     //SET EVENT HAZARDS
     document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
     document.getElementById(eventTimeArray[selectedIcon]).textContent = date.toUTCString();
+    console.log(selectedIcon + "_SELECTED ICON");
 
     /*==== CREATE GOOGLE MAPS MARKER ====*/
     volcanoMarkerArray[i] = new google.maps.Marker({

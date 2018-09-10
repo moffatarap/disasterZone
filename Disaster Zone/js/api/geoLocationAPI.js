@@ -262,11 +262,12 @@ var alertCirlceRadiusArray = [
 ];
 
 var newAlertCirlceRadiusArray = [
-    1500,//[0] WEAK      || 1.5km
-    5000,//[1] LIGHT     || 5km
-    20000,//[2] MODERATE || 20km
-    40000,//[3] STRONG   || 40km
-    50000,//[4] SEVERE   || 50km    
+    50,   //[0] WEAK      || 1.5km
+    1500, //[1] WEAK      || 1.5km
+    5000, //[2] LIGHT     || 5km
+    20000,//[3] MODERATE || 20km
+    40000,//[4] STRONG   || 40km
+    50000,//[5] SEVERE   || 50km    
 ];
 
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
