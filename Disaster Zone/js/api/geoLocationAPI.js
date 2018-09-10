@@ -188,6 +188,7 @@ var iconVolcanoArray = [
 ];
 
 var newIconVolcanoArray = [
+    './media/img/mapKeys/key/volcano.png',
     './media/img/mapKeys/event/weak/volcanoW.png',        //[0] WEAK
     './media/img/mapKeys/event/light/volcanoL.png',       //[1] LIGHT
     './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE

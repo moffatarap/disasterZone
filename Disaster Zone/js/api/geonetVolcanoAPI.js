@@ -9,7 +9,7 @@ var volAlertLevelText = "Alert Level "; //alert level var
 var date = new Date(); //gets the date and time
 var textContent = document.createElement('div'); //creates vairable that is a div
 var debugEnabled = 1;
-var showInactiveVol = 1;
+var showInactiveVol = 0;
 
 /*== ARRAYS ==*/
 
@@ -98,12 +98,19 @@ var textContentArray = [
 
 //text inner html array
 var textInnerHtmlArray = [
-    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>', //[0]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>', //[1]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>', //[2]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>', //[3]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>', //[4]
-    '<img id="eventIcon" src="./media/img/mapKeys/key/volcano.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>', //[0]
+    //[0] LEVEL 0 NO ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/key/volcano.svg"> <h4 id="eventType0"></h4><h6 id="eventLocation0"></h6><h6 id="eventRating0"></h6><h6 id="eventTime0"></h6><div id="gradientL"></div>',
+    //[1] LEVEL 1 WEAK ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>',
+    //[2] LEVEL 2 LIGHT ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType2></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>',
+    //[3] LEVEL 3 MODERATE ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>',
+    //[2] LEVEL 4 STRONG ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>',
+    //[2] LEVEL 5 SEVERE ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>',
+    
 
 ]
 /* 1.1# VOLCANO VARABLE ARRAY [END]*/
@@ -154,7 +161,7 @@ var eventTimeArray = [
 
 // VOL JSON is called as a function in geolocationAPI
 function volJSON() {
-    $.getJSON(geonetVolcano, function (data) {
+    $.getJSON(goenetVolcanoLocal, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
             if (i < volTitleLength) {
@@ -237,32 +244,41 @@ function VolAlertMarkerCreate() {
     /**== SELECTS CORRECT ICON TO BE USED DEPENDING ON SEVERITY LEVEL
     THE ALERT LEVEL NEEDS TO BE SET TO PLUS ONE OF THE ICON INDEX DUE TO ICON STARTING AT 0 
     AND ALERT STARTING AT 1 ==**/                        
-
+    console.trace(selectedIcon);
+    console.log(selectedIcon);
+    
     if (alertVolcanosArray[i] === 1) {
-        selectedIcon = 0; //SELECTS WEAK ICON FROM geoLocationAPI
-        selectedCircle = 0; //SELECTS WEAK CIRCLE FROM geoLocationAPI
+        selectedIcon = 1; //SELECTS WEAK ICON FROM geoLocationAPI
+        selectedCircle = 1; //SELECTS WEAK CIRCLE FROM geoLocationAPI
+        CreateVolIcons();
+     }
+
+    if (alertVolcanosArray[i] === 2) {
+        selectedIcon = 2; //SELECTS LIGHT ICON FROM geoLocationAPI
+        selectedCircle = 2;
+        CreateVolIcons();
     }
 
-    else if (alertVolcanosArray[i] === 2) {
-        selectedIcon = 1; //SELECTS LIGHT ICON FROM geoLocationAPI
-        selectedCircle = 1;                                                       
+    if (alertVolcanosArray[i] === 3) {
+        selectedIcon = 3; //SELECTS MODERATE ICON FROM geoLocationAPI
+        selectedCircle = 3;
+        CreateVolIcons();
     }
 
-    else if (alertVolcanosArray[i] === 3) {
-        selectedIcon = 2; //SELECTS MODERATE ICON FROM geoLocationAPI
-        selectedCircle = 2;                                                       
+    if (alertVolcanosArray[i] === 4) {
+        selectedIcon = 4; //SELECTS STRONG ICON FROM geoLocationAPI
+        selectedCircle = 4;
+        CreateVolIcons();
     }
 
-    else if (alertVolcanosArray[i] === 4) {
-        selectedIcon = 3; //SELECTS STRONG ICON FROM geoLocationAPI
-        selectedCircle = 3;                                                      
+    if (alertVolcanosArray[i] === 5) {
+        selectedIcon = 5; //SELECTS SEVERE ICON FROM geoLocationAPI
+        selectedCircle = 5;
+        CreateVolIcons();
     }
+};
 
-    else if (alertVolcanosArray[i] === 5) {
-        selectedIcon = 4; //SELECTS SEVERE ICON FROM geoLocationAPI
-        selectedCircle = 4;                                                       
-    }
-
+function CreateVolIcons() {
     /*=== TAKES CONTENT FROM JSON AND DISPLAYS IN UI  ===*/
     textContentArray[i] = document.createElement('div');
     $(textContentArray[i]).addClass("dummyEvent");
@@ -270,7 +286,7 @@ function VolAlertMarkerCreate() {
 
     $(".eventsList").prepend(textContentArray[i]);
 
-    // 1.0# SET CONTENT
+    //// 1.0# SET CONTENT
     //SET EVENT TITLE
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
     //SET EVENT LOCATION
@@ -288,7 +304,7 @@ function VolAlertMarkerCreate() {
         position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
         icon: newIconVolcanoArray[selectedIcon],
     });
-                        
+
     pushToArray(); //pushes active volcanos to array
 
     /*===== CREATE GOOGLE MAPS CIRCLE ALERT  =====*/
@@ -317,19 +333,19 @@ function VolInactiveShow() {
     /*=== TAKES CONTENT FROM JSON AND DISPLAYS IN UI  ===*/
         textContentArray[i] = document.createElement('div');
         $(textContentArray[i]).addClass("dummyEvent");
-        textContentArray[i].innerHTML = textInnerHtmlArray[5];
+        textContentArray[i].innerHTML = textInnerHtmlArray[0];
 
         $(".eventsList").prepend(textContentArray[i]);
 
     // 1.0# SET CONTENT
     //SET EVENT TITLE
-        document.getElementById(eventTypeArray[5]).textContent = volUIVar;
+        document.getElementById(eventTypeArray[0]).textContent = volUIVar;
     //SET EVENT LOCATION
-        document.getElementById(eventLocationArray[5]).textContent = volcanoMarkerTitleArray[i];
+        document.getElementById(eventLocationArray[0]).textContent = volcanoMarkerTitleArray[i];
     //SET EVENT HAZARDS
-        document.getElementById(eventRatingArray[5]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+        document.getElementById(eventRatingArray[0]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
-        document.getElementById(eventTimeArray[5]).textContent = date.toUTCString();
+        document.getElementById(eventTimeArray[0]).textContent = date.toUTCString();
 };
 
 /* 4.1# ==-- VOLCANO MARKER LOOP --== */
