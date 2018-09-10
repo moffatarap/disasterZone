@@ -446,11 +446,6 @@ body {
 
 /* ARAPAOA EDIT */
 /* some how broke your id class of event icon :( */
-#eventIcon  {
-    position: absolute;
-    width: 60px;
-    margin-top: 20px;
-}
 
 /* VOL ALERT LEVEl 1*/
 #eventType0 {

@@ -188,12 +188,12 @@ var iconVolcanoArray = [
 ];
 
 var newIconVolcanoArray = [
-    './media/img/mapKeys/key/volcano.png',
-    './media/img/mapKeys/event/weak/volcanoW.png',        //[0] WEAK
-    './media/img/mapKeys/event/light/volcanoL.png',       //[1] LIGHT
-    './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
-    './media/img/mapKeys/event/strong/volcanoST.png',     //[3] STRONG
-    './media/img/mapKeys/event/severe/volcanoS.png',      //[4] SEVERE 
+    './media/img/mapKeys/key/volcano.png',                //[0] NO ACTIVITY
+    './media/img/mapKeys/event/weak/volcanoW.png',        //[1] WEAK
+    './media/img/mapKeys/event/light/volcanoL.png',       //[2] LIGHT
+    './media/img/mapKeys/event/moderate/volcanoM.png',    //[3] MODERATE
+    './media/img/mapKeys/event/strong/volcanoST.png',     //[4] STRONG
+    './media/img/mapKeys/event/severe/volcanoS.png',      //[5] SEVERE 
     
     
     
@@ -281,11 +281,12 @@ var alertCircleColorArray = [
 ];
 
 var newAlertCircleColorArray = [
-    '#4ecbf2',//[0]  WEAK
-    '#31c95c',//[1] LIGHT
-    '#f2c92d',//[2] MODERATE
-    '#f68824',//[3] STRONG
-    '#e52419',//[4] SEVERE
+    '#353535',//[0] STANDARD
+    '#4ecbf2',//[1] WEAK
+    '#31c95c',//[2] LIGHT
+    '#f2c92d',//[3] MODERATE
+    '#f68824',//[4] STRONG
+    '#e52419',//[5] SEVERE
 ];
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY [END] ======*/
