@@ -106,9 +106,9 @@ var textInnerHtmlArray = [
     '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType2></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>',
     //[3] LEVEL 3 MODERATE ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>',
-    //[2] LEVEL 4 STRONG ALERT
+    //[4] LEVEL 4 STRONG ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/strong/volcanoST.svg"> <h4 id="eventType4"></h4><h6 id="eventLocation4"></h6><h6 id="eventRating4"></h6><h6 id="eventTime4"></h6><div id="gradientL"></div>',
-    //[2] LEVEL 5 SEVERE ALERT
+    //[5] LEVEL 5 SEVERE ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/severe/volcanoS.svg"> <h4 id="eventType5"></h4><h6 id="eventLocation5"></h6><h6 id="eventRating5"></h6><h6 id="eventTime5"></h6><div id="gradientL"></div>',
 ]
 
@@ -224,45 +224,76 @@ function VolcanoSortLoop() {
     for (i = 0; i < volcanoLevelArray.length; i++) {
         //SORTS VOLCANOS FROM VOLCANO LEVEL ARRAY THAT ARE GREATER THAN 0 to VOLCANOACTIVEARRAY
         if (volcanoLevelArray[i] > 0) {
-            console.log("ACTIVE_VOLCANOS_ADDED");
+            //console.log("ACTIVE_VOLCANOS_ADDED");
             VolcanoMakeIcons();
         }
 
         //SORTS VOLCANOS FROM VOLCANO LEVEL ARRAY THAT ARE EQUAL TO 0 to VOLCANOINACTIVEARRAY
         if (volcanoLevelArray[i] === 0 && showInactiveVol === 1) {
             volcanoInactiveArray.push(volcanoLevelArray[i]);
-            console.log("INACTIVE_VOLCANOS_ADDED");
+            //console.log("INACTIVE_VOLCANOS_ADDED");
             console.log(volcanoInactiveArray);
             VolcanoMakeIcons();
         }
 
     }
-    console.log("VolcanoMakeIcons_Called");
-    console.log("VolcanoSortLoop_ENDED");
+    //console.log("VolcanoMakeIcons_Called");
+    //console.log("VolcanoSortLoop_ENDED");
 }
 /* THIS FUNCTION USES VOLSORTLOOPS [i] varable to do counting */
 function VolcanoMakeIcons() {
      
     console.log("VolcanoMakeIcons_Started");
-    /*#1 SETS ICON TO BE USED BASED ON ARRAY */
+    /* #1.1 SETS ICON TO BE USED BASED ON ARRAY */
     selectedIcon = volcanoLevelArray[i];
-    console.log("SelectedIcon_"+ selectedIcon);
+    //console.log("SelectedIcon_"+ selectedIcon);
     selectedCircle = volcanoLevelArray[i];
-    console.log("SelectedCircle_" + selectedCircle);
+    //console.log("SelectedCircle_" + selectedCircle);
 
-    /* #2  CREATE GOOGLE MAPS MARKER */
+    /* #1.2  CREATE GOOGLE MAPS MARKER */
     volcanoMarkerArray[i] = new google.maps.Marker({
-    //create marker
-    map: mapObject,
-    title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
-    position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
-    icon: newIconVolcanoArray[selectedIcon],
+      map: mapObject,
+      title: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i],
+      position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
+      icon: newIconVolcanoArray[selectedIcon],
     });
-    
+    console.log("Marker_Created");
 
-    
-    
+    /* #1.3 CREATE CIRCLE ALERT */
+    volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
+        map: mapObject,
+        radius: newAlertCirlceRadiusArray[selectedCircle] * volRadiusMulti, // sets alert radius from array 
+        fillColor: newAlertCircleColorArray[selectedCircle], //sets color of fill from array
+        strokeColor: newAlertCircleColorArray[selectedCircle], //sets stroke color from array
+        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+    });
+    console.log("Circle_Created");
+
+    /* #1.4 MARKER BINDING */
+    bindCircle();
+    console.log("Marker_Binded");
+
+    /* #2.0 CREATE UI */
+    textContentArray[i] = document.createElement('div');
+    $(textContentArray[i]).addClass("dummyEvent");
+    textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon]; //uses the value from volcano level
+    console.log(textContentArray[selectedIcon]);
+    console.log(textInnerHtmlArray[selectedIcon]);                    //uses the value from volcano level
+
+    $(".eventsList").prepend(textContentArray[i]);
+
+    /* #2.1 SET CONTENT UI //IT IS EXCEEDING ARRAY LENGTH
+    //SET EVENT TITLE
+    //console.log(eventTypeArray[selectedIcon]);
+    document.getElementById(eventTypeArray[i]).textContent = volUIVar;
+    //SET EVENT LOCATION
+    document.getElementById(eventLocationArray[i]).textContent = volcanoMarkerTitleArray[i];
+    //SET EVENT HAZARDS
+    document.getElementById(eventRatingArray[i]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+    //SET LAST CHECKED EVENT
+    document.getElementById(eventTimeArray[i]).textContent = date.toUTCString();  */
     console.log("VolcanoMakeIcons_ENDED");
+    return; //finish function and return to previous task
 }
 
 ///* 4.1# ==-- VOLCANO MARKER LOOP --== */
