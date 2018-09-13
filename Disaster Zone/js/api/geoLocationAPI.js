@@ -254,20 +254,20 @@ var phEventsAlertCircleMarkerArray = [
 /* 5# ===== ALERT CIRCLE ARRAY [END] =====*/
 //sets radius for each disaster type meters to km 1km = 1000 meters
 var alertCirlceRadiusArray = [
-    50000,//[0] SEVERE   || 50km
-    40000,//[1] STRONG   || 40km
-    20000,//[2] MODERATE || 20km
-    5000,//[3] LIGHT     || 5km
-    1500,//[4] WEAK      || 1.5km
+    50000,//[0] SEVERE    || 50km
+    40000,//[1] STRONG    || 40km
+    20000,//[2] MODERATE  || 20km
+    5000,  //[3] LIGHT      || 5km
+    1500,  //[4] WEAK       || 1.5km
 ];
 
 var newAlertCirlceRadiusArray = [
     50,   //[0] WEAK      || 1.5km
     1500, //[1] WEAK      || 1.5km
     5000, //[2] LIGHT     || 5km
-    20000,//[3] MODERATE || 20km
-    40000,//[4] STRONG   || 40km
-    50000,//[5] SEVERE   || 50km    
+    20000,//[3] MODERATE  || 20km
+    40000,//[4] STRONG    || 40km
+    50000,//[5] SEVERE    || 50km    
 ];
 
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
@@ -671,13 +671,7 @@ setInterval(function () {
         geoLocateUser();
         //console.log('geoLocateUser');writes to debug geoLocateUser
 
-
-
-        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
-
-        firebaseAPI(); //firebase function call from firebaseAPI scrypt
-        //[TEMP]console.log("firebaseDataPush")
-        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
+        //REMOVED FIREBASE  [13/09/2018]
 
         geoRefresh = 2; //reset value to 2
 

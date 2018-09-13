@@ -9,7 +9,7 @@ var volAlertLevelText = "Alert Level "; //alert level var
 var date = new Date(); //gets the date and time
 var textContent = document.createElement('div'); //creates vairable that is a div
 var debugEnabled = 1;
-var showInactiveVol = 0;
+var showInactiveVol = 1;
 
 /*== ARRAYS ==*/
 
@@ -103,7 +103,7 @@ var textInnerHtmlArray = [
     //[1] LEVEL 1 WEAK ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/weak/volcanoW.svg"> <h4 id="eventType1"></h4><h6 id="eventLocation1"></h6><h6 id="eventRating1"></h6><h6 id="eventTime1"></h6><div id="gradientL"></div>',
     //[2] LEVEL 2 LIGHT ALERT
-    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType2></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>',
+    '<img id="eventIcon" src="./media/img/mapKeys/event/light/volcanoL.svg"> <h4 id="eventType2"></h4><h6 id="eventLocation2"></h6><h6 id="eventRating2"></h6><h6 id="eventTime2"></h6><div id="gradientL"></div>',
     //[3] LEVEL 3 MODERATE ALERT
     '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/volcanoM.svg"> <h4 id="eventType3"></h4><h6 id="eventLocation3"></h6><h6 id="eventRating3"></h6><h6 id="eventTime3"></h6><div id="gradientL"></div>',
     //[4] LEVEL 4 STRONG ALERT
@@ -202,15 +202,7 @@ function volJSON() {
            //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
        }
         /* DEBUGGING [END] */
-        ///* PLAN */
-        ////[1] Split JSON into array consisting of active and non active volcanos
-        ////[2] Then create a loop to go through the arrays we just created and check to see what the severity level is
-        ////[3] With this severity level make icon depneding on severity and using another loop to prevent double ups
-        ////[4] add in a if statement to show the inactive volcanos
-        ////[5] Show all on map and in ui
-        ////[6] it works and its great
-
-
+        
        console.log("3.1 volcanoMarkerCreateLoop"); //debug volcano marker create
         //volcanoMarkerCreateLoop(); //calls vol marker loop
        VolcanoSortLoop();
@@ -273,25 +265,30 @@ function VolcanoMakeIcons() {
     bindCircle();
     console.log("Marker_Binded");
 
-    /* #2.0 CREATE UI */
+    /* #2.0 CREATE UI  */
     textContentArray[i] = document.createElement('div');
     $(textContentArray[i]).addClass("dummyEvent");
     textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon]; //uses the value from volcano level
     console.log(textContentArray[selectedIcon]);
     console.log(textInnerHtmlArray[selectedIcon]);                    //uses the value from volcano level
-
+    //console.log
     $(".eventsList").prepend(textContentArray[i]);
 
-    /* #2.1 SET CONTENT UI //IT IS EXCEEDING ARRAY LENGTH
+    /* #2.1 SET CONTENT UI //IT IS EXCEEDING ARRAY LENGTH */
     //SET EVENT TITLE
-    //console.log(eventTypeArray[selectedIcon]);
-    document.getElementById(eventTypeArray[i]).textContent = volUIVar;
+    console.log("_SelectedIconValue");
+    console.log(eventTypeArray[selectedIcon]);
+    console.log(volcanoMarkerTitleArray[i]);
+    console.log("MARKER");
+    console.log(eventLocationArray[selectedIcon]);
+    console.log("eventLocation");
+    document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
     //SET EVENT LOCATION
-    document.getElementById(eventLocationArray[i]).textContent = volcanoMarkerTitleArray[i];
+    document.getElementById(eventLocationArray[selectedIcon]).textContent = volcanoMarkerTitleArray[i];
     //SET EVENT HAZARDS
-    document.getElementById(eventRatingArray[i]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
+    document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
-    document.getElementById(eventTimeArray[i]).textContent = date.toUTCString();  */
+    document.getElementById(eventTimeArray[selectedIcon]).textContent = date.toUTCString();
     console.log("VolcanoMakeIcons_ENDED");
     return; //finish function and return to previous task
 }
