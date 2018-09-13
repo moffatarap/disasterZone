@@ -161,6 +161,17 @@ var eventTimeArray = [
     "eventTime5", //[5]
 ];
 
+//EVENT RAINING CLASS
+var eventAlertClassArray = [
+    "volcanoEvent Alert_00",  //[0]
+    "volcanoEvent Alert_01",  //[1]
+    "volcanoEvent Alert_02",  //[2]
+    "volcanoEvent Alert_03",  //[3]
+    "volcanoEvent Alert_04",  //[4]
+    "volcanoEvent Alert_05",  //[5]
+];
+
+
 /* 2.0# ==- CSS VARABLE ARRAYS [END]-== */
 
 //#0 VOL JSON is called as a function in geolocationAPI
@@ -261,17 +272,16 @@ function VolcanoMakeIcons() {
     bindCircle();
 
     /* #2.0 CREATE UI  */
-    textContentArray[i] = document.createElement('div');
-    $(textContentArray[i]).addClass("dummyEvent");
+    textContentArray[i] = document.createElement('div'); //creates a div
+    $(textContentArray[i]).addClass(eventAlertClassArray[selectedIcon]); //sets div classes depending on alert level
     textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon]; //uses the value from volcano level
-
+    $(".eventsList").prepend(textContentArray[i])
+   
     if (volMakeIconsDebug === 1) {
         console.log(textContentArray[selectedIcon]);
         console.log(textInnerHtmlArray[selectedIcon]);                    //uses the value from volcano level
     }   
     
-    $(".eventsList").prepend(textContentArray[i]);
-
     /* #2.1 SET CONTENT UI //IT IS EXCEEDING ARRAY LENGTH */
     //SET EVENT TITLE
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;

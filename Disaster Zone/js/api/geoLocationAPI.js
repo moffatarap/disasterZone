@@ -239,7 +239,7 @@ var phEventsAlertCircleMarkerArray = [
 /* 5# ===== ALERT CIRCLE ARRAY [END] =====*/
 //sets radius for each disaster type meters to km 1km = 1000 meters
 var alertCirlceRadiusArray = [
-    50,   //[0] STANDARD  || 0.5km
+    650,   //[0] STANDARD  || 0.5km
     1500, //[1] WEAK      || 1.5km
     5000, //[2] LIGHT     || 5km
     20000,//[3] MODERATE  || 20km
@@ -250,7 +250,7 @@ var alertCirlceRadiusArray = [
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY ======*/
-var newAlertCircleColorArray = [
+var alertCircleColorArray = [
     '#353535',//[0] STANDARD
     '#4ecbf2',//[1] WEAK
     '#31c95c',//[2] LIGHT
