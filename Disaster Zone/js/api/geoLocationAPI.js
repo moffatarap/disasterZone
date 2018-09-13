@@ -576,6 +576,7 @@ function geolocationError(positionError) {
 /* 4# ====  GEO LOCATION ERROR [END]==== */
 
 /* 5# ===== RE DRAW MARKER ===== */
+var drawOnce = 0;
 function reDraw() {
     /*DISPLAY WARNING IF USER IS NEAR DISASTER */
 
@@ -585,8 +586,13 @@ function reDraw() {
 
     /* DEBUG SECTION END */
 
-    /* sets center of map [ENABLED]*/
-    mapObject.setCenter(userLatLng)
+    /* sets center of map [ENABLED RUN ONCE]*/
+    if (drawOnce === 0) {
+        mapObject.setCenter(userLatLng)
+        drawOnce++;
+    }
+    
+    console.log("DRAW");
 
 }
 /* 5# ===== RE DRAW MARKER [END] ===== */
@@ -597,7 +603,7 @@ setInterval(function () {
     reDraw();
     /* 6.0# ====== GeoLocate User Every Second refresh ======*/
     //if geoRefresh var = 10, then run geolocation function and reset geoRefresh to 1
-
+    if (drawOnce === 0){
     /* 6.1# ======-- BREAK USER LATLNG INTO LAT AND LNG --====== */
     //SET VAR
     latitude = userLatLng.lat(); //sets latitude to userLatLng lat value
@@ -606,7 +612,7 @@ setInterval(function () {
     //ROUND VAR
     latitude = Math.round(latitude * fourDPR) / fourDPR; //round lat to 4 decimal places
     longitude = Math.round(longitude * fourDPR) / fourDPR; //round lng to 4 decimal places
-
+    }
     /*BREAK USER LATLNG INTO LAT AND LNG [END] */
 
     /*DEBUG

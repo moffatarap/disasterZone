@@ -171,6 +171,21 @@ var eventAlertClassArray = [
     "volcanoEvent Alert_05",  //[5]
 ];
 
+var eventAlertIdArray = [
+    "volEventIndex_00",
+    "volEventIndex_01",
+    "volEventIndex_02",
+    "volEventIndex_03",
+    "volEventIndex_04",
+    "volEventIndex_05",
+    "volEventIndex_06",
+    "volEventIndex_07",
+    "volEventIndex_08",
+    "volEventIndex_09",
+    "volEventIndex_10",
+    "volEventIndex_11",
+]
+
 
 /* 2.0# ==- CSS VARABLE ARRAYS [END]-== */
 
@@ -232,6 +247,8 @@ function VolcanoSortLoop() {
 
     }
     console.log("#9 VolSortLoop_ENDED" + "_VOLCANOS_LOADED_&_DISPLAYED");
+    VolJumpToEvent(); //Allow clicking of UI
+    console.log("#10 VolJumpToEvent_Called");
 }
 /*#2 THIS FUNCTION MAKES ICONS USING THE VOLCANOSORTLOOPS VARABLES */
 function VolcanoMakeIcons() {
@@ -271,9 +288,12 @@ function VolcanoMakeIcons() {
     }
     bindCircle();
 
-    /* #2.0 CREATE UI  */
+    /* #2.0 CREATE UI  [NEED TO WORK ON SORTING INTO PROPER ORDER]*/
     textContentArray[i] = document.createElement('div'); //creates a div
+    //ADD CLASSES
     $(textContentArray[i]).addClass(eventAlertClassArray[selectedIcon]); //sets div classes depending on alert level
+    //ADD ID's
+    $(textContentArray[i]).attr("id", eventAlertIdArray[i]); //ads id selector based on array
     textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon]; //uses the value from volcano level
     $(".eventsList").prepend(textContentArray[i])
    
@@ -282,7 +302,7 @@ function VolcanoMakeIcons() {
         console.log(textInnerHtmlArray[selectedIcon]);                    //uses the value from volcano level
     }   
     
-    /* #2.1 SET CONTENT UI //IT IS EXCEEDING ARRAY LENGTH */
+    /* #2.1 SET CONTENT UI */
     //SET EVENT TITLE
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
     //SET EVENT LOCATION
@@ -291,6 +311,8 @@ function VolcanoMakeIcons() {
     document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
     document.getElementById(eventTimeArray[selectedIcon]).textContent = date.toUTCString();
+
+    
 
     if (volMakeIconsDebug === 1) {
         console.log("VolcanoMakeIcons_ENDED");
@@ -304,6 +326,45 @@ function bindCircle() {
     return; //finish function and return to previous task
 }
 /*3# BIND CIRCLE TO MIDDLE MARKER [END]*/
+var centerSelector = 0;
+var volZoomSetting = 9;
+var volStockZoomSetting = 6;
+var volEventCenter = 0;
+
+/*4# JUMP TO MAP */
+function VolJumpToEvent() {
+    
+
+    $("#volEventIndex_10").click(function () {
+        centerSelector = 10;
+        console.log('EVENT10');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_11").click(function () {
+        centerSelector = 11;
+        console.log('EVENT10');
+        VolOnClick();
+    });
+
+
+    /* RESETS VIEW BACK TO USER */
+    $("#googleAPI").click(function () {
+        mapObject.setCenter(userLatLng);
+        mapObject.setZoom(volStockZoomSetting);
+    });
+}
+
+function VolOnClick() {
+    console.log(volcanonLatArray[centerSelector], volcanonLngArray[centerSelector]);
+    volEventCenter = new google.maps.LatLng(volcanonLatArray[centerSelector], volcanonLngArray[centerSelector]);
+    mapObject.setCenter(volEventCenter);
+    mapObject.setZoom(volZoomSetting);
+    console.log("SET CENTER");
+    return;
+}
+
+
 
 
 
