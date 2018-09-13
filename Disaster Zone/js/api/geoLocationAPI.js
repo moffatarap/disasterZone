@@ -642,7 +642,7 @@ setInterval(function () {
 
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
 
-        firebaseAPI(); //firebase function call from firebaseAPI scrypt
+        /* firebaseAPI(); //firebase function call from firebaseAPI scrypt [DISABLED 13/09/2018]*/
         console.log("firebaseDataPush")
         /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
 
