@@ -6,11 +6,14 @@ var volTitleLength = 12; //sets array length
 var volRadiusMulti = 10; //sets volcano alert radius to be multiplyed by this number original [5]
 var volUIVar = "Volcano"; //sets volcano title for UI
 var volAlertLevelText = "Alert Level "; //alert level var
+/*SET TIME*/
 var date = new Date(); //gets the date and time
+/* SET TIME END */
 var textContent = document.createElement('div'); //creates vairable that is a div
 var debugEnabled = 1;
 var volMakeIconsDebug = 0; //0 is off 1 is on
 var showInactiveVol = 1;
+var dateUTC = 0; //sets var for saving the date to a varable to prevent issues with the date on some browsers
 
 /*== ARRAYS ==*/
 
@@ -244,8 +247,8 @@ function VolcanoSortLoop() {
             volcanoInactiveArray.push(volcanoLevelArray[i]);
             VolcanoMakeIcons();
         }
-
     }
+
     console.log("#9 VolSortLoop_ENDED" + "_VOLCANOS_LOADED_&_DISPLAYED");
     VolJumpToEvent(); //Allow clicking of UI
     console.log("#10 VolJumpToEvent_Called");
@@ -299,7 +302,7 @@ function VolcanoMakeIcons() {
    
     if (volMakeIconsDebug === 1) {
         console.log(textContentArray[selectedIcon]);
-        console.log(textInnerHtmlArray[selectedIcon]);                    //uses the value from volcano level
+        console.log(textInnerHtmlArray[selectedIcon]);   //uses the value from volcano level
     }   
     
     /* #2.1 SET CONTENT UI */
@@ -310,7 +313,8 @@ function VolcanoMakeIcons() {
     //SET EVENT HAZARDS
     document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
-    document.getElementById(eventTimeArray[selectedIcon]).textContent = date.toUTCString();
+    dateUTC = date.toUTCString(); //runs function then turns into var to enable use in all browsers
+    document.getElementById(eventTimeArray[selectedIcon]).textContent = dateUTC;
 
     
 
@@ -326,6 +330,7 @@ function bindCircle() {
     return; //finish function and return to previous task
 }
 /*3# BIND CIRCLE TO MIDDLE MARKER [END]*/
+
 var centerSelector = 0;
 var volZoomSetting = 9;
 var volStockZoomSetting = 6;
@@ -333,17 +338,89 @@ var volEventCenter = 0;
 
 /*4# JUMP TO MAP */
 function VolJumpToEvent() {
-    
+
+
+    $("#volEventIndex_00").click(function () {
+        centerSelector = 0;
+        console.log('EVENT_00');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_01").click(function () {
+        centerSelector = 1;
+        console.log('EVENT_01');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_02").click(function () {
+        centerSelector = 2;
+        console.log('EVENT_02');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_03").click(function () {
+        centerSelector = 3;
+        console.log('EVENT_03');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_04").click(function () {
+        centerSelector = 4;
+        console.log('EVENT_04');
+        VolOnClick();
+    });
+
+    $("#volEventIndex_05").click(function () {
+        centerSelector = 5;
+        console.log('EVENT_05');
+        VolOnClick();
+    });
+
+
+    $("#volEventIndex_06").click(function () {
+        centerSelector = 6;
+        console.log('EVENT_06');
+        VolOnClick();
+    });
+
+
+    $("#volEventIndex_07").click(function () {
+        centerSelector = 7;
+        console.log('EVENT_07');
+        VolOnClick();
+    });
+
+
+    $("#volEventIndex_08").click(function () {
+        centerSelector = 8;
+        console.log('EVENT_08');
+        VolOnClick();
+    });
+
+
+    $("#volEventIndex_09").click(function () {
+        centerSelector = 9;
+        console.log('EVENT_09');
+        VolOnClick();
+    });
+
 
     $("#volEventIndex_10").click(function () {
         centerSelector = 10;
-        console.log('EVENT10');
+        console.log('EVENT_10');
+        VolOnClick();
+    });
+
+
+    $("#volEventIndex_10").click(function () {
+        centerSelector = 10;
+        console.log('EVENT_10');
         VolOnClick();
     });
 
     $("#volEventIndex_11").click(function () {
         centerSelector = 11;
-        console.log('EVENT10');
+        console.log('EVENT_11');
         VolOnClick();
     });
 
