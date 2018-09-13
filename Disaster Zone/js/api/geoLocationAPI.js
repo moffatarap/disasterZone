@@ -176,29 +176,14 @@ var iconArray = [
     './media/img/mapKeys/event/light/volcanoL.png',       //[28] LIGHT
     './media/img/mapKeys/event/weak/volcanoW.png',        //[29] WEAK
 ];
+
 var iconVolcanoArray = [
-    // 4.5 ===== VOLCANO =====
-    './media/img/mapKeys/event/severe/volcanoS.png',      //[0] SEVERE 
-    './media/img/mapKeys/event/strong/volcanoST.png',     //[1] STRONG
-    './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
-    './media/img/mapKeys/event/light/volcanoL.png',       //[3] LIGHT
-    './media/img/mapKeys/event/weak/volcanoW.png',        //[4] WEAK
-
-   
-];
-
-var newIconVolcanoArray = [
     './media/img/mapKeys/key/volcano.png',                //[0] NO ACTIVITY
     './media/img/mapKeys/event/weak/volcanoW.png',        //[1] WEAK
     './media/img/mapKeys/event/light/volcanoL.png',       //[2] LIGHT
     './media/img/mapKeys/event/moderate/volcanoM.png',    //[3] MODERATE
     './media/img/mapKeys/event/strong/volcanoST.png',     //[4] STRONG
-    './media/img/mapKeys/event/severe/volcanoS.png',      //[5] SEVERE 
-    
-    
-    
-    
-
+    './media/img/mapKeys/event/severe/volcanoS.png',      //[5] SEVERE
 ];
 /* 4# ==== DISASTER ICON ARRAY [END] ==== */
 
@@ -254,15 +239,7 @@ var phEventsAlertCircleMarkerArray = [
 /* 5# ===== ALERT CIRCLE ARRAY [END] =====*/
 //sets radius for each disaster type meters to km 1km = 1000 meters
 var alertCirlceRadiusArray = [
-    50000,//[0] SEVERE    || 50km
-    40000,//[1] STRONG    || 40km
-    20000,//[2] MODERATE  || 20km
-    5000,  //[3] LIGHT      || 5km
-    1500,  //[4] WEAK       || 1.5km
-];
-
-var newAlertCirlceRadiusArray = [
-    50,   //[0] WEAK      || 1.5km
+    50,   //[0] STANDARD  || 0.5km
     1500, //[1] WEAK      || 1.5km
     5000, //[2] LIGHT     || 5km
     20000,//[3] MODERATE  || 20km
@@ -273,14 +250,6 @@ var newAlertCirlceRadiusArray = [
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY ======*/
-var alertCircleColorArray = [
-    '#e52419',//[0] SEVERE 
-    '#f68824',//[1] STRONG
-    '#f2c92d',//[2] MODERATE
-    '#31c95c',//[3] LIGHT
-    '#4ecbf2',//[4]  WEAK
-];
-
 var newAlertCircleColorArray = [
     '#353535',//[0] STANDARD
     '#4ecbf2',//[1] WEAK
