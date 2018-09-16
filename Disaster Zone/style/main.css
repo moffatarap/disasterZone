@@ -855,7 +855,7 @@ text-transform: capitalize;
 }
 
 /* ALERT CLASSES */
-/* ORDERNAL SETS ORDER TO BE DISPLAYED IN UI */
+/* ORDERNAL SETS ORDER TO BE DISPLAYED IN UI depending on alert level */
 
 .Alert_00 {
     -webkit-box-ordinal-group: 6;
