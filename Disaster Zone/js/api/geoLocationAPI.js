@@ -480,6 +480,28 @@ window.onload = function () {
 
 }
 
+window.onload = function () {
+
+    console.log('windowOnLoad'); //debug
+    $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
+    $("#errorCantFind").css({ "visibility": "visible" });
+    geoLocateUser();
+    /* DISPLAYS ERROR CANT FIND */
+
+   //on first loop create map
+    if (mapLoad === 1) {
+        /* = 1# GOOGLE MAP CREATE = */
+        mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
+        volJSON(); //Loads JSON Data volcanos geonet
+        //earthJSON(); //Loads JSON data earthquakes goenet
+        //phJSON(); disabled to just show earthquakes
+
+
+    }
+
+
+}
+
 /* 1# = ON LOAD SET STYLE MAP AND STARTING LOCATION [END] =*/
 
 /* 1.2# =-- CONVERT LatLng TO ADDRESS --= */
@@ -502,11 +524,13 @@ function writeAddressName(latLng) {
         }
 
         else
-            //if address cant be found show error code
-            //shows error message if postion found
-            $("#errorCantFind").css({ "visibility": "visible" });
-        //[TEMP]console.log('2 Geocoder Status Fail')
-        document.getElementById("errorCantFind").innerHTML = "No address found" + "<br />";
+        //if address cant be found show error code
+        //shows error message if postion found
+        //[DISALBED UNWANTED EFFECTS 16/09/2018]$("#errorCantFind").css({ "visibility": "visible" });
+            //[TEMP]console.log('2 Geocoder Status Fail')
+            /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
+            $("#errorCantFind").css({ "visibility": "hidden" });
+            document.getElementById("mapAddress").innerHTML = "No address found" + "<br />";
     });
 
     //set marker creation on load of map
@@ -571,7 +595,8 @@ function geolocationSuccess(position) {
 
 /* 4# ====  GEO LOCATION ERROR ==== */
 function geolocationError(positionError) {
-    document.getElementById("errorCantFind").innerHTML = "Error: " + positionError.message + "<br />";
+    document.getElementById("mapAddress").innerHTML = "Error: " + positionError.message + "<br />";
+    console.log('LOCATION ERROR');
 }
 /* 4# ====  GEO LOCATION ERROR [END]==== */
 
@@ -583,16 +608,16 @@ function reDraw() {
     /* DEBUG SECTION */
     //console.log('reDraw');writes to debug redraw
     //console.log(geoRefresh); checks value of geoRefresh
-
+    //console.log(drawOnce);
     /* DEBUG SECTION END */
-
+    
     /* sets center of map [ENABLED RUN ONCE]*/
     if (drawOnce === 0) {
         mapObject.setCenter(userLatLng)
         drawOnce++;
     }
     
-    console.log("DRAW");
+    //console.log("DRAW");
 
 }
 /* 5# ===== RE DRAW MARKER [END] ===== */

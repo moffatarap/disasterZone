@@ -314,6 +314,7 @@ function VolcanoMakeIcons() {
     document.getElementById(eventRatingArray[selectedIcon]).textContent = volAlertLevelText + volcanoLevelArray[i] + " " + volcanoActivityArray[i];
     //SET LAST CHECKED EVENT
     dateUTC = date.toUTCString(); //runs function then turns into var to enable use in all browsers
+    //dateUTC = dateUTC.slice(0, -4); //TRIMS OFF THE GMT
     document.getElementById(eventTimeArray[selectedIcon]).textContent = dateUTC;
 
     
@@ -330,48 +331,54 @@ function bindCircle() {
     return; //finish function and return to previous task
 }
 /*3# BIND CIRCLE TO MIDDLE MARKER [END]*/
-
-var centerSelector = 0;
-var volZoomSetting = 9;
-var volStockZoomSetting = 6;
-var volEventCenter = 0;
-
+/* VolJumpToEvent VARABLES */
+var centerSelector = 0; //sets the center to zoom on to eg volcano event
+var volZoomSetting = 9; //sets zoom level for zooming in on event
+var volStockZoomSetting = 6; //sets the zoom level on the map
+var volEventCenter = 0; //sets the vol center
+var clickEvent = 0; //sets var to test if map has been clicked on
 /*4# JUMP TO MAP */
 function VolJumpToEvent() {
 
 
     $("#volEventIndex_00").click(function () {
         centerSelector = 0;
+        clickEvent = 1;
         console.log('EVENT_00');
         VolOnClick();
     });
 
     $("#volEventIndex_01").click(function () {
         centerSelector = 1;
+        clickEvent = 1;
         console.log('EVENT_01');
         VolOnClick();
     });
 
     $("#volEventIndex_02").click(function () {
         centerSelector = 2;
+        clickEvent = 1;
         console.log('EVENT_02');
         VolOnClick();
     });
 
     $("#volEventIndex_03").click(function () {
         centerSelector = 3;
+        clickEvent = 1;
         console.log('EVENT_03');
         VolOnClick();
     });
 
     $("#volEventIndex_04").click(function () {
         centerSelector = 4;
+        clickEvent = 1;
         console.log('EVENT_04');
         VolOnClick();
     });
 
     $("#volEventIndex_05").click(function () {
         centerSelector = 5;
+        clickEvent = 1;
         console.log('EVENT_05');
         VolOnClick();
     });
@@ -379,6 +386,7 @@ function VolJumpToEvent() {
 
     $("#volEventIndex_06").click(function () {
         centerSelector = 6;
+        clickEvent = 1;
         console.log('EVENT_06');
         VolOnClick();
     });
@@ -386,6 +394,7 @@ function VolJumpToEvent() {
 
     $("#volEventIndex_07").click(function () {
         centerSelector = 7;
+        clickEvent = 1;
         console.log('EVENT_07');
         VolOnClick();
     });
@@ -393,6 +402,7 @@ function VolJumpToEvent() {
 
     $("#volEventIndex_08").click(function () {
         centerSelector = 8;
+        clickEvent = 1;
         console.log('EVENT_08');
         VolOnClick();
     });
@@ -400,6 +410,7 @@ function VolJumpToEvent() {
 
     $("#volEventIndex_09").click(function () {
         centerSelector = 9;
+        clickEvent = 1;
         console.log('EVENT_09');
         VolOnClick();
     });
@@ -414,21 +425,31 @@ function VolJumpToEvent() {
 
     $("#volEventIndex_10").click(function () {
         centerSelector = 10;
+        clickEvent = 1;
         console.log('EVENT_10');
         VolOnClick();
     });
 
     $("#volEventIndex_11").click(function () {
         centerSelector = 11;
+        clickEvent = 1;
         console.log('EVENT_11');
         VolOnClick();
     });
 
 
-    /* RESETS VIEW BACK TO USER */
+    /* RESETS VIEW BACK TO USER  */
     $("#googleAPI").click(function () {
-        mapObject.setCenter(userLatLng);
-        mapObject.setZoom(volStockZoomSetting);
+        if (clickEvent === 1) {
+            mapObject.setCenter(userLatLng);
+            mapObject.setZoom(volStockZoomSetting);
+            console.log("MAP CENTER TRIGGERED");
+            clickEvent = 0;
+        }
+
+        else {
+            console.log("MAP CENTER NOT ARMED");
+        }
     });
 }
 
