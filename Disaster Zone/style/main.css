@@ -280,6 +280,16 @@ body {
 
 .eventsList {
     margin-top: 50px;
+
+    /* SETS ORDER OF UI ICONS */
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    /* SETS ORDER OF UI ICONS */
+
 }
 
 .eventsList-title {
@@ -845,36 +855,75 @@ text-transform: capitalize;
 }
 
 /* ALERT CLASSES */
+/* ORDERNAL SETS ORDER TO BE DISPLAYED IN UI */
+
 .Alert_00 {
-    background-color: rgb(25,25,25);
+    -webkit-box-ordinal-group: 6;
+    -moz-box-ordinal-group: 6;
+    box-ordinal-group: 6;
+}
+
+.Alert_00:hover {
+    background-color: rgba(25,25,25,0.3);
 }
 
 .Alert_01 {
-    background-color: rgb(70,203,244);
+    -webkit-box-ordinal-group: 5;
+    -moz-box-ordinal-group: 5;
+    box-ordinal-group: 5;
+}
+
+.Alert_01:hover {
+    background-color: rgba(70,203,244,0.3);
+    order:5;
 }
 
 .Alert_02 {
-    background-color: rgb(35,202,86);
+    -webkit-box-ordinal-group: 4;
+    -moz-box-ordinal-group: 4;
+    box-ordinal-group: 4;
+}
+
+.Alert_02:hover {
+    background-color: rgba(35,202,86,0.3);
+    order:4;
 }
 
 .Alert_03 {
-    background-color: rgb(244,203,0);
+    -webkit-box-ordinal-group: 3;
+    -moz-box-ordinal-group: 3;
+    box-ordinal-group: 3;
+}
+
+.Alert_03:hover {
+    background-color: rgba(244,203,0,0.3);
+    order:3;
 }
 
 .Alert_04 {
-    background-color: rgb(248,136,0);
+    -webkit-box-ordinal-group: 2;
+    -moz-box-ordinal-group: 2;
+    box-ordinal-group: 2;
+}
+
+.Alert_04:hover {
+    background-color: rgba(248,136,0,0.3);
+    order:2;
 }
 
 .Alert_05 {
-    background-color: rgb(231,32,1);
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    box-ordinal-group: 1;
+}
+
+.Alert_05:hover {
+    background-color: rgba(231,32,1,0.3);
+    order:1;
 }
 
 /* VOL ORDER ID */
 
-
-
-
-/* TEST_V02
 
 /* VOLCANO EVENT CARD [END] */
 .eventLocation {

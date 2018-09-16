@@ -337,10 +337,9 @@ var volZoomSetting = 9; //sets zoom level for zooming in on event
 var volStockZoomSetting = 6; //sets the zoom level on the map
 var volEventCenter = 0; //sets the vol center
 var clickEvent = 0; //sets var to test if map has been clicked on
+
 /*4# JUMP TO MAP */
 function VolJumpToEvent() {
-
-
     $("#volEventIndex_00").click(function () {
         centerSelector = 0;
         clickEvent = 1;
@@ -412,13 +411,6 @@ function VolJumpToEvent() {
         centerSelector = 9;
         clickEvent = 1;
         console.log('EVENT_09');
-        VolOnClick();
-    });
-
-
-    $("#volEventIndex_10").click(function () {
-        centerSelector = 10;
-        console.log('EVENT_10');
         VolOnClick();
     });
 
