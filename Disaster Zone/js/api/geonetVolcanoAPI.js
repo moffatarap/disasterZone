@@ -254,6 +254,8 @@ function VolcanoSortLoop() {
     console.log("#10 VolJumpToEvent_Called");
 }
 /*#2 THIS FUNCTION MAKES ICONS USING THE VOLCANOSORTLOOPS VARABLES */
+var infowindow = [];
+
 function VolcanoMakeIcons() {
     if (volMakeIconsDebug === 1) {
         console.log("VolcanoMakeIcons_Started");
@@ -270,6 +272,20 @@ function VolcanoMakeIcons() {
       position: { lat: volcanonLatArray[i], lng: volcanonLngArray[i] },
       icon: iconVolcanoArray[selectedIcon],
     });
+
+    /* MAKE POP UP WINDOW */
+    infowindow[i] = new google.maps.InfoWindow({
+        content: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i] + "<br> " + volcanoActivityArray[i],
+    });
+
+    volcanoMarkerArray[i].addListener('click', function () {
+       
+            infowindow[i].open(mapObject, volcanoMarkerArray[i]);
+       
+    });
+
+    //[DSIPLAY INFO WINDOWS] infowindow.open(mapObject, volcanoMarkerArray[i]);
+
 
     if (volMakeIconsDebug === 1) {
         console.log("Marker_Created");
@@ -347,6 +363,7 @@ function VolJumpToEvent() {
         VolOnClick();
     });
 
+    
     $("#volEventIndex_01").click(function () {
         centerSelector = 1;
         clickEvent = 1;
@@ -430,6 +447,7 @@ function VolJumpToEvent() {
     });
 
 
+
     /* RESETS VIEW BACK TO USER  */
     $("#googleAPI").click(function () {
         if (clickEvent === 1) {
@@ -437,6 +455,7 @@ function VolJumpToEvent() {
             mapObject.setZoom(volStockZoomSetting);
             console.log("MAP CENTER TRIGGERED");
             clickEvent = 0;
+            closeAllInfoWindows();
         }
 
         else {
@@ -451,7 +470,16 @@ function VolOnClick() {
     mapObject.setCenter(volEventCenter);
     mapObject.setZoom(volZoomSetting);
     console.log("SET CENTER");
+    infowindow[centerSelector].open(mapObject, volcanoMarkerArray[centerSelector]);
     return;
+}
+
+function closeAllInfoWindows() {
+    console.log("closeAllInfoWindows");
+    infowindow[centerSelector].close();
+    centerSelector = -1;
+    return;
+    
 }
 
 
