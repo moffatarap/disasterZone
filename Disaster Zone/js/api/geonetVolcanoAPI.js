@@ -12,7 +12,7 @@ var date = new Date(); //gets the date and time
 var textContent = document.createElement('div'); //creates vairable that is a div
 var debugEnabled = 1;
 var volMakeIconsDebug = 0; //0 is off 1 is on
-var showInactiveVol = 1;
+var showInactiveVol = 0;
 var dateUTC = 0; //sets var for saving the date to a varable to prevent issues with the date on some browsers
 
 /*== ARRAYS ==*/
@@ -195,7 +195,7 @@ var eventAlertIdArray = [
 //#0 VOL JSON is called as a function in geolocationAPI
 function volJSON() {
     console.log("#0 VOLJSON_Called");
-    $.getJSON(goenetVolcanoLocal, function (data) {
+    $.getJSON(geonetVolcano, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
             if (i < volTitleLength) {
@@ -273,15 +273,13 @@ function VolcanoMakeIcons() {
       icon: iconVolcanoArray[selectedIcon],
     });
 
-    /* MAKE POP UP WINDOW */
+    /* MAKE INFO WINDOW*/
     infowindow[i] = new google.maps.InfoWindow({
         content: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i] + "<br> " + volcanoActivityArray[i],
     });
 
     volcanoMarkerArray[i].addListener('click', function () {
-       
-            infowindow[i].open(mapObject, volcanoMarkerArray[i]);
-       
+            infowindow[i].open(mapObject, volcanoMarkerArray[i]); //alows marker to have listner for info window click
     });
 
     //[DSIPLAY INFO WINDOWS] infowindow.open(mapObject, volcanoMarkerArray[i]);
@@ -474,6 +472,7 @@ function VolOnClick() {
     return;
 }
 
+/* CLOSES OPEN INFO WINDOWS */
 function closeAllInfoWindows() {
     console.log("closeAllInfoWindows");
     infowindow[centerSelector].close();
