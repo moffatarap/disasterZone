@@ -75,6 +75,15 @@ var earthQTextInnerHtmlLightArray = [
    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventTypeLight5"></h4><h6 id="earthQEventLocationLight5"></h6><h6 id="earthQEventRatingLight5"></h6><h6 id="earthQEventTimeLight5"></h6><div id="gradientL"></div>', //[0]
 
 ];
+
+/* EARTH ALERT MARKET CREATE VAR */
+var alertEarthQuakesArray = []; //holds current volcaons on alert
+var alertEarthQIndex = 0; //sets alertvol array indext to zero for sorting
+var earthQSelectedIcon = 0; //sets icon to be used for each event
+var earthQSelectedCircle = 0; // sets the color of circle to be used and the radius
+var earthQCount = 0;
+
+
 //EARTHQUAKE TITLE CASE ARRAY 
 var earthQTitleArray = {
 };
@@ -115,15 +124,6 @@ var earthQEventTimeLightArray = [
     "earthQEventTimeLight4", //[4]
 ];
 
-
-/* TEMP FUNCTION FOR TESTING 
-window.onload = function () {
-    earthJSON();
-}; */
-
-/* 1# EARTHQUAKE VARABLE ARRAYS [END]*/
-
-/* 1.1# ==- CSS VARABLE ARRAYS -== */
 
 //EVENT TYPE
 var earthQEventTypeArray = [
@@ -166,7 +166,8 @@ var earthQEventTimeArray = [
 /* 2# EARTHQUAKE FUNCTION */
 // earthJSON is called as a function in geolocationAPI under geoRefresh
 function earthJSON() {
-    $.getJSON(geonetEarthQuake, function (data) {
+    $.getJSON(geonetEarthQuakeLocal, function (data) {
+        console.log("#1 EARTHQJSON_Called");
         $.each(data.features, function (i, eq) {
             //data id displayed in table row || this one is earthquake title
             if (i < earthQEventLength) {
@@ -177,16 +178,15 @@ function earthJSON() {
                 earthQDepthArray[i] = eq.properties.depth;
                 earthQTimeArray[i] = eq.properties.origintime;
                 earthQIDNameArray[i] = eq.id.toTitleCase();
-
                 i++;
             }
             else {
-                //doNothing
+                console.log("JSON DID NOT LOAD CORRECTLY");
             }
 
         });
 
-        /* DEBUGGING 
+        /* DEBUGGING  */
         console.log('#1 Intensity');
         console.log(earthQIntensityArray); //display value of title array
         console.log('#2 Magitude');
@@ -202,7 +202,7 @@ function earthJSON() {
         console.log('6 ID')
         console.log(earthQIDNameArray); //display value of name array  
         
-        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11]; */
+        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
         earthQuakeMarkerCreateLoop(); //calls earthquake marker loop
         console.log("3.2 earthquakeMarkerCreate"); //debug marker create
@@ -210,6 +210,32 @@ function earthJSON() {
 
 }
 /* 2# EARTHQUAKE FUNCTION [END]*/
+
+
+/* NEW EARTHQUAKE FUNCTION */
+
+/* #1 SORTS EARTHQUAKES */
+function EarthQSortLoop() {
+    console.log("#8 EarthQSortLoop_CALLED");
+    for (i = 0; i < earthQEventLength; i++) {
+
+        //#1 Setting Up Varables
+        var earthQMagnitudeRound = Math.round(earthQMagnitudeArray[i] * twoDP) / twoDP; //rounds to two decimal palces
+        //#2 CONVERT JSON DATE TIME TO UTC
+        var earthQTimeFormat = earthQTimeArray[i]; //for formatting earthquake event time based off json
+        var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
+        var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1')); //replacing date format
+
+        /*  6.4 - CONVERT TO TITLE CASE */
+        earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i];
+
+    }
+}
+
+/* #2 Earthquake Time Formatting */
+
+/* #2 Earthquake Time Formatting [END]*/
+/* NEW EARTHQUAKE FUNCTION */
 
 /* 3# BIND CIRCLE TO MIDDLE MARKER */
 function bindCircleEq() {

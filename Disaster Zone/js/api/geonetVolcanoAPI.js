@@ -13,7 +13,7 @@ var textContent = document.createElement('div'); //creates vairable that is a di
 var debugEnabled = 1;
 var volMakeIconsDebug = 0; //0 is off 1 is on
 var showInactiveVol = 0;
-var dateUTC = 0; //sets var for saving the date to a varable to prevent issues with the date on some browsers
+
 
 /*== ARRAYS ==*/
 

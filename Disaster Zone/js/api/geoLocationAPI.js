@@ -12,7 +12,7 @@ var latitude; //lat for warning system, based off userLatLng var
 var longitude; //lng for warning system, based off userLatLng var
 var fourDPR = 10000;  //sets rounding var
 var alertCircleStrokeWeight = 2; //sets stroke weight for alert circle
-
+var dateUTC = 0; //sets var for saving the date to a varable to prevent issues with the date on some browsers
 
 /* 1# = DISASTER WARNING LOCATION ARRAYS =*/
 //location warning LAT 
@@ -470,8 +470,8 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        volJSON(); //Loads JSON Data volcanos geonet
-        //earthJSON(); //Loads JSON data earthquakes goenet
+        //volJSON(); //Loads JSON Data volcanos geonet
+        earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
 
@@ -492,8 +492,8 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        volJSON(); //Loads JSON Data volcanos geonet
-        //earthJSON(); //Loads JSON data earthquakes goenet
+        //volJSON(); //Loads JSON Data volcanos geonet
+        earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
 
