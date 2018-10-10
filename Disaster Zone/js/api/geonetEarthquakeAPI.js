@@ -204,7 +204,7 @@ function earthJSON() {
         
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
-        earthQuakeMarkerCreateLoop(); //calls earthquake marker loop
+        EarthQSortLoop(); //calls earthquake marker loop
         console.log("3.2 earthquakeMarkerCreate"); //debug marker create
     });
 
@@ -215,26 +215,92 @@ function earthJSON() {
 /* NEW EARTHQUAKE FUNCTION */
 
 /* #1 SORTS EARTHQUAKES */
+var earthQEventRaitingArray = [];
 function EarthQSortLoop() {
     console.log("#8 EarthQSortLoop_CALLED");
+    console.log(earthQIntensityArray);
     for (i = 0; i < earthQEventLength; i++) {
 
         //#1 Setting Up Varables
         var earthQMagnitudeRound = Math.round(earthQMagnitudeArray[i] * twoDP) / twoDP; //rounds to two decimal palces
-        //#2 CONVERT JSON DATE TIME TO UTC
-        var earthQTimeFormat = earthQTimeArray[i]; //for formatting earthquake event time based off json
-        var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
-        var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1')); //replacing date format
-
-        /*  6.4 - CONVERT TO TITLE CASE */
         earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i];
+        
+        EarthQDateTime(); //run EarthQ time and date
+        
+        //#2 Change Intencitys from strings to numbers to allow for icon applying correctly
+        if (earthQIntensityArray[i] === "Weak") {
+            earthQEventRaitingArray.push(1);
+            EarthQMakeIcons();
+        }
 
+        if (earthQIntensityArray[i] === "Light") {
+            earthQEventRaitingArray.push(2);
+            EarthQMakeIcons();
+        }
+
+        if (earthQIntensityArray[i] === "Moderate") {
+            earthQEventRaitingArray.push(3);
+            EarthQMakeIcons();
+        }
+
+        if (earthQIntensityArray[i] === "Strong") {
+            earthQEventRaitingArray.push(4);
+            EarthQMakeIcons();
+        }
+
+        if (earthQIntensityArray[i] === "Severe") {
+            earthQEventRaitingArray.push(5);
+            EarthQMakeIcons();
+        }
     }
+    
+    console.log(earthQEventRaitingArray);
 }
 
 /* #2 Earthquake Time Formatting */
+function EarthQDateTime() {
+    var earthQTimeFormat = earthQTimeArray[i]; //for formatting earthquake event time based off json
+    var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
+    var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1'));
+    console.log("#2 Time Format");
+    return;
+}
 
 /* #2 Earthquake Time Formatting [END]*/
+var earthQInfowindow = [];
+
+/* #3 MAKES VOLCANO ICONS */
+function EarthQMakeIcons() {
+    /* # 1.1 SETS ICON DEPENDING ON LEVEL ON ARRAY INDEX */
+    earthQSelectedIcon = earthQEventRaitingArray[i];
+    earthQSelectedCircle = earthQEventRaitingArray[i];
+
+    /* #1.2 CREATE GOOGLE MAPS MARKER */
+    earthquakeMarkerArray[i] = new google.maps.Marker({
+        map: mapObject,
+        title: earthQTitleArray[i],
+        position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
+        icon: iconEarthQArray[earthQSelectedIcon],
+    });
+
+    /* #1.3 MAKE INFO WINDOWS 
+    earthQInfowindow[i] = new google.maps.InfoWindow({
+        content: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i] + "<br> " + volcanoActivityArray[i],
+    }); */
+
+    /* #1.3 CREATE ALERT CIRCLE */
+    earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
+        map: mapObject,
+        radius: alertCirlceRadiusArray[earthQSelectedCircle] * earthQRadiusMulti, // sets alert radius from array 
+        fillColor: alertCircleColorArray[earthQSelectedCircle], //sets color of fill from array
+        strokeColor: alertCircleColorArray[earthQSelectedCircle], //sets stroke color from array
+        strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
+    });
+
+    bindCircleEq();
+    return;
+}
+
 /* NEW EARTHQUAKE FUNCTION */
 
 /* 3# BIND CIRCLE TO MIDDLE MARKER */

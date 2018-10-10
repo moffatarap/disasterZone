@@ -185,6 +185,16 @@ var iconVolcanoArray = [
     './media/img/mapKeys/event/strong/volcanoST.png',     //[4] STRONG
     './media/img/mapKeys/event/severe/volcanoS.png',      //[5] SEVERE
 ];
+
+var iconEarthQArray = [
+
+    './media/img/mapKeys/event/key/earthquake.png',    //[0] NO ACTIVITY
+    './media/img/mapKeys/event/weak/earthquakeW.png',    //[1] WEAK
+    './media/img/mapKeys/event/light/earthquakeL.png',   //[2] LIGHT
+    './media/img/mapKeys/event/moderate/earthquakeM.png',  //[3] MODERATE
+    './media/img/mapKeys/event/strong/earthquakeST.png',     //[4] STRONG
+    './media/img/mapKeys/event/severe/earthquakeS.png',      //[5] SEVERE
+];
 /* 4# ==== DISASTER ICON ARRAY [END] ==== */
 
 /* 4.1# ==== DISASTER ICON STANDARD ARRAY ==== */
