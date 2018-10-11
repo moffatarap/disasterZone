@@ -684,6 +684,7 @@ setInterval(function () {
 
         //REMOVED FIREBASE  [13/09/2018]
 
+
         geoRefresh = 2; //reset value to 2
 
 
