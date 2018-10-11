@@ -141,7 +141,7 @@ var earthQEventAlertIdArray = [
 ]
 
 //EVENT TIME
-var earthQEventTimeArray  = [
+var earthQEventTimeArray = [
     "eventTime0", //[0]
     "eventTime1", //[1]
     "eventTime2", //[2]
@@ -166,7 +166,7 @@ var earthQEventAlertClassArray = [
 /* 2# EARTHQUAKE FUNCTION */
 // earthJSON is called as a function in geolocationAPI under geoRefresh
 function earthJSON() {
-    $.getJSON(geonetEarthQuakeLocal, function (data) {
+    $.getJSON(geonetEarthQuake, function (data) {
         console.log("#1 EARTHQJSON_Called");
         $.each(data.features, function (i, eq) {
             //data id displayed in table row || this one is earthquake title
@@ -201,7 +201,7 @@ function earthJSON() {
         console.log(earthQTimeArray); //display value of time array
         console.log('6 ID')
         console.log(earthQIDNameArray); //display value of name array
-        
+
 
         //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
 
@@ -224,11 +224,12 @@ function EarthQSortLoop() {
     for (i = 0; i < earthQEventLength; i++) {
 
         //#1 Setting Up Varables
+        earthQAddress();
         earthQMagnitudeRound = Math.round(earthQMagnitudeArray[i] * twoDP) / twoDP; //rounds to two decimal palces
         earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i];
 
         EarthQDateTime(); //run EarthQ time and date
-
+        
         //#2 Change Intencitys from strings to numbers to allow for icon applying correctly
         if (earthQIntensityArray[i] === "Weak") {
             earthQEventRaitingArray.push(1);
@@ -257,6 +258,7 @@ function EarthQSortLoop() {
     }
 
     console.log(earthQEventRaitingArray);
+    EarthQJumpToEvent();
 }
 
 /* #2 Earthquake Time Formatting */
@@ -288,14 +290,15 @@ function EarthQMakeIcons() {
     /* MAKE INFO WINDOWS   */
 
     earthQInfowindow[i] = new google.maps.InfoWindow({
-        content: earthQIDNameArray[i] + ' Alert Level ' + earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound + "<br> " + earthQuakeDateUTC,
+        content: earthQIDNameArray[i] + '</br> ' + earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound + "<br> " + earthQuakeDateUTC,
     });
 
     earthquakeMarkerArray[i].addListener('click', function () {
         infowindow[i].open(mapObject, earthquakeMarkerArray[i]); //alows marker to have listner for info window click
     });
 
-    
+
+
     /* #1.3 CREATE ALERT CIRCLE */
     earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
         map: mapObject,
@@ -317,7 +320,7 @@ function EarthQMakeIcons() {
 
     $(".eventsList").prepend(earthQTextContentArray[i]);
 
-    
+
     /* 2.1# SET CONTENT UI */
     //SET EVENT TITLE
     document.getElementById(earthQEventTypeArray[earthQSelectedIcon]).textContent = earthUIVar;
@@ -336,265 +339,188 @@ function EarthQMakeIcons() {
 /*3# THIS FUNCTION BINDS A CIRCLE TO DISPLAY RADIUS TO GOOGLE MAP MARKERS */
 function bindCircleEq() {
     earthQAlertCircleMarkerArray[i].bindTo('center', earthquakeMarkerArray[i], 'position'); //binds circle to location of marker
+    markerAnimaton();
     return; //finish function and return to previous task
 }
-
-/* NEW EARTHQUAKE FUNCTION */
-
-/* 3.1# DATEFORMATS function */
 
 
 /* 3.2# MARKER ANIMATION*/
 function markerAnimaton() {
     earthquakeMarkerArray[i].setAnimation(google.maps.Animation.DROP);
+    //earthQAlertCircleMarkerArray[i].setAnimation(google.maps.Animation.DROP);
+    return; //finish function and return to previous task
 }
-/* 3.2# MARKER ANIMATION [END]*/
-var earthQLatLng = { lat: parseFloat(earthQLatArray[0]), lng: parseFloat(earthQLngArray[0]) };
 
-/* 3.3# GEOCODER REVERSE */
-//currently disabled and removed
+var geoTest = 'test';
+//var earthQLatLng = { lat: earthQLatArray[0], lng: earthQLngArray[0] };
+var reverseGeocodeAddressArray = [];
 
-/* 3.3# GEOCODER REVERSE [END]*/
+/* 3.3# Reverse Geocoding */
+function earthQAddress(earthQLatLng) { 
 
-/* 4# ==== EARTHQUAKE MARKER LOOP ==== */
-function earthQuakeMarkerCreateLoop() {
-    //geocodeLatLng();
-    //writeEarthQAddress();
+    geocoder = new google.maps.Geocoder();
+    earthQLatLng = new google.maps.LatLng(earthQLatArray[i], earthQLngArray[i]);
+    geocoder.geocode({
+        "location": earthQLatLng
+    },
+        function (results, status) {
 
-    for (i = 0; i < earthQEventLength; i++) {
-        //loop until i = earthQEventLength Var
-        //Math.round
-        var earthQMagnitudeRound = Math.round(earthQMagnitudeArray[i] * twoDP) / twoDP; //rounds to two decimal palces
+            if (status === google.maps.GeocoderStatus.OK) {
+                console.log(results);
 
-        /* CONVERT JSON DATE TIME TO UTC */
-        var earthQTimeFormat = earthQTimeArray[i]; //for formatting earthquake event time based off json
-        var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
-        var earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1')); //replacing date format
+                geoTest = results[2].formatted_address;
+                reverseGeocodeAddressArray.push(geoTest);
+                console.log(reverseGeocodeAddressArray);
+                console.log("SUCESS");
+            }
 
-        /*  6.4 - CONVERT TO TITLE CASE */
-        earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i]; //merges EQ array and name into one array
+            else
+           console.log('GeoDecodeFail');
+            console.log(results);
+            console.log(geoTest);
+            console.log(earthQLatLng);
+        });
 
-        /*  6.4 - CONVERT TO TITLE CASE [END] */
-
-        //EARTHQUAKE SEVERITY WEAK
-        if (earthQIntensityArray[i].toLowerCase() === 'weak') {
-            earthquakeMarkerArray[i] = new google.maps.Marker({
-                //create marker
-                map: mapObject,
-                title: earthQTitleArray[i],
-                position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
-                icon: iconArray[4],
-            });
-
-            markerAnimaton(); //sets animation on markers
+}
 
 
 
+/* EarthQJumpToEvent VARABLES */
+var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake event
+    var earthQZoomSetting = 9; //sets zoom level for zooming in on event
+    var earthQStockZoomSetting = 6; //sets the zoom level on the map
+    var earthQEventCenter = 0; //sets the earth center
+    var earthQClickEvent = 0; //sets var to test if map has been clicked on
 
-            // circle alert create
-            earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
-                map: mapObject,
-                radius: alertCirlceRadiusArray[4] * earthQRadiusMulti, // sets alert radius from array 
-                fillColor: alertCircleColorArray[4], //sets color of fill from array
-                strokeColor: alertCircleColorArray[4], //sets stroke color from array
-                strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-            });
-
-            bindCircleEq(); //binds circle to marker
-
-            /* 1# DISPLAY IN UI */
-            //idFunction();
-            earthQTextContentArray[i] = document.createElement('div');
-            $(earthQTextContentArray[i]).addClass("dummyEvent");
-            earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[0];
-
-            $(".eventsList").prepend(earthQTextContentArray[i]);
+    /*4# JUMP TO MAP */
+    function EarthQJumpToEvent() {
+        $("#earthQEventIndex_00").click(function () {
+            earthQCenterSelector = 0;
+            earthQClickEvent = 1;
+            console.log('EVENT_00');
+            EarthQOnClick();
+        });
 
 
-            // 1.0# SET CONTENT
-            //SET EVENT TITLE
-            document.getElementById(earthQEventTypeArray[0]).textContent = earthUIVar;
-            //SET EVENT LOCATION
-            document.getElementById(earthQEventLocationArray[0]).textContent = earthQIDNameArray[i];
-            //SET EVENT HAZARDS
-            document.getElementById(earthQEventRatingArray[0]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
-            //SET LAST CHECKED EVENT
-            document.getElementById(earthQEventTimeArray[0]).textContent = earthQDateFormat.toUTCString();
-            /* 1# DISPLAY IN UI [END] */
+        $("#earthQEventIndex_01").click(function () {
+            earthQCenterSelector = 1;
+            earthQClickEvent = 1;
+            console.log('EVENT_01');
+            EarthQOnClick();
+        });
 
-        }
+        $("#earthQEventIndex_02").click(function () {
+            earthQCenterSelector = 2;
+            earthQClickEvent = 1;
+            console.log('EVENT_02');
+            EarthQOnClick();
+        });
 
-        //EARTHQUAKE SEVERITY LIGHT
-        if (earthQIntensityArray[i].toLowerCase() === 'light') {
-            earthquakeMarkerArray[i] = new google.maps.Marker({
-                //create marker
-                map: mapObject,
-                title: earthQTitleArray[i],
-                position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
-                icon: iconArray[3],
-            });
+        $("#earthQEventIndex_03").click(function () {
+            earthQCenterSelector = 3;
+            earthQClickEvent = 1;
+            console.log('EVENT_03');
+            EarthQOnClick();
+        });
 
-            markerAnimaton(); //sets animation on markers
+        $("#earthQEventIndex_04").click(function () {
+            earthQCenterSelector = 4;
+            earthQClickEvent = 1;
+            console.log('EVENT_04');
+            EarthQOnClick();
+        });
 
-            // circle alert create
-            earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
-                map: mapObject,
-                radius: alertCirlceRadiusArray[3] * earthQRadiusMulti, // sets alert radius from array 
-                fillColor: alertCircleColorArray[3], //sets color of fill from array
-                strokeColor: alertCircleColorArray[3], //sets stroke color from array
-                strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-            });
-
-            bindCircleEq(); //binds circle to marker
-
-            /* 2# DISPLAY IN UI */
-            earthQTextContentLightArray[earthQLightLoop] = document.createElement('div');
-            $(earthQTextContentLightArray[earthQLightLoop]).addClass("dummyEvent");
-            earthQTextContentLightArray[earthQLightLoop].innerHTML = earthQTextInnerHtmlLightArray[earthQLightLoop];
-
-            $(".eventsList").append(earthQTextContentLightArray[earthQLightLoop]);
-            // 2.0# SET CONTENT
-            //SET EVENT TITLE
-            document.getElementById(earthQEventTypeLightArray[earthQLightLoop]).textContent = earthUIVar;
-            //SET EVENT LOCATION
-            document.getElementById(earthQEventLocationLightArray[earthQLightLoop]).textContent = earthQIDNameArray[i];
-            //SET EVENT HAZARDS
-            document.getElementById(earthQEventRatingLightArray[earthQLightLoop]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
-            //SET LAST CHECKED EVENT
-            document.getElementById(earthQEventTimeLightArray[earthQLightLoop]).textContent = earthQDateFormat.toUTCString();
-            /* 2# DISPLAY IN UI [END] */
-
-            earthQLightLoop += 1;
-
-        }
-
-        //EARTHQUAKE SEVERITY MODERATE
-        if (earthQIntensityArray[i].toLowerCase() === 'moderate') {
-            earthquakeMarkerArray[i] = new google.maps.Marker({
-                //create marker
-                map: mapObject,
-                title: earthQTitleArray[i],
-                position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
-                icon: iconArray[2],
-            });
-
-            markerAnimaton(); //sets animation on markers
-
-            // circle alert create
-            earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
-                map: mapObject,
-                radius: alertCirlceRadiusArray[2] * earthQRadiusMulti / earthQRadiusDivide, // sets alert radius from array 
-                fillColor: alertCircleColorArray[2], //sets color of fill from array
-                strokeColor: alertCircleColorArray[2], //sets stroke color from array
-                strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-            });
-
-            bindCircleEq(); //binds circle to marker
-
-            /* 3# DISPLAY IN UI */
-            earthQTextContentArray[i] = document.createElement('div');
-            $(earthQTextContentArray[i]).addClass("dummyEvent");
-            earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[2];
-
-            $(".eventsList").prepend(earthQTextContentArray[i]);
-            //earthQIDNameArray[i];
-
-            // 3.0# SET CONTENT
-            //SET EVENT TITLE
-            document.getElementById(earthQEventTypeArray[2]).textContent = earthUIVar;
-            //SET EVENT LOCATION
-            document.getElementById(earthQEventLocationArray[2]).textContent = earthQIDNameArray[i];
-            //SET EVENT HAZARDS
-            document.getElementById(earthQEventRatingArray[2]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
-            //SET LAST CHECKED EVENT
-            document.getElementById(earthQEventTimeArray[2]).textContent = earthQDateFormat.toUTCString();
-            /* 3# DISPLAY IN UI [END] */
-        }
-
-        //EARTHQUAKE SEVERITY STRONG
-        if (earthQIntensityArray[i].toLowerCase() === 'strong') {
-            earthquakeMarkerArray[i] = new google.maps.Marker({
-                //create marker
-                map: mapObject,
-                title: earthQTitleArray[i],
-                position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
-                icon: iconArray[1],
-            });
-
-            markerAnimaton(); //sets animation on markers
-
-            // circle alert create
-            earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
-                map: mapObject,
-                radius: alertCirlceRadiusArray[1] * earthQRadiusMulti / earthQRadiusDivide, // sets alert radius from array 
-                fillColor: alertCircleColorArray[1], //sets color of fill from array
-                strokeColor: alertCircleColorArray[1], //sets stroke color from array
-                strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-            });
-
-            bindCircleEq(); //binds circle to marker
-
-            /* 4# DISPLAY IN UI */
-            earthQTextContentArray[i] = document.createElement('div');
-            $(earthQTextContentArray[i]).addClass("dummyEvent");
-            earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[3];
-
-            $(".eventsList").prepend(earthQTextContentArray[i]);
-            // 4.0# SET CONTENT
-            //SET EVENT TITLE
-            document.getElementById(earthQEventTypeArray[3]).textContent = earthUIVar;
-            //SET EVENT LOCATION
-            document.getElementById(earthQEventLocationArray[3]).textContent = earthQIDNameArray[i];
-            //SET EVENT HAZARDS
-            document.getElementById(earthQEventRatingArray[3]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
-            //SET LAST CHECKED EVENT
-            document.getElementById(earthQEventTimeArray[3]).textContent = earthQDateFormat.toUTCString();
-            /* 4# DISPLAY IN UI [END] */
-        }
+        $("#earthQEventIndex_05").click(function () {
+            earthQCenterSelector = 5;
+            earthQClickEvent = 1;
+            console.log('EVENT_05');
+            EarthQOnClick();
+        });
 
 
-        //EARTHQUAKE SEVERITY SEVERE
-        if (earthQIntensityArray[i].toLowerCase() === 'severe') {
-            earthquakeMarkerArray[i] = new google.maps.Marker({
-                //create marker
-                map: mapObject,
-                title: earthQTitleArray[i],
-                position: { lat: earthQLatArray[i], lng: earthQLngArray[i] },
-                icon: iconArray[0],
+        $("#earthQEventIndex_06").click(function () {
+            earthQCenterSelector = 6;
+            earthQClickEvent = 1;
+            console.log('EVENT_06');
+            EarthQOnClick();
+        });
 
-            });
 
-            markerAnimaton(); //sets animation on markers
+        $("#earthQEventIndex_07").click(function () {
+            earthQCenterSelector = 7;
+            earthQClickEvent = 1;
+            console.log('EVENT_07');
+            EarthQOnClick();
+        });
 
-            // circle alert create
-            earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
-                map: mapObject,
-                radius: alertCirlceRadiusArray[0] * earthQRadiusMulti / earthQRadiusDivide, // sets alert radius from array 
-                fillColor: alertCircleColorArray[0], //sets color of fill from array
-                strokeColor: alertCircleColorArray[0], //sets stroke color from array
-                strokeWeight: alertCircleStrokeWeight, //sets stroke weight from var
-            });
 
-            bindCircleEq(); //binds circle to marker
+        $("#earthQEventIndex_08").click(function () {
+            earthQCenterSelector = 8;
+            earthQClickEvent = 1;
+            console.log('EVENT_08');
+            EarthQOnClick();
+        });
 
-            /* 5# DISPLAY IN UI */
-            earthQTextContentArray[i] = document.createElement('div');
-            $(earthQTextContentArray[i]).addClass("dummyEvent");
-            earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[4];
 
-            $(".eventsList").prepend(earthQTextContentArray[i]);
-            // 5.0# SET CONTENT
-            //SET EVENT TITLE
-            document.getElementById(earthQEventTypeArray[4]).textContent = earthUIVar;
-            //SET EVENT LOCATION
-            document.getElementById(earthQEventLocationArray[4]).textContent = earthQIDNameArray[i];
-            //SET EVENT HAZARDS
-            document.getElementById(earthQEventRatingArray[4]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
-            //SET LAST CHECKED EVENT
-            document.getElementById(earthQEventTimeArray[4]).textContent = earthQDateFormat.toUTCString();
-            /* 5# DISPLAY IN UI [END] */
-        }
+        $("#earthQEventIndex_09").click(function () {
+            earthQCenterSelector = 9;
+            earthQClickEvent = 1;
+            console.log('EVENT_09');
+            EarthQOnClick();
+        });
+
+
+        $("#earthQEventIndex_10").click(function () {
+            earthQCenterSelector = 10;
+            earthQClickEvent = 1;
+            console.log('EVENT_10');
+            EarthQOnClick();
+        });
+
+        $("#earthQEventIndex_11").click(function () {
+            earthQCenterSelector = 11;
+            earthQClickEvent = 1;
+            console.log('EVENT_11');
+            EarthQOnClick();
+        });
+
+
+
+        /* RESETS VIEW BACK TO USER  */
+        $("#googleAPI").click(function () {
+            if (earthQClickEvent === 1) {
+                mapObject.setCenter(userLatLng);
+                mapObject.setZoom(volStockZoomSetting);
+                console.log("MAP CENTER TRIGGERED");
+                earthQClickEvent = 0;
+                EarthQCloseAllInfoWindows();
+            }
+
+            else {
+                console.log("MAP CENTER NOT ARMED");
+            }
+        });
+    }
+
+    function EarthQOnClick() {
+        console.log(earthQLatArray[earthQCenterSelector], earthQLngArray[earthQCenterSelector]);
+        earthQEventCenter = new google.maps.LatLng(earthQLatArray[earthQCenterSelector], earthQLngArray[earthQCenterSelector]);
+        mapObject.setCenter(earthQEventCenter);
+        mapObject.setZoom(earthQZoomSetting);
+        console.log("SET CENTER");
+        earthQInfowindow[earthQCenterSelector].open(mapObject, earthquakeMarkerArray[earthQCenterSelector]);
+        return;
+    }
+
+    /* CLOSES OPEN INFO WINDOWS */
+    function EarthQCloseAllInfoWindows() {
+        console.log("closeAllInfoWindows");
+        earthQInfowindow[earthQCenterSelector].close();
+        //earthQInfowindow.length.close();
+        earthQCenterSelector = -1;
+        return;
 
     }
-}
-/* 4# ==== EARTHQUAKE MARKER LOOP [END]==== */
+
+
+

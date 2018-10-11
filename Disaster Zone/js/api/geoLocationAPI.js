@@ -502,7 +502,7 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        //volJSON(); //Loads JSON Data volcanos geonet
+        volJSON(); //Loads JSON Data volcanos geonet
         earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
@@ -541,6 +541,7 @@ function writeAddressName(latLng) {
                 /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
                 $("#errorCantFind").css({ "visibility": "hidden" });
             document.getElementById("mapAddress").innerHTML = "No address found" + "<br />";
+
         });
 
     //set marker creation on load of map
