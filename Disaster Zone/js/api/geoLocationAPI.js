@@ -12,7 +12,7 @@ var latitude; //lat for warning system, based off userLatLng var
 var longitude; //lng for warning system, based off userLatLng var
 var fourDPR = 10000;  //sets rounding var
 var alertCircleStrokeWeight = 2; //sets stroke weight for alert circle
-var showInactiveVol = 0; //show or hide inactive volcanos 0 to hide inactive volcano 1 to show
+var dateUTC = 0; //sets var for saving the date to a varable to prevent issues with the date on some browsers
 
 /* 1# = DISASTER WARNING LOCATION ARRAYS =*/
 //location warning LAT 
@@ -60,7 +60,7 @@ var volcanoWarningLngArray = [
     175.8960, //[2]  - LNG || TAUPO
     175.6417, //[1]  - LNG || TONGARIRO
     174.0610, //[0]  - LNG || TARANAKI/EGMONT
-	177.1830, //[10] - LNG || WHITE ISLAND
+    177.1830, //[10] - LNG || WHITE ISLAND
 ];
 
 
@@ -176,13 +176,24 @@ var iconArray = [
     './media/img/mapKeys/event/light/volcanoL.png',       //[28] LIGHT
     './media/img/mapKeys/event/weak/volcanoW.png',        //[29] WEAK
 ];
+
 var iconVolcanoArray = [
-    // 4.5 ===== VOLCANO =====
-    './media/img/mapKeys/event/severe/volcanoS.png',      //[0] SEVERE 
-    './media/img/mapKeys/event/strong/volcanoST.png',     //[1] STRONG
-    './media/img/mapKeys/event/moderate/volcanoM.png',    //[2] MODERATE
-    './media/img/mapKeys/event/light/volcanoL.png',       //[3] LIGHT
-    './media/img/mapKeys/event/weak/volcanoW.png',        //[4] WEAK
+    './media/img/mapKeys/key/volcano.png',                //[0] NO ACTIVITY
+    './media/img/mapKeys/event/weak/volcanoW.png',        //[1] WEAK
+    './media/img/mapKeys/event/light/volcanoL.png',       //[2] LIGHT
+    './media/img/mapKeys/event/moderate/volcanoM.png',    //[3] MODERATE
+    './media/img/mapKeys/event/strong/volcanoST.png',     //[4] STRONG
+    './media/img/mapKeys/event/severe/volcanoS.png',      //[5] SEVERE
+];
+
+var iconEarthQArray = [
+
+    './media/img/mapKeys/event/key/earthquake.png',    //[0] NO ACTIVITY
+    './media/img/mapKeys/event/weak/earthquakeW.png',    //[1] WEAK
+    './media/img/mapKeys/event/light/earthquakeL.png',   //[2] LIGHT
+    './media/img/mapKeys/event/moderate/earthquakeM.png',  //[3] MODERATE
+    './media/img/mapKeys/event/strong/earthquakeST.png',     //[4] STRONG
+    './media/img/mapKeys/event/severe/earthquakeS.png',      //[5] SEVERE
 ];
 /* 4# ==== DISASTER ICON ARRAY [END] ==== */
 
@@ -238,23 +249,24 @@ var phEventsAlertCircleMarkerArray = [
 /* 5# ===== ALERT CIRCLE ARRAY [END] =====*/
 //sets radius for each disaster type meters to km 1km = 1000 meters
 var alertCirlceRadiusArray = [
-    50000,//[0] SEVERE   || 50km
-    40000,//[1] STRONG   || 40km
-    20000,//[2] MODERATE || 20km
-    5000,//[3] LIGHT     || 5km
-    1500,//[4] WEAK      || 1.5km
+    650,   //[0] STANDARD  || 0.5km
+    1500, //[1] WEAK      || 1.5km
+    5000, //[2] LIGHT     || 5km
+    20000,//[3] MODERATE  || 20km
+    40000,//[4] STRONG    || 40km
+    50000,//[5] SEVERE    || 50km    
 ];
 
 /* 5# ===== ALERT CIRCLE ARRAY END =====*/
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY ======*/
 var alertCircleColorArray = [
-    '#e52419',//[0] SEVERE 
-    '#f68824',//[1] STRONG
-    '#f2c92d',//[2] MODERATE
-    '#31c95c',//[3] LIGHT
-    '#4ecbf2',//[4]  WEAK
-
+    '#353535',//[0] STANDARD
+    '#4ecbf2',//[1] WEAK
+    '#31c95c',//[2] LIGHT
+    '#f2c92d',//[3] MODERATE
+    '#f68824',//[4] STRONG
+    '#e52419',//[5] SEVERE
 ];
 
 /* 6# ====== ALERT CIRCLE COLORS ARRAY [END] ======*/
@@ -276,180 +288,180 @@ var mapOptions = {
 
     /* STYLE SETTINGS */
     styles: [
-    {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dbdbdb"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 29
-            },
-            {
-                "weight": 0.2
-            }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 18
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dedede"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "saturation": 36
-            },
-            {
-                "color": "#333333"
-            },
-            {
-                "lightness": 40
-            }
-        ]
-    },
-    {
-        "elementType": "labels.icon",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f2f2f2"
-            },
-            {
-                "lightness": 19
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 17
-            },
-            {
-                "weight": 1.2
-            }
-        ]
-    }
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dbdbdb"
+                },
+                {
+                    "lightness": 17
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f5f5f5"
+                },
+                {
+                    "lightness": 20
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 17
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 29
+                },
+                {
+                    "weight": 0.2
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 18
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 16
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f5f5f5"
+                },
+                {
+                    "lightness": 21
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dedede"
+                },
+                {
+                    "lightness": 21
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 16
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "saturation": 36
+                },
+                {
+                    "color": "#333333"
+                },
+                {
+                    "lightness": 40
+                }
+            ]
+        },
+        {
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f2f2f2"
+                },
+                {
+                    "lightness": 19
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 20
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 17
+                },
+                {
+                    "weight": 1.2
+                }
+            ]
+        }
     ]
     /* STYLE SETTINGS */
 
@@ -464,12 +476,34 @@ window.onload = function () {
     geoLocateUser();
     /* DISPLAYS ERROR CANT FIND */
 
-   //on first loop create map
+    //on first loop create map
+    if (mapLoad === 1) {
+        /* = 1# GOOGLE MAP CREATE = */
+        mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
+        //volJSON(); //Loads JSON Data volcanos geonet
+        earthJSON(); //Loads JSON data earthquakes goenet
+        //phJSON(); disabled to just show earthquakes
+
+
+    }
+
+
+}
+
+window.onload = function () {
+
+    console.log('windowOnLoad'); //debug
+    $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
+    $("#errorCantFind").css({ "visibility": "visible" });
+    geoLocateUser();
+    /* DISPLAYS ERROR CANT FIND */
+
+    //on first loop create map
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
         volJSON(); //Loads JSON Data volcanos geonet
-        //earthJSON(); //Loads JSON data earthquakes goenet
+        earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
 
@@ -486,26 +520,29 @@ function writeAddressName(latLng) {
     geocoder.geocode({
         "location": latLng
     },
-    function (results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            // console.log('geoLocationOK'); debug
-            //formatted address from latLng
-            //hides error message if postion found
-            $("#errorCantFind").css({ "visibility": "hidden" });
-            console.log('1 Geocoder Status OK')
-            
-            document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
-            //+= for debugging, to show all addresses = to just show one address at a time
+        function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                // console.log('geoLocationOK'); debug
+                //formatted address from latLng
+                //hides error message if postion found
+                $("#errorCantFind").css({ "visibility": "hidden" });
+                //[TEMP]console.log('1 Geocoder Status OK')
 
-        }
+                document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
+                //+= for debugging, to show all addresses = to just show one address at a time
 
-        else
-            //if address cant be found show error code
-            //shows error message if postion found
-            $("#errorCantFind").css({ "visibility": "visible" });
-        console.log('2 Geocoder Status Fail')
-        document.getElementById("errorCantFind").innerHTML = "No address found" + "<br />";
-    });
+            }
+
+            else
+                //if address cant be found show error code
+                //shows error message if postion found
+                //[DISALBED UNWANTED EFFECTS 16/09/2018]$("#errorCantFind").css({ "visibility": "visible" });
+                //[TEMP]console.log('2 Geocoder Status Fail')
+                /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
+                $("#errorCantFind").css({ "visibility": "hidden" });
+            document.getElementById("mapAddress").innerHTML = "No address found" + "<br />";
+
+        });
 
     //set marker creation on load of map
     if (mapLoad === 1) {
@@ -518,7 +555,7 @@ function writeAddressName(latLng) {
         })
 
     }
-        //change marker position to new user LatLng
+    //change marker position to new user LatLng
     else {
         //console.log('mapMarkerSetPositon'); debug
         mapUserMarker.setPosition(userLatLng); //mapUserMarker LatLng
@@ -569,22 +606,29 @@ function geolocationSuccess(position) {
 
 /* 4# ====  GEO LOCATION ERROR ==== */
 function geolocationError(positionError) {
-    document.getElementById("errorCantFind").innerHTML = "Error: " + positionError.message + "<br />";
+    document.getElementById("mapAddress").innerHTML = "Error: " + positionError.message + "<br />";
+    console.log('LOCATION ERROR');
 }
 /* 4# ====  GEO LOCATION ERROR [END]==== */
 
 /* 5# ===== RE DRAW MARKER ===== */
+var drawOnce = 0;
 function reDraw() {
     /*DISPLAY WARNING IF USER IS NEAR DISASTER */
 
     /* DEBUG SECTION */
     //console.log('reDraw');writes to debug redraw
     //console.log(geoRefresh); checks value of geoRefresh
-
+    //console.log(drawOnce);
     /* DEBUG SECTION END */
 
-    /* sets center of map [ENABLED]*/
-    mapObject.setCenter(userLatLng)
+    /* sets center of map [ENABLED RUN ONCE]*/
+    if (drawOnce === 0) {
+        mapObject.setCenter(userLatLng)
+        drawOnce++;
+    }
+
+    //console.log("DRAW");
 
 }
 /* 5# ===== RE DRAW MARKER [END] ===== */
@@ -595,16 +639,16 @@ setInterval(function () {
     reDraw();
     /* 6.0# ====== GeoLocate User Every Second refresh ======*/
     //if geoRefresh var = 10, then run geolocation function and reset geoRefresh to 1
+    if (drawOnce === 0) {
+        /* 6.1# ======-- BREAK USER LATLNG INTO LAT AND LNG --====== */
+        //SET VAR
+        latitude = userLatLng.lat(); //sets latitude to userLatLng lat value
+        longitude = userLatLng.lng(); //sets lon to userLatLng lat value
 
-    /* 6.1# ======-- BREAK USER LATLNG INTO LAT AND LNG --====== */
-    //SET VAR
-    latitude = userLatLng.lat(); //sets latitude to userLatLng lat value
-    longitude = userLatLng.lng(); //sets lon to userLatLng lat value
-
-    //ROUND VAR
-    latitude = Math.round(latitude * fourDPR) / fourDPR; //round lat to 4 decimal places
-    longitude = Math.round(longitude * fourDPR) / fourDPR; //round lng to 4 decimal places
-
+        //ROUND VAR
+        latitude = Math.round(latitude * fourDPR) / fourDPR; //round lat to 4 decimal places
+        longitude = Math.round(longitude * fourDPR) / fourDPR; //round lng to 4 decimal places
+    }
     /*BREAK USER LATLNG INTO LAT AND LNG [END] */
 
     /*DEBUG
@@ -621,10 +665,10 @@ setInterval(function () {
             //1# - inZone
             $("#inZone").css({ "margin-top": "50px" }); //display alert
             $("#floatingKey").css({ "margin-top": "110px" }); //set offset of key when disaster event shown
-           // console.log('ALERT: FIRE'); //debug
+            // console.log('ALERT: FIRE'); //debug
         }
 
-            //1# - out ofZone
+        //1# - out ofZone
         else {
             $("#inZone").css({ "margin-top": "-50px" }); //hide alert
             $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
@@ -638,24 +682,18 @@ setInterval(function () {
         geoLocateUser();
         //console.log('geoLocateUser');writes to debug geoLocateUser
 
-
-
-        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [REMOTE]*/
-
-        /* firebaseAPI(); //firebase function call from firebaseAPI scrypt [DISABLED 13/09/2018]*/
-        console.log("firebaseDataPush")
-        /* 6.3# ======- PUSH DATA TO FIREBASE -====== [END]*/
+        //REMOVED FIREBASE  [13/09/2018]
 
         geoRefresh = 2; //reset value to 2
 
-        
+
     }
-        //if geoRefresh var = > 10 then add 1 to geoRefresh 
+    //if geoRefresh var = > 10 then add 1 to geoRefresh 
     else {
 
         //console.log('ALERT: None'); debug
         if (geoRefresh === 1) {
-            earthJSON();
+            //earthJSON();
         }
 
         geoRefresh += 1;
