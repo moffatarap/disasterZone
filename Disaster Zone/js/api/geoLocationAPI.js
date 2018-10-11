@@ -470,7 +470,6 @@ var mapOptions = {
 /* 1# == ON LOAD SET STYLE MAP AND STARTING LOCATION ==*/
 window.onload = function () {
 
-    console.log('windowOnLoad'); //debug
     $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
     $("#errorCantFind").css({ "visibility": "visible" });
     geoLocateUser();
@@ -480,9 +479,9 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        //volJSON(); //Loads JSON Data volcanos geonet
+        volJSON(); //Loads JSON Data volcanos geonet
         earthJSON(); //Loads JSON data earthquakes goenet
-        //phJSON(); disabled to just show earthquakes
+        
 
 
     }
@@ -492,7 +491,6 @@ window.onload = function () {
 
 window.onload = function () {
 
-    console.log('windowOnLoad'); //debug
     $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
     $("#errorCantFind").css({ "visibility": "visible" });
     geoLocateUser();
@@ -522,12 +520,9 @@ function writeAddressName(latLng) {
     },
         function (results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
-                // console.log('geoLocationOK'); debug
-                //formatted address from latLng
                 //hides error message if postion found
                 $("#errorCantFind").css({ "visibility": "hidden" });
-                //[TEMP]console.log('1 Geocoder Status OK')
-
+                
                 document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
                 //+= for debugging, to show all addresses = to just show one address at a time
 
@@ -537,7 +532,6 @@ function writeAddressName(latLng) {
                 //if address cant be found show error code
                 //shows error message if postion found
                 //[DISALBED UNWANTED EFFECTS 16/09/2018]$("#errorCantFind").css({ "visibility": "visible" });
-                //[TEMP]console.log('2 Geocoder Status Fail')
                 /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
                 $("#errorCantFind").css({ "visibility": "hidden" });
             document.getElementById("mapAddress").innerHTML = "No address found" + "<br />";
@@ -547,7 +541,6 @@ function writeAddressName(latLng) {
     //set marker creation on load of map
     if (mapLoad === 1) {
         //create map marker
-        // console.log('mapMarkerSetPositonInital'); debug
         mapUserMarker = new google.maps.Marker({
             map: mapObject,
             position: userLatLng,
@@ -557,7 +550,6 @@ function writeAddressName(latLng) {
     }
     //change marker position to new user LatLng
     else {
-        //console.log('mapMarkerSetPositon'); debug
         mapUserMarker.setPosition(userLatLng); //mapUserMarker LatLng
 
     }
@@ -573,8 +565,7 @@ function geoLocateUser() {
 
     // If the browser supports the Geolocation API
     if (navigator.geolocation) {
-        //console.log('geoLocateUser'); debug
-
+        
         var positionOptions = {
             enableHighAccuracy: true, //accuracy 
             timeout: 10 * 2000 // 10 seconds
@@ -586,7 +577,6 @@ function geoLocateUser() {
     else {
         //shows error message if postion found
         $("#errorCantFind").css({ "visibility": "visible" });
-        console.log('doesNotSupport'); //debug
         document.getElementById("errorCantFind").innerHTML = "<p>Your browser doesn't support location</p>";
     }
 
@@ -607,29 +597,19 @@ function geolocationSuccess(position) {
 /* 4# ====  GEO LOCATION ERROR ==== */
 function geolocationError(positionError) {
     document.getElementById("mapAddress").innerHTML = "Error: " + positionError.message + "<br />";
-    console.log('LOCATION ERROR');
-}
+ }
+
 /* 4# ====  GEO LOCATION ERROR [END]==== */
 
 /* 5# ===== RE DRAW MARKER ===== */
 var drawOnce = 0;
 function reDraw() {
-    /*DISPLAY WARNING IF USER IS NEAR DISASTER */
-
-    /* DEBUG SECTION */
-    //console.log('reDraw');writes to debug redraw
-    //console.log(geoRefresh); checks value of geoRefresh
-    //console.log(drawOnce);
-    /* DEBUG SECTION END */
-
+    
     /* sets center of map [ENABLED RUN ONCE]*/
     if (drawOnce === 0) {
         mapObject.setCenter(userLatLng)
         drawOnce++;
     }
-
-    //console.log("DRAW");
-
 }
 /* 5# ===== RE DRAW MARKER [END] ===== */
 
@@ -651,36 +631,15 @@ setInterval(function () {
     }
     /*BREAK USER LATLNG INTO LAT AND LNG [END] */
 
-    /*DEBUG
-    console.log(latitude);
-    console.log(longitude);
-    DEBUG END */
-
     if (geoRefresh === 2) {
-        /* 6.3# ======--- GEOLOCATION ALERTS PLACEHOLDER---====== [ENABLED] */
 
-        /* 1# WELLINGTON FIRE TE PAPA || LIGHT */
-        if (latitude <= disasterLocLatArray[0] + disasterOffsetArray[4] && latitude >= disasterLocLatArray[0] - disasterOffsetArray[4] && longitude <= disasterLocLngArray[0] + disasterOffsetArray[5] && longitude >= disasterLocLngArray[0] - disasterOffsetArray[5]) {
 
-            //1# - inZone
-            $("#inZone").css({ "margin-top": "50px" }); //display alert
-            $("#floatingKey").css({ "margin-top": "110px" }); //set offset of key when disaster event shown
-            // console.log('ALERT: FIRE'); //debug
-        }
-
-        //1# - out ofZone
-        else {
-            $("#inZone").css({ "margin-top": "-50px" }); //hide alert
-            $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
-            //console.log('ALERT: FIRE RESET'); //debug
-        };
-
-        /* 6.3# ======--- GEOLOCATION ALERTS [END] ---====== */
+       
     };
 
     if (geoRefresh === 10) {
         geoLocateUser();
-        //console.log('geoLocateUser');writes to debug geoLocateUser
+       
 
         //REMOVED FIREBASE  [13/09/2018]
 
@@ -691,9 +650,9 @@ setInterval(function () {
     //if geoRefresh var = > 10 then add 1 to geoRefresh 
     else {
 
-        //console.log('ALERT: None'); debug
+        
         if (geoRefresh === 1) {
-            //earthJSON();
+            
         }
 
         geoRefresh += 1;

@@ -196,7 +196,6 @@ var eventAlertIdArray = [
 
 //#0 VOL JSON is called as a function in geolocationAPI
 function volJSON() {
-    console.log("#0 VOLJSON_Called");
     $.getJSON(geonetVolcano, function (data) {
        $.each(data.features, function (i, vol) {
             //data id displayed in table row || this one is volcano title
@@ -210,34 +209,16 @@ function volJSON() {
                 i++;
             }
             else {
-                console.log("JSON DID NOT LOAD CORRECTLY");
+                
             }
         });
 
-        /* DEBUGGING */
-       if (debugEnabled === 1) {
-           console.log('#1 Vol Title');
-           console.log(volcanoMarkerTitleArray); //display value of title array
-           console.log('#2 Vol Alert Level');
-           console.log(volcanoLevelArray); //display value of level array
-           console.log('#3 Vol Activity');
-           console.log(volcanoActivityArray); //display value of activity array
-           console.log('#4 Vol Hazards');
-           console.log(volcanoHazardsArray); //display value of hazard array
-           console.log('#5 Vol Lat');
-           console.log(volcanonLatArray); //displays value of Lat Array VOL
-           console.log('#6 Vol Lng');
-           console.log(volcanonLngArray); //displays value of Lng Array VOL           
-       }
-        /* DEBUGGING [END] */
-       console.log("#7 volcanoMarkerCreateLoop"); //debug volcano marker create
        VolcanoSortLoop(); //runs function to sort volcanos to make icons
     });
 }
 
 /*#1 SORTS VOLCANOS FROM ACTIVE TO INACTIVE 0 to 5 */
 function VolcanoSortLoop() {
-    console.log("#8 VolSortLoop_CALLED");
     for (i = 0; i < volcanoLevelArray.length; i++) {
         /* Makes ICONS IF THE LEVEL ON SELECTED INDEX IS GREATER THAN 0 */
         if (volcanoLevelArray[i] > 0) {
@@ -251,18 +232,13 @@ function VolcanoSortLoop() {
         }
     }
 
-    console.log("#9 VolSortLoop_ENDED" + "_VOLCANOS_LOADED_&_DISPLAYED");
     VolJumpToEvent(); //Allow clicking of UI
-    console.log("#10 VolJumpToEvent_Called");
 }
+
 /*#2 THIS FUNCTION MAKES ICONS USING THE VOLCANOSORTLOOPS VARABLES */
 var infowindow = [];
 
 function VolcanoMakeIcons() {
-    if (volMakeIconsDebug === 1) {
-        console.log("VolcanoMakeIcons_Started");
-    }   
-    
     /* #1.1 SETS ICON TO BE USED BASED ON ARRAY INDEX VALUE */
     selectedIcon = volcanoLevelArray[i]; //sets icon to be equal to i's index value on volcanolevelarray
     selectedCircle = volcanoLevelArray[i]; //sets circle radius to be equal to i's index value on volcanolevelarray
@@ -284,13 +260,6 @@ function VolcanoMakeIcons() {
             infowindow[i].open(mapObject, volcanoMarkerArray[i]); //alows marker to have listner for info window click
     });
 
-    //[DSIPLAY INFO WINDOWS] infowindow.open(mapObject, volcanoMarkerArray[i]);
-
-
-    if (volMakeIconsDebug === 1) {
-        console.log("Marker_Created");
-    }
-
     /* #1.3 CREATE CIRCLE ALERT */
     volcanoAlertCircleMarkerArray[i] = new google.maps.Circle({
         map: mapObject,
@@ -301,10 +270,6 @@ function VolcanoMakeIcons() {
     });
 
     /* #1.4 MARKER BINDING */
-    if (volMakeIconsDebug === 1) {
-        console.log("Circle_Created");
-        console.log("Marker_Binded");
-    }
     bindCircle();
 
     /* #2.0 CREATE UI  */
@@ -316,13 +281,7 @@ function VolcanoMakeIcons() {
     textContentArray[i].innerHTML = textInnerHtmlArray[selectedIcon]; //uses the value from volcano level
     $(".eventsList").prepend(textContentArray[i])
    
-    if (volMakeIconsDebug === 1) {
-        console.log(textContentArray[selectedIcon]);
-        console.log(textInnerHtmlArray[selectedIcon]);   //uses the value from volcano level
-    }   
-    
     /* #2.1 SET CONTENT UI */
-    console.log(eventTypeArray[selectedIcon]);
     //SET EVENT TITLE
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
     //SET EVENT LOCATION
@@ -333,12 +292,6 @@ function VolcanoMakeIcons() {
     dateUTC = date.toUTCString(); //runs function then turns into var to enable use in all browsers
     //dateUTC = dateUTC.slice(0, -4); //TRIMS OFF THE GMT
     document.getElementById(eventTimeArray[selectedIcon]).textContent = dateUTC;
-
-    
-
-    if (volMakeIconsDebug === 1) {
-        console.log("VolcanoMakeIcons_ENDED");
-    }   
     return; //finish function and return to previous task
 }
 
@@ -363,7 +316,6 @@ function VolJumpToEvent() {
     $("#volEventIndex_00").click(function () {
         centerSelector = 0;
         clickEvent = 1;
-        console.log('EVENT_00');
         VolOnClick();
     });
 
@@ -371,35 +323,30 @@ function VolJumpToEvent() {
     $("#volEventIndex_01").click(function () {
         centerSelector = 1;
         clickEvent = 1;
-        console.log('EVENT_01');
         VolOnClick();
     });
 
     $("#volEventIndex_02").click(function () {
         centerSelector = 2;
         clickEvent = 1;
-        console.log('EVENT_02');
         VolOnClick();
     });
 
     $("#volEventIndex_03").click(function () {
         centerSelector = 3;
         clickEvent = 1;
-        console.log('EVENT_03');
-        VolOnClick();
+         VolOnClick();
     });
 
     $("#volEventIndex_04").click(function () {
         centerSelector = 4;
         clickEvent = 1;
-        console.log('EVENT_04');
         VolOnClick();
     });
 
     $("#volEventIndex_05").click(function () {
         centerSelector = 5;
         clickEvent = 1;
-        console.log('EVENT_05');
         VolOnClick();
     });
 
@@ -407,7 +354,6 @@ function VolJumpToEvent() {
     $("#volEventIndex_06").click(function () {
         centerSelector = 6;
         clickEvent = 1;
-        console.log('EVENT_06');
         VolOnClick();
     });
 
@@ -415,7 +361,6 @@ function VolJumpToEvent() {
     $("#volEventIndex_07").click(function () {
         centerSelector = 7;
         clickEvent = 1;
-        console.log('EVENT_07');
         VolOnClick();
     });
 
@@ -423,7 +368,6 @@ function VolJumpToEvent() {
     $("#volEventIndex_08").click(function () {
         centerSelector = 8;
         clickEvent = 1;
-        console.log('EVENT_08');
         VolOnClick();
     });
 
@@ -431,7 +375,6 @@ function VolJumpToEvent() {
     $("#volEventIndex_09").click(function () {
         centerSelector = 9;
         clickEvent = 1;
-        console.log('EVENT_09');
         VolOnClick();
     });
 
@@ -439,14 +382,12 @@ function VolJumpToEvent() {
     $("#volEventIndex_10").click(function () {
         centerSelector = 10;
         clickEvent = 1;
-        console.log('EVENT_10');
         VolOnClick();
     });
 
     $("#volEventIndex_11").click(function () {
         centerSelector = 11;
         clickEvent = 1;
-        console.log('EVENT_11');
         VolOnClick();
     });
 
@@ -457,30 +398,26 @@ function VolJumpToEvent() {
         if (clickEvent === 1) {
             mapObject.setCenter(userLatLng);
             mapObject.setZoom(volStockZoomSetting);
-            console.log("MAP CENTER TRIGGERED");
             clickEvent = 0;
             closeAllInfoWindows();
         }
 
         else {
-            console.log("MAP CENTER NOT ARMED");
+            
         }
     });
 }
 
 function VolOnClick() {
-    console.log(volcanonLatArray[centerSelector], volcanonLngArray[centerSelector]);
-    volEventCenter = new google.maps.LatLng(volcanonLatArray[centerSelector], volcanonLngArray[centerSelector]);
+   volEventCenter = new google.maps.LatLng(volcanonLatArray[centerSelector], volcanonLngArray[centerSelector]);
     mapObject.setCenter(volEventCenter);
     mapObject.setZoom(volZoomSetting);
-    console.log("SET CENTER");
     infowindow[centerSelector].open(mapObject, volcanoMarkerArray[centerSelector]);
     return;
 }
 
 /* CLOSES OPEN INFO WINDOWS */
 function closeAllInfoWindows() {
-    console.log("closeAllInfoWindows");
     infowindow[centerSelector].close();
     centerSelector = -1;
     return;

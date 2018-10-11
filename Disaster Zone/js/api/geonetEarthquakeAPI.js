@@ -167,7 +167,6 @@ var earthQEventAlertClassArray = [
 // earthJSON is called as a function in geolocationAPI under geoRefresh
 function earthJSON() {
     $.getJSON(geonetEarthQuake, function (data) {
-        console.log("#1 EARTHQJSON_Called");
         $.each(data.features, function (i, eq) {
             //data id displayed in table row || this one is earthquake title
             if (i < earthQEventLength) {
@@ -181,32 +180,13 @@ function earthJSON() {
                 i++;
             }
             else {
-                console.log("JSON DID NOT LOAD CORRECTLY");
+                
             }
 
         });
 
-        /* DEBUGGING  */
-        console.log('#1 Intensity');
-        console.log(earthQIntensityArray); //display value of title array
-        console.log('#2 Magitude');
-        console.log(earthQMagnitudeArray); //display value of level array
-        console.log('#3 LAT');
-        console.log(earthQLatArray); //display value of activity array
-        console.log('#3 LNG');
-        console.log(earthQLngArray); //display value of activity array
-        console.log('#4 Depth');
-        console.log(earthQDepthArray); //display value of depth array
-        console.log('5 Time');
-        console.log(earthQTimeArray); //display value of time array
-        console.log('6 ID')
-        console.log(earthQIDNameArray); //display value of name array
-
-
-        //[DEBUG DISPLAY]document.getElementById("errorCantFind").innerHTML = volcanoLevelArray[11];
-
         EarthQSortLoop(); //calls earthquake marker loop
-        console.log("3.2 earthquakeMarkerCreate"); //debug marker create
+        
     });
 
 }
@@ -218,8 +198,6 @@ function earthJSON() {
 /* #1 SORTS EARTHQUAKES */
 var earthQEventRaitingArray = [];
 function EarthQSortLoop() {
-    console.log("#8 EarthQSortLoop_CALLED");
-    console.log(earthQIntensityArray);
 
     for (i = 0; i < earthQEventLength; i++) {
 
@@ -256,7 +234,6 @@ function EarthQSortLoop() {
         }
     }
 
-    console.log(earthQEventRaitingArray);
     EarthQJumpToEvent();
 }
 
@@ -265,7 +242,6 @@ function EarthQDateTime() {
     var earthQTimeFormat = earthQTimeArray[i]; //for formatting earthquake event time based off json
     var dateFromat = /(\d{2})\.(\d{2})\.(\d{4})/; //wanted date format
     earthQDateFormat = new Date(earthQTimeFormat.replace(dateFromat, '$3-$2-$1'));
-    console.log("#2 Time Format");
     return;
 }
 
@@ -276,8 +252,7 @@ var earthQAddressCode = '';
 /* #3 MAKES Earthquake ICONS */
 function EarthQMakeIcons() {
     /*# 1.0 REVERSE GEODECODES */
-    //[DISABLED]earthQAddress();
-
+    
     /* # 1.1 SETS ICON DEPENDING ON LEVEL ON ARRAY INDEX */
     earthQSelectedIcon = earthQEventRaitingArray[i];
     earthQSelectedCircle = earthQEventRaitingArray[i];
@@ -349,12 +324,10 @@ function bindCircleEq() {
 /* 3.2# MARKER ANIMATION*/
 function markerAnimaton() {
     earthquakeMarkerArray[i].setAnimation(google.maps.Animation.DROP);
-    //earthQAlertCircleMarkerArray[i].setAnimation(google.maps.Animation.DROP);
     return; //finish function and return to previous task
 }
 
 var geoReverse = 0;
-//var earthQLatLng = { lat: earthQLatArray[0], lng: earthQLngArray[0] };
 var reverseGeocodeAddressArray = [];
 
 /* 3.3# Reverse Geocoding */
@@ -369,7 +342,7 @@ function earthQAddress(earthQLatLng) {
 
             //IF GEODECODE IS SUCCESSFUL
             if (status === google.maps.GeocoderStatus.OK) {
-                //console.log(results);
+            
 
                 geoReverse = results[2].formatted_address; //PRINT OUT ADDRESS
 
@@ -381,8 +354,6 @@ function earthQAddress(earthQLatLng) {
                     geoTest = results[0].formatted_address;
                 }
                 reverseGeocodeAddressArray.push(geoReverse); //push addresses to array
-                console.log(reverseGeocodeAddressArray);
-                console.log("SUCESS");
                 return;
             }
 
@@ -390,7 +361,6 @@ function earthQAddress(earthQLatLng) {
             //IF CANT FIND GEODECODE ADDRESS 
             else
            reverseGeocodeAddressArray.push(0); //save null to array
-           console.log('No Address Found');
            
         });
     return;
@@ -410,7 +380,6 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_00").click(function () {
             earthQCenterSelector = 0;
             earthQClickEvent = 1;
-            console.log('EVENT_00');
             EarthQOnClick();
         });
 
@@ -418,35 +387,30 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_01").click(function () {
             earthQCenterSelector = 1;
             earthQClickEvent = 1;
-            console.log('EVENT_01');
             EarthQOnClick();
         });
 
         $("#earthQEventIndex_02").click(function () {
             earthQCenterSelector = 2;
             earthQClickEvent = 1;
-            console.log('EVENT_02');
             EarthQOnClick();
         });
 
         $("#earthQEventIndex_03").click(function () {
             earthQCenterSelector = 3;
             earthQClickEvent = 1;
-            console.log('EVENT_03');
             EarthQOnClick();
         });
 
         $("#earthQEventIndex_04").click(function () {
             earthQCenterSelector = 4;
             earthQClickEvent = 1;
-            console.log('EVENT_04');
             EarthQOnClick();
         });
 
         $("#earthQEventIndex_05").click(function () {
             earthQCenterSelector = 5;
             earthQClickEvent = 1;
-            console.log('EVENT_05');
             EarthQOnClick();
         });
 
@@ -454,7 +418,6 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_06").click(function () {
             earthQCenterSelector = 6;
             earthQClickEvent = 1;
-            console.log('EVENT_06');
             EarthQOnClick();
         });
 
@@ -462,7 +425,6 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_07").click(function () {
             earthQCenterSelector = 7;
             earthQClickEvent = 1;
-            console.log('EVENT_07');
             EarthQOnClick();
         });
 
@@ -470,7 +432,6 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_08").click(function () {
             earthQCenterSelector = 8;
             earthQClickEvent = 1;
-            console.log('EVENT_08');
             EarthQOnClick();
         });
 
@@ -478,7 +439,6 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_09").click(function () {
             earthQCenterSelector = 9;
             earthQClickEvent = 1;
-            console.log('EVENT_09');
             EarthQOnClick();
         });
 
@@ -486,14 +446,12 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
         $("#earthQEventIndex_10").click(function () {
             earthQCenterSelector = 10;
             earthQClickEvent = 1;
-            console.log('EVENT_10');
             EarthQOnClick();
         });
 
         $("#earthQEventIndex_11").click(function () {
             earthQCenterSelector = 11;
             earthQClickEvent = 1;
-            console.log('EVENT_11');
             EarthQOnClick();
         });
 
@@ -504,30 +462,26 @@ var earthQCenterSelector = 0; //sets the center to zoom on to eg earthquake even
             if (earthQClickEvent === 1) {
                 mapObject.setCenter(userLatLng);
                 mapObject.setZoom(volStockZoomSetting);
-                console.log("MAP CENTER TRIGGERED");
                 earthQClickEvent = 0;
                 EarthQCloseAllInfoWindows();
             }
 
             else {
-                console.log("MAP CENTER NOT ARMED");
+                
             }
         });
     }
 
     function EarthQOnClick() {
-        console.log(earthQLatArray[earthQCenterSelector], earthQLngArray[earthQCenterSelector]);
         earthQEventCenter = new google.maps.LatLng(earthQLatArray[earthQCenterSelector], earthQLngArray[earthQCenterSelector]);
         mapObject.setCenter(earthQEventCenter);
         mapObject.setZoom(earthQZoomSetting);
-        console.log("SET CENTER");
         earthQInfowindow[earthQCenterSelector].open(mapObject, earthquakeMarkerArray[earthQCenterSelector]);
         return;
     }
 
     /* CLOSES OPEN INFO WINDOWS */
     function EarthQCloseAllInfoWindows() {
-        console.log("closeAllInfoWindows");
         earthQInfowindow[earthQCenterSelector].close();
         //earthQInfowindow.length.close();
         earthQCenterSelector = -1;
