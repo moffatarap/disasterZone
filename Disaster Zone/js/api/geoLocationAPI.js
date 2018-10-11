@@ -480,8 +480,8 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        //volJSON(); //Loads JSON Data volcanos geonet
-        earthJSON(); //Loads JSON data earthquakes goenet
+        volJSON(); //Loads JSON Data volcanos geonet
+        //earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
 

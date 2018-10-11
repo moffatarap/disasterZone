@@ -49,6 +49,7 @@ var volcanoLevelArray = [
   , //[10] || TARANAKI/EGMONT	
   , //[11] || WHITE ISLAND
 ];
+
 //volcano activity
 var volcanoActivityArray = [
   , //[0]  || AUCKLAND VOLCANIC FIELD
