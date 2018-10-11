@@ -502,7 +502,7 @@ window.onload = function () {
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        //volJSON(); //Loads JSON Data volcanos geonet
+        volJSON(); //Loads JSON Data volcanos geonet
         earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
@@ -683,7 +683,6 @@ setInterval(function () {
         //console.log('geoLocateUser');writes to debug geoLocateUser
 
         //REMOVED FIREBASE  [13/09/2018]
-
 
         geoRefresh = 2; //reset value to 2
 
