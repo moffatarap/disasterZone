@@ -224,7 +224,6 @@ function EarthQSortLoop() {
     for (i = 0; i < earthQEventLength; i++) {
 
         //#1 Setting Up Varables
-        earthQAddress();
         earthQMagnitudeRound = Math.round(earthQMagnitudeArray[i] * twoDP) / twoDP; //rounds to two decimal palces
         earthQTitleArray[i] = earthQIntensityArray[i] + '.' + earthQIDNameArray[i];
 
@@ -272,12 +271,17 @@ function EarthQDateTime() {
 
 /* #2 Earthquake Time Formatting [END]*/
 var earthQInfowindow = [];
+var earthQAddressCode = '';
 
 /* #3 MAKES Earthquake ICONS */
 function EarthQMakeIcons() {
+    /*# 1.0 REVERSE GEODECODES */
+    //[DISABLED]earthQAddress();
+
     /* # 1.1 SETS ICON DEPENDING ON LEVEL ON ARRAY INDEX */
     earthQSelectedIcon = earthQEventRaitingArray[i];
     earthQSelectedCircle = earthQEventRaitingArray[i];
+    
 
     /* #1.2 CREATE GOOGLE MAPS MARKER */
     earthquakeMarkerArray[i] = new google.maps.Marker({
@@ -294,10 +298,8 @@ function EarthQMakeIcons() {
     });
 
     earthquakeMarkerArray[i].addListener('click', function () {
-        infowindow[i].open(mapObject, earthquakeMarkerArray[i]); //alows marker to have listner for info window click
+        earthQInfowindow[i].open(mapObject, earthquakeMarkerArray[i]); //alows marker to have listner for info window click
     });
-
-
 
     /* #1.3 CREATE ALERT CIRCLE */
     earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
@@ -351,7 +353,7 @@ function markerAnimaton() {
     return; //finish function and return to previous task
 }
 
-var geoTest = 'test';
+var geoReverse = 0;
 //var earthQLatLng = { lat: earthQLatArray[0], lng: earthQLngArray[0] };
 var reverseGeocodeAddressArray = [];
 
@@ -367,30 +369,31 @@ function earthQAddress(earthQLatLng) {
 
             //IF GEODECODE IS SUCCESSFUL
             if (status === google.maps.GeocoderStatus.OK) {
-                console.log(results);
+                //console.log(results);
 
-                geoTest = results[2].formatted_address; //PRINT OUT ADDRESS
+                geoReverse = results[2].formatted_address; //PRINT OUT ADDRESS
 
                 if (results[2] == null) {
-                    geoTest = results[1].formatted_address;
+                    geoReverse = results[1].formatted_address;
                 }
 
-                if (results[1] == null) {
+                if (geoReverse[1] == null) {
                     geoTest = results[0].formatted_address;
                 }
-                reverseGeocodeAddressArray.push(geoTest); //push addresses to array
+                reverseGeocodeAddressArray.push(geoReverse); //push addresses to array
                 console.log(reverseGeocodeAddressArray);
                 console.log("SUCESS");
+                return;
             }
 
 
             //IF CANT FIND GEODECODE ADDRESS 
             else
-           reverseGeocodeAddressArray.push(null); //save null to array
+           reverseGeocodeAddressArray.push(0); //save null to array
            console.log('No Address Found');
            
         });
-
+    return;
 }
 
 
