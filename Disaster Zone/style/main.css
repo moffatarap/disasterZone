@@ -280,6 +280,16 @@ body {
 
 .eventsList {
     margin-top: 50px;
+
+    /* SETS ORDER OF UI ICONS */
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    /* SETS ORDER OF UI ICONS */
+
 }
 
 .eventsList-title {
@@ -446,11 +456,6 @@ body {
 
 /* ARAPAOA EDIT */
 /* some how broke your id class of event icon :( */
-#eventIcon  {
-    position: absolute;
-    width: 60px;
-    margin-top: 20px;
-}
 
 /* VOL ALERT LEVEl 1*/
 #eventType0 {
@@ -563,7 +568,7 @@ body {
 }
 
 /* L ALERT LEVEL 5*/
-#eventType4 {
+#eventType5 {
     position: absolute;
     margin-top: 10px;
     margin-left: 60px;
@@ -572,15 +577,15 @@ body {
     font-size: 16pt;
 }
 
-#eventLocation4 {
+#eventLocation5 {
     margin-top: 35px;
 }
 
-#eventRating4 {
+#eventRating5 {
     margin-top: 50px;
 }
 
-#eventTime4 {
+#eventTime5 {
     margin-top: 68px;
 }
 
@@ -789,7 +794,6 @@ body {
     height: 100px;
     border-top: solid 1px rgba(255,255,255,0.5);
     border-bottom: solid 1px rgba(255,255,255,0.5);
-    
     background-color: rgba(0,0,0,0);
 }
 /**/
@@ -808,7 +812,6 @@ body {
 .dummyEvent h6 {
 text-transform: capitalize;
 }
-/* ARAPAOA EDIT [END] */
 
 #dummyEvent h6 {
     position: absolute;
@@ -818,6 +821,144 @@ text-transform: capitalize;
     margin-left: 60px;
 }
 
+/* VOLCANO EVENT CARD */
+
+.volcanoEvent {
+    height: 100px;
+    border-top: solid 1px rgba(255,255,255,0.5);
+    border-bottom: solid 1px rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0);
+}
+
+.volcanoEvent h6 {
+    position: absolute;
+    font-weight: 400;
+    color: white;
+    font-size: 10pt;
+    margin-left: 60px;
+    width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+/* SETS FIRST LETTER OF H6 to caps*/
+.volcanoEvent h6 {
+text-transform: capitalize;
+}
+
+#volcanoEvent h6 {
+    position: absolute;
+    font-weight: 400;
+    color: white;
+    font-size: 10pt;
+    margin-left: 60px;
+}
+
+/* EARTHQUAKE EVENT CARD */
+.earthQEvent {
+    height: 100px;
+    border-top: solid 1px rgba(255,255,255,0.5);
+    border-bottom: solid 1px rgba(255,255,255,0.5);
+    background-color: rgba(0,0,0,0);
+}
+
+ .earthQEvent h6 {
+        position: absolute;
+        font-weight: 400;
+        color: white;
+        font-size: 10pt;
+        margin-left: 60px;
+        width: 280px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+/* SETS FIRST LETTER OF H6 to caps*/
+.earthQEvent h6 {
+        text-transform: capitalize;
+    }
+
+#earthQEvent h6 {
+    position: absolute;
+    font-weight: 400;
+    color: white;
+    font-size: 10pt;
+    margin-left: 60px;
+}
+
+/* ALERT CLASSES */
+/* ORDERNAL SETS ORDER TO BE DISPLAYED IN UI depending on alert level */
+
+.Alert_00 {
+    -webkit-box-ordinal-group: 6;
+    -moz-box-ordinal-group: 6;
+    box-ordinal-group: 6;
+}
+
+.Alert_00:hover {
+    background-color: rgba(25,25,25,0.3);
+}
+
+.Alert_01 {
+    -webkit-box-ordinal-group: 5;
+    -moz-box-ordinal-group: 5;
+    box-ordinal-group: 5;
+}
+
+.Alert_01:hover {
+    background-color: rgba(70,203,244,0.3);
+    order:5;
+}
+
+.Alert_02 {
+    -webkit-box-ordinal-group: 4;
+    -moz-box-ordinal-group: 4;
+    box-ordinal-group: 4;
+}
+
+.Alert_02:hover {
+    background-color: rgba(35,202,86,0.3);
+    order:4;
+}
+
+.Alert_03 {
+    -webkit-box-ordinal-group: 3;
+    -moz-box-ordinal-group: 3;
+    box-ordinal-group: 3;
+}
+
+.Alert_03:hover {
+    background-color: rgba(244,203,0,0.3);
+    order:3;
+}
+
+.Alert_04 {
+    -webkit-box-ordinal-group: 2;
+    -moz-box-ordinal-group: 2;
+    box-ordinal-group: 2;
+}
+
+.Alert_04:hover {
+    background-color: rgba(248,136,0,0.3);
+    order:2;
+}
+
+.Alert_05 {
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    box-ordinal-group: 1;
+}
+
+.Alert_05:hover {
+    background-color: rgba(231,32,1,0.3);
+    order:1;
+}
+
+/* VOL ORDER ID */
+
+
+/* VOLCANO EVENT CARD [END] */
 .eventLocation {
     margin-top: 35px;
 }
