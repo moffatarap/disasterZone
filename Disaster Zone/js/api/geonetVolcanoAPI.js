@@ -322,6 +322,7 @@ function VolcanoMakeIcons() {
     }   
     
     /* #2.1 SET CONTENT UI */
+    console.log(eventTypeArray[selectedIcon]);
     //SET EVENT TITLE
     document.getElementById(eventTypeArray[selectedIcon]).textContent = volUIVar;
     //SET EVENT LOCATION
