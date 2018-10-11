@@ -5,7 +5,7 @@ var geonetEarthQuakeLocal = "./json/geoNetEarthquakeVal.json" //loads local JSON
 var earthQEventLength = 10; //sets earthquake array max events
 var earthQRadiusMulti = 4; //sets earthquake alert radius to be multiplyed by
 var earthQRadiusDivide = 2; //sets earthquake alert radius division
-var earthUIVar = "Earthquake"; //sets volcano title for UI
+var earthUIVar = "Earthquake"; //sets earthquake title for UI
 var earthAlertLevelText = "Alert "; //alert level var
 var earthTextContent = document.createElement('div'); //creates vairable that is a div
 var earthQMag = ", Magnitude "; //var for displaying the magatuide of event
@@ -52,17 +52,23 @@ var earthQTextContentArray = [
 
 //TEXT ARRAY
 var earthQTextInnerHtmlArray = [
-    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/earthquakeW.svg"> <h4 id="earthQEventType0"></h4><h6 id="earthQEventLocation0"></h6><h6 id="earthQEventRating0"></h6><h6 id="earthQEventTime0"></h6><div id="gradientL"></div>', //[0]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventType1"></h4><h6 id="earthQEventLocation1"></h6><h6 id="earthQEventRating1"></h6><h6 id="earthQEventTime1"></h6><div id="gradientL"></div>', //[1]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/earthquakeM.svg"> <h4 id="earthQEventType2"></h4><h6 id="earthQEventLocation2"></h6><h6 id="earthQEventRating2"></h6><h6 id="earthQEventTime2"></h6><div id="gradientL"></div>', //[2]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/earthquakeST.svg"> <h4 id="earthQEventType3"></h4><h6 id="earthQEventLocation3"></h6><h6 id="earthQEventRating3"></h6><h6 id="earthQEventTime3"></h6><div id="gradientL"></div>', //[3]
-    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/earthquakeS.svg"> <h4 id="earthQEventType4"></h4><h6 id="earthQEventLocation4"></h6><h6 id="earthQEventRating4"></h6><h6 id="earthQEventTime4"></h6><div id="gradientL"></div>', //[4]
-
+    //[0] LEVEL 0 NO ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/key/earthquake.svg"> <h4 id="earthQEventType0"></h4><h6 id="earthQEventLocation0"></h6><h6 id="earthQEventRating0"></h6><h6 id="earthQEventTime0"></h6><div id="gradientL"></div>', //[0]
+    //[1] LEVEL 1 WEAK ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/weak/earthquakeW.svg"> <h4 id="earthQEventType1"></h4><h6 id="earthQEventLocation1"></h6><h6 id="earthQEventRating1"></h6><h6 id="earthQEventTime1"></h6><div id="gradientL"></div>', //[1]
+    //[2] LEVEL 2 LIGHT ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventType2"></h4><h6 id="earthQEventLocation2"></h6><h6 id="earthQEventRating2"></h6><h6 id="earthQEventTime2"></h6><div id="gradientL"></div>', //[2]
+    //[3] LEVEL 3 MODERATE ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/moderate/earthquakeM.svg"> <h4 id="earthQEventType3"></h4><h6 id="earthQEventLocation3"></h6><h6 id="earthQEventRating3"></h6><h6 id="earthQEventTime3"></h6><div id="gradientL"></div>', //[3]
+     //[4] LEVEL 4 STRONG ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/strong/earthquakeST.svg"> <h4 id="earthQEventType4"></h4><h6 id="earthQEventLocation4"></h6><h6 id="earthQEventRating4"></h6><h6 id="earthQEventTime4"></h6><div id="gradientL"></div>', //[4]
+    //[5] LEVEL 5 SEVERE ALERT
+    '<img id="eventIcon" src="./media/img/mapKeys/event/severe/earthquakeS.svg"> <h4 id="earthQEventType5"></h4><h6 id="earthQEventLocation5"></h6><h6 id="earthQEventRating5"></h6><h6 id="earthQEventTime5"></h6><div id="gradientL"></div>', //[4]
 ];
 
 //TEXT ARRAY LIGHT EQ
 //Text content array
-var earthQTextContentLightArray = [
+/* var earthQTextContentLightArray = [
 ];
 
 
@@ -74,7 +80,7 @@ var earthQTextInnerHtmlLightArray = [
    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventTypeLight4"></h4><h6 id="earthQEventLocationLight4"></h6><h6 id="earthQEventRatingLight4"></h6><h6 id="earthQEventTimeLight4"></h6><div id="gradientL"></div>', //[0]
    '<img id="eventIcon" src="./media/img/mapKeys/event/light/earthquakeL.svg"> <h4 id="earthQEventTypeLight5"></h4><h6 id="earthQEventLocationLight5"></h6><h6 id="earthQEventRatingLight5"></h6><h6 id="earthQEventTimeLight5"></h6><div id="gradientL"></div>', //[0]
 
-];
+]; */
 
 /* EARTH ALERT MARKET CREATE VAR */
 var alertEarthQuakesArray = []; //holds current volcaons on alert
@@ -87,7 +93,7 @@ var earthQCount = 0;
 //EARTHQUAKE TITLE CASE ARRAY 
 var earthQTitleArray = {
 };
-
+/*
 //EVENT TYPE
 var earthQEventTypeLightArray = [
     "earthQEventTypeLight0", //[0]
@@ -160,6 +166,76 @@ var earthQEventTimeArray = [
     "earthQEventTime3", //[3]
     "earthQEventTime4", //[4]
 ];
+/*
+/* NEW CSS */
+
+//EVENT TYPE
+var earthQEventTypeArray = [
+    "eventType0", //[0]
+    "eventType1", //[1]
+    "eventType2", //[2]
+    "eventType3", //[3]
+    "eventType4", //[4]
+    "eventType5", //[5]
+];
+
+//EVENT LOCATION
+var earthQEventLocationArray = [
+    "eventLocation0", //[0]
+    "eventLocation1", //[1]
+    "eventLocation2", //[2]
+    "eventLocation3", //[3]
+    "eventLocation4", //[4]
+    "eventLocation5", //[5]
+];
+
+
+//EVENT RATING
+var earthQEventRatingArray = [
+    "eventRating0", //[0]
+    "eventRating1", //[1]
+    "eventRating2", //[2]
+    "eventRating3", //[3]
+    "eventRating4", //[4]
+    "eventRating5", //[5]
+];
+
+//EVENT TIME
+var eathQEventTimeArray = [
+    "eventTime0", //[0]
+    "eventTime1", //[1]
+    "eventTime2", //[2]
+    "eventTime3", //[3]
+    "eventTime4", //[4]
+    "eventTime5", //[5]
+];
+
+//EVENT RAINING CLASS
+var earthQEventAlertClassArray = [
+    "earthQEvent Alert_00",  //[0]
+    "earthQEvent Alert_01",  //[1]
+    "earthQEvent Alert_02",  //[2]
+    "earthQEvent Alert_03",  //[3]
+    "earthQEvent Alert_04",  //[4]
+    "earthQEvent Alert_05",  //[5]
+];
+
+//EVENT RATING ID ARRAY
+var earthQEventAlertIdArray = [
+    "earthQEventIndex_00",
+    "earthQEventIndex_01",
+    "earthQEventIndex_02",
+    "earthQEventIndex_03",
+    "earthQEventIndex_04",
+    "earthQEventIndex_05",
+    "earthQEventIndex_06",
+    "earthQEventIndex_07",
+    "earthQEventIndex_08",
+    "earthQEventIndex_09",
+    "earthQEventIndex_10",
+    "earthQEventIndex_11",
+]
+
 
 /* 2.1# ==- CSS VARABLE ARRAYS [END]-== */
 
@@ -269,7 +345,7 @@ function EarthQDateTime() {
 /* #2 Earthquake Time Formatting [END]*/
 var earthQInfowindow = [];
 
-/* #3 MAKES VOLCANO ICONS */
+/* #3 MAKES Earthquake ICONS */
 function EarthQMakeIcons() {
     /* # 1.1 SETS ICON DEPENDING ON LEVEL ON ARRAY INDEX */
     earthQSelectedIcon = earthQEventRaitingArray[i];
@@ -298,6 +374,32 @@ function EarthQMakeIcons() {
     });
 
     bindCircleEq();
+
+    /* 2.1# DISPLAY IN UI */
+    //idFunction();
+    earthQTextContentArray[i] = document.createElement('div');
+    $(earthQTextContentArray[i]).addClass(eventAlertClassArray[earthQSelectedIcon]); //sets div classes depending on alert level
+    //ADD ID's
+    $(earthQTextContentArray[i]).attr("id", earthQEventAlertIdArray[i]); //ads id selector based on array
+    earthQTextContentArray[i].innerHTML = earthQTextInnerHtmlArray[earthQSelectedIcon]; //uses the value from earthquake level
+
+    $(".eventsList").prepend(earthQTextContentArray[i]);
+
+    /*
+    // 1.0# SET CONTENT
+    //SET EVENT TITLE
+    document.getElementById(earthQEventTypeArray[0]).textContent = earthUIVar;
+    //SET EVENT LOCATION
+    document.getElementById(earthQEventLocationArray[0]).textContent = earthQIDNameArray[i];
+    //SET EVENT HAZARDS
+    document.getElementById(earthQEventRatingArray[0]).textContent = earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound;
+    //SET LAST CHECKED EVENT
+    document.getElementById(earthQEventTimeArray[0]).textContent = earthQDateFormat.toUTCString();
+    */
+
+
+
+
     return;
 }
 

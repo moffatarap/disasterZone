@@ -174,6 +174,7 @@ var eventAlertClassArray = [
     "volcanoEvent Alert_05",  //[5]
 ];
 
+//EVENT RATING ID ARRAY
 var eventAlertIdArray = [
     "volEventIndex_00",
     "volEventIndex_01",
@@ -305,7 +306,7 @@ function VolcanoMakeIcons() {
     }
     bindCircle();
 
-    /* #2.0 CREATE UI  [NEED TO WORK ON SORTING INTO PROPER ORDER]*/
+    /* #2.0 CREATE UI  */
     textContentArray[i] = document.createElement('div'); //creates a div
     //ADD CLASSES
     $(textContentArray[i]).addClass(eventAlertClassArray[selectedIcon]); //sets div classes depending on alert level
