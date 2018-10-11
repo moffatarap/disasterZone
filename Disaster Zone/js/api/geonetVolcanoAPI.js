@@ -347,7 +347,10 @@ function bindCircle() {
     volcanoAlertCircleMarkerArray[i].bindTo('center', volcanoMarkerArray[i], 'position'); //binds circle to location of marker
     return; //finish function and return to previous task
 }
+
 /*3# BIND CIRCLE TO MIDDLE MARKER [END]*/
+
+
 /* VolJumpToEvent VARABLES */
 var centerSelector = 0; //sets the center to zoom on to eg volcano event
 var volZoomSetting = 9; //sets zoom level for zooming in on event

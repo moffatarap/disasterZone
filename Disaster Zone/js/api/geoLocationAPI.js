@@ -60,7 +60,7 @@ var volcanoWarningLngArray = [
     175.8960, //[2]  - LNG || TAUPO
     175.6417, //[1]  - LNG || TONGARIRO
     174.0610, //[0]  - LNG || TARANAKI/EGMONT
-	177.1830, //[10] - LNG || WHITE ISLAND
+    177.1830, //[10] - LNG || WHITE ISLAND
 ];
 
 
@@ -288,180 +288,180 @@ var mapOptions = {
 
     /* STYLE SETTINGS */
     styles: [
-    {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dbdbdb"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 17
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 29
-            },
-            {
-                "weight": 0.2
-            }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 18
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dedede"
-            },
-            {
-                "lightness": 21
-            }
-        ]
-    },
-    {
-        "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#ffffff"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "saturation": 36
-            },
-            {
-                "color": "#333333"
-            },
-            {
-                "lightness": 40
-            }
-        ]
-    },
-    {
-        "elementType": "labels.icon",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#f2f2f2"
-            },
-            {
-                "lightness": 19
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 20
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#fefefe"
-            },
-            {
-                "lightness": 17
-            },
-            {
-                "weight": 1.2
-            }
-        ]
-    }
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dbdbdb"
+                },
+                {
+                    "lightness": 17
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f5f5f5"
+                },
+                {
+                    "lightness": 20
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 17
+                }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 29
+                },
+                {
+                    "weight": 0.2
+                }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 18
+                }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 16
+                }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f5f5f5"
+                },
+                {
+                    "lightness": 21
+                }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#dedede"
+                },
+                {
+                    "lightness": 21
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "color": "#ffffff"
+                },
+                {
+                    "lightness": 16
+                }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "saturation": 36
+                },
+                {
+                    "color": "#333333"
+                },
+                {
+                    "lightness": 40
+                }
+            ]
+        },
+        {
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
+        },
+        {
+            "featureType": "transit",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "color": "#f2f2f2"
+                },
+                {
+                    "lightness": 19
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 20
+                }
+            ]
+        },
+        {
+            "featureType": "administrative",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "color": "#fefefe"
+                },
+                {
+                    "lightness": 17
+                },
+                {
+                    "weight": 1.2
+                }
+            ]
+        }
     ]
     /* STYLE SETTINGS */
 
@@ -476,11 +476,11 @@ window.onload = function () {
     geoLocateUser();
     /* DISPLAYS ERROR CANT FIND */
 
-   //on first loop create map
+    //on first loop create map
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        volJSON(); //Loads JSON Data volcanos geonet
+        //volJSON(); //Loads JSON Data volcanos geonet
         earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
@@ -498,11 +498,11 @@ window.onload = function () {
     geoLocateUser();
     /* DISPLAYS ERROR CANT FIND */
 
-   //on first loop create map
+    //on first loop create map
     if (mapLoad === 1) {
         /* = 1# GOOGLE MAP CREATE = */
         mapObject = new google.maps.Map(document.getElementById("googleAPI"), mapOptions);
-        volJSON(); //Loads JSON Data volcanos geonet
+        //volJSON(); //Loads JSON Data volcanos geonet
         earthJSON(); //Loads JSON data earthquakes goenet
         //phJSON(); disabled to just show earthquakes
 
@@ -520,28 +520,28 @@ function writeAddressName(latLng) {
     geocoder.geocode({
         "location": latLng
     },
-    function (results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            // console.log('geoLocationOK'); debug
-            //formatted address from latLng
-            //hides error message if postion found
-            $("#errorCantFind").css({ "visibility": "hidden" });
-            //[TEMP]console.log('1 Geocoder Status OK')
-            
-            document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
-            //+= for debugging, to show all addresses = to just show one address at a time
+        function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                // console.log('geoLocationOK'); debug
+                //formatted address from latLng
+                //hides error message if postion found
+                $("#errorCantFind").css({ "visibility": "hidden" });
+                //[TEMP]console.log('1 Geocoder Status OK')
 
-        }
+                document.getElementById("mapAddress").innerHTML = results[0].formatted_address + "<br/>";
+                //+= for debugging, to show all addresses = to just show one address at a time
 
-        else
-        //if address cant be found show error code
-        //shows error message if postion found
-        //[DISALBED UNWANTED EFFECTS 16/09/2018]$("#errorCantFind").css({ "visibility": "visible" });
-            //[TEMP]console.log('2 Geocoder Status Fail')
-            /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
-            $("#errorCantFind").css({ "visibility": "hidden" });
+            }
+
+            else
+                //if address cant be found show error code
+                //shows error message if postion found
+                //[DISALBED UNWANTED EFFECTS 16/09/2018]$("#errorCantFind").css({ "visibility": "visible" });
+                //[TEMP]console.log('2 Geocoder Status Fail')
+                /* TEMP DUE TO LAN LOCATION FINDING ISSUES [16/09/2018]*/
+                $("#errorCantFind").css({ "visibility": "hidden" });
             document.getElementById("mapAddress").innerHTML = "No address found" + "<br />";
-    });
+        });
 
     //set marker creation on load of map
     if (mapLoad === 1) {
@@ -554,7 +554,7 @@ function writeAddressName(latLng) {
         })
 
     }
-        //change marker position to new user LatLng
+    //change marker position to new user LatLng
     else {
         //console.log('mapMarkerSetPositon'); debug
         mapUserMarker.setPosition(userLatLng); //mapUserMarker LatLng
@@ -620,13 +620,13 @@ function reDraw() {
     //console.log(geoRefresh); checks value of geoRefresh
     //console.log(drawOnce);
     /* DEBUG SECTION END */
-    
+
     /* sets center of map [ENABLED RUN ONCE]*/
     if (drawOnce === 0) {
         mapObject.setCenter(userLatLng)
         drawOnce++;
     }
-    
+
     //console.log("DRAW");
 
 }
@@ -638,15 +638,15 @@ setInterval(function () {
     reDraw();
     /* 6.0# ====== GeoLocate User Every Second refresh ======*/
     //if geoRefresh var = 10, then run geolocation function and reset geoRefresh to 1
-    if (drawOnce === 0){
-    /* 6.1# ======-- BREAK USER LATLNG INTO LAT AND LNG --====== */
-    //SET VAR
-    latitude = userLatLng.lat(); //sets latitude to userLatLng lat value
-    longitude = userLatLng.lng(); //sets lon to userLatLng lat value
+    if (drawOnce === 0) {
+        /* 6.1# ======-- BREAK USER LATLNG INTO LAT AND LNG --====== */
+        //SET VAR
+        latitude = userLatLng.lat(); //sets latitude to userLatLng lat value
+        longitude = userLatLng.lng(); //sets lon to userLatLng lat value
 
-    //ROUND VAR
-    latitude = Math.round(latitude * fourDPR) / fourDPR; //round lat to 4 decimal places
-    longitude = Math.round(longitude * fourDPR) / fourDPR; //round lng to 4 decimal places
+        //ROUND VAR
+        latitude = Math.round(latitude * fourDPR) / fourDPR; //round lat to 4 decimal places
+        longitude = Math.round(longitude * fourDPR) / fourDPR; //round lng to 4 decimal places
     }
     /*BREAK USER LATLNG INTO LAT AND LNG [END] */
 
@@ -664,10 +664,10 @@ setInterval(function () {
             //1# - inZone
             $("#inZone").css({ "margin-top": "50px" }); //display alert
             $("#floatingKey").css({ "margin-top": "110px" }); //set offset of key when disaster event shown
-           // console.log('ALERT: FIRE'); //debug
+            // console.log('ALERT: FIRE'); //debug
         }
 
-            //1# - out ofZone
+        //1# - out ofZone
         else {
             $("#inZone").css({ "margin-top": "-50px" }); //hide alert
             $("#floatingKey").css({ "margin-top": "60px" }); //set offset of key when disaster event shown
@@ -685,9 +685,9 @@ setInterval(function () {
 
         geoRefresh = 2; //reset value to 2
 
-        
+
     }
-        //if geoRefresh var = > 10 then add 1 to geoRefresh 
+    //if geoRefresh var = > 10 then add 1 to geoRefresh 
     else {
 
         //console.log('ALERT: None'); debug

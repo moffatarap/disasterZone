@@ -285,11 +285,17 @@ function EarthQMakeIcons() {
         icon: iconEarthQArray[earthQSelectedIcon],
     });
 
-    /* #1.3 MAKE INFO WINDOWS 
-    earthQInfowindow[i] = new google.maps.InfoWindow({
-        content: volcanoMarkerTitleArray[i] + ' Alert Level ' + volcanoLevelArray[i] + "<br> " + volcanoActivityArray[i],
-    }); */
+    /* MAKE INFO WINDOWS   */
 
+    earthQInfowindow[i] = new google.maps.InfoWindow({
+        content: earthQIDNameArray[i] + ' Alert Level ' + earthAlertLevelText + earthQIntensityArray[i] + earthQMag + earthQMagnitudeRound + "<br> " + earthQuakeDateUTC,
+    });
+
+    earthquakeMarkerArray[i].addListener('click', function () {
+        infowindow[i].open(mapObject, earthquakeMarkerArray[i]); //alows marker to have listner for info window click
+    });
+
+    
     /* #1.3 CREATE ALERT CIRCLE */
     earthQAlertCircleMarkerArray[i] = new google.maps.Circle({
         map: mapObject,
@@ -325,7 +331,7 @@ function EarthQMakeIcons() {
     return;
 }
 
-/* NEW EARTHQUAKE FUNCTION */
+
 
 /*3# THIS FUNCTION BINDS A CIRCLE TO DISPLAY RADIUS TO GOOGLE MAP MARKERS */
 function bindCircleEq() {
@@ -333,7 +339,7 @@ function bindCircleEq() {
     return; //finish function and return to previous task
 }
 
-/* 3# BIND CIRCLE TO MIDDLE MARKER [END]*/
+/* NEW EARTHQUAKE FUNCTION */
 
 /* 3.1# DATEFORMATS function */
 
