@@ -359,26 +359,36 @@ var reverseGeocodeAddressArray = [];
 function earthQAddress(earthQLatLng) { 
 
     geocoder = new google.maps.Geocoder();
-    earthQLatLng = new google.maps.LatLng(earthQLatArray[i], earthQLngArray[i]);
+    earthQLatLng = new google.maps.LatLng(earthQLatArray[i], earthQLngArray[i]); //takes current lat lng of event to be reverse geocoded
     geocoder.geocode({
         "location": earthQLatLng
     },
         function (results, status) {
 
+            //IF GEODECODE IS SUCCESSFUL
             if (status === google.maps.GeocoderStatus.OK) {
                 console.log(results);
 
-                geoTest = results[2].formatted_address;
-                reverseGeocodeAddressArray.push(geoTest);
+                geoTest = results[2].formatted_address; //PRINT OUT ADDRESS
+
+                if (results[2] == null) {
+                    geoTest = results[1].formatted_address;
+                }
+
+                if (results[1] == null) {
+                    geoTest = results[0].formatted_address;
+                }
+                reverseGeocodeAddressArray.push(geoTest); //push addresses to array
                 console.log(reverseGeocodeAddressArray);
                 console.log("SUCESS");
             }
 
+
+            //IF CANT FIND GEODECODE ADDRESS 
             else
-           console.log('GeoDecodeFail');
-            console.log(results);
-            console.log(geoTest);
-            console.log(earthQLatLng);
+           reverseGeocodeAddressArray.push(null); //save null to array
+           console.log('No Address Found');
+           
         });
 
 }
