@@ -34,5 +34,19 @@ npm run build
 npm run preview
 ```
 
-Deploys to GitHub Pages from the `gh-pages` branch via GitHub Actions
-(`.github/workflows/deploy.yml`) on every push to `main`.
+## Hosting
+
+Currently self-hosted as a systemd **user** service on this machine (no sudo
+required), serving the production build with `serve`:
+
+- Unit file: `~/.config/systemd/user/disaster-zone.service`
+- Runs `serve -s dist -l 8080` from this project directory
+- `loginctl enable-linger $USER` is on, so it starts on boot without needing
+  an active login session
+- After changing code: `npm run build && systemctl --user restart disaster-zone`
+- Logs: `journalctl --user -u disaster-zone -f`
+
+A GitHub Actions workflow (`.github/workflows/deploy.yml`) also exists to
+publish to GitHub Pages from `gh-pages` on push to `main`, if that's wanted
+later instead of/alongside local hosting - it isn't currently wired up to
+anything since nothing has been pushed to GitHub yet.
