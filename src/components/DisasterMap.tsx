@@ -1,14 +1,10 @@
-import { useEffect, useRef } from 'react'
-import Map, { NavigationControl, type MapRef } from 'react-map-gl/maplibre'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import Map, { NavigationControl, type MapRef, type ViewStateChangeEvent } from 'react-map-gl/maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import {
-  EARTHQUAKE_RADIUS_MULTIPLIER,
-  SEVERITY_COLORS,
-  VOLCANO_RADIUS_MULTIPLIER,
-  alertRadiusMeters,
-} from '../constants/severity'
+import { SEVERITY_COLORS } from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
+import { computeStackedCircleSuppressions, eventAlertRadiusMeters } from '../lib/circleDensity'
 import type { DisasterEvent } from '../types/event'
 import { AlertCircle } from './AlertCircle'
 import { EventDetailPopup } from './EventDetailPopup'
@@ -40,10 +36,10 @@ const OSM_STYLE: StyleSpecification = {
   layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
 }
 
-const RADIUS_MULTIPLIER_BY_KIND = {
-  earthquake: EARTHQUAKE_RADIUS_MULTIPLIER,
-  volcano: VOLCANO_RADIUS_MULTIPLIER,
-} as const
+// At or above this zoom, alert circles are shown unconditionally - you're
+// looking closely enough at one area that overlap-declutter no longer
+// matters, and it matches the zoom flyTo already uses for a selected event.
+const ZOOM_SHOW_ALL_CIRCLES = 9
 
 export function DisasterMap({
   userLocation,
@@ -55,6 +51,7 @@ export function DisasterMap({
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const hasCenteredOnUser = useRef(false)
+  const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom)
 
   useEffect(() => {
     if (userLocation && !hasCenteredOnUser.current) {
@@ -71,6 +68,17 @@ export function DisasterMap({
       })
     }
   }, [selectedEvent])
+
+  // Only earthquakes get suppressed (see computeStackedCircleSuppressions) -
+  // recomputed whenever the event list changes, not on every render.
+  const suppressedCircleIds = useMemo(() => computeStackedCircleSuppressions(events), [events])
+
+  const visibleCircleEvents =
+    zoom >= ZOOM_SHOW_ALL_CIRCLES
+      ? events
+      : events.filter(
+          (event) => event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id),
+        )
 
   return (
     // MapLibre's own zoom/compass buttons default to 29x29px - grown here to
@@ -89,15 +97,16 @@ export function DisasterMap({
         mapStyle={OSM_STYLE}
         style={{ width: '100%', height: '100%' }}
         onClick={onDeselectEvent}
+        onZoomEnd={(evt: ViewStateChangeEvent) => setZoom(evt.viewState.zoom)}
       >
         <NavigationControl position="bottom-left" />
 
-        {events.map((event) => (
+        {visibleCircleEvents.map((event) => (
           <AlertCircle
             key={`circle-${event.id}`}
             id={event.id}
             center={event.location}
-            radiusMeters={alertRadiusMeters(event.severity, RADIUS_MULTIPLIER_BY_KIND[event.kind])}
+            radiusMeters={eventAlertRadiusMeters(event)}
             color={SEVERITY_COLORS[event.severity]}
           />
         ))}
