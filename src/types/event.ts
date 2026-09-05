@@ -8,6 +8,8 @@ export interface DisasterEvent {
   kind: HazardKind
   severity: SeverityLevel
   title: string
+  /** Raw GeoNet ID, shown as fine print for looking the event up on GeoNet's own site. */
+  subtitle?: string
   location: { lat: number; lng: number }
   /** e.g. "Magnitude 4.2" or "Alert Level 2" */
   ratingText: string

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
+import { SEVERITY_COLORS, SEVERITY_LEVELS } from '../constants/severity'
 
 // Fire/flood/hurricane/tornado are intentionally left out of the key for now -
 // they aren't wired to real data yet (see the placeholder-events phase).
@@ -8,6 +9,10 @@ const KEY_ENTRIES = [
   { icon: earthquakeIcon, label: 'Earthquake' },
   { icon: volcanoIcon, label: 'Volcano' },
 ]
+
+// "none" is never actually shown on the map (volcanoes at level 0 are
+// filtered out, quakes are never classed "none"), so the legend skips it.
+const SEVERITY_LEGEND_LEVELS = SEVERITY_LEVELS.filter((level) => level !== 'none')
 
 export function SeverityKey() {
   const [expandedOnMobile, setExpandedOnMobile] = useState(false)
@@ -38,6 +43,24 @@ export function SeverityKey() {
             </li>
           ))}
         </ul>
+
+        <h4 className="mt-3 mb-1.5 border-t border-slate-100 pt-2.5 text-xs tracking-wide text-slate-500">
+          INTENSITY
+        </h4>
+        <ul className="flex flex-col gap-1">
+          {SEVERITY_LEGEND_LEVELS.map((level) => (
+            <li key={level} className="flex items-center gap-1.5 text-sm capitalize">
+              <span
+                className="h-2.5 w-2.5 flex-none rounded-full"
+                style={{ backgroundColor: SEVERITY_COLORS[level] }}
+              />
+              <span>{level}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-1.5 max-w-[160px] text-[10px] leading-snug text-slate-400">
+          Quakes: how strongly it was felt. Volcanoes: official alert level.
+        </p>
       </div>
     </div>
   )

@@ -1,5 +1,7 @@
 import { EARTHQUAKE_ICONS, SEVERITY_COLORS, VOLCANO_ICONS } from '../constants/severity'
-import { formatEventTime } from '../lib/events'
+import type { UserLocation } from '../hooks/useGeolocation'
+import { formatDistanceKm, haversineDistanceKm } from '../lib/geo'
+import { formatRelativeTime } from '../lib/relativeTime'
 import type { DisasterEvent } from '../types/event'
 
 interface EventsSidebarProps {
@@ -8,6 +10,7 @@ interface EventsSidebarProps {
   selectedEventId: string | null
   onSelectEvent: (event: DisasterEvent) => void
   onClose: () => void
+  userLocation: UserLocation | null
 }
 
 const ICONS_BY_KIND = {
@@ -21,6 +24,7 @@ export function EventsSidebar({
   selectedEventId,
   onSelectEvent,
   onClose,
+  userLocation,
 }: EventsSidebarProps) {
   return (
     <>
@@ -63,29 +67,40 @@ export function EventsSidebar({
           {events.length === 0 && (
             <li className="text-sm text-white/60">No events to show right now.</li>
           )}
-          {events.map((event) => (
-            <li key={event.id}>
-              <button
-                type="button"
-                onClick={() => onSelectEvent(event)}
-                style={{ borderLeftColor: SEVERITY_COLORS[event.severity] }}
-                className={`flex w-full items-center gap-2.5 rounded-lg border-l-4 bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/15 ${
-                  event.id === selectedEventId ? 'bg-white/15' : ''
-                }`}
-              >
-                <img
-                  src={ICONS_BY_KIND[event.kind][event.severity]}
-                  alt=""
-                  className="h-7 w-7 flex-none"
-                />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-semibold">{event.title}</span>
-                  <span className="text-xs text-white/70">{event.ratingText}</span>
-                  <span className="text-xs text-white/70">{formatEventTime(event.time)}</span>
-                </span>
-              </button>
-            </li>
-          ))}
+          {events.map((event) => {
+            const distanceFromUserKm =
+              event.kind === 'earthquake' && userLocation
+                ? haversineDistanceKm(event.location, userLocation)
+                : null
+            const timeLine =
+              distanceFromUserKm !== null
+                ? `${formatRelativeTime(event.time)} · ${formatDistanceKm(distanceFromUserKm)} from you`
+                : formatRelativeTime(event.time)
+
+            return (
+              <li key={event.id}>
+                <button
+                  type="button"
+                  onClick={() => onSelectEvent(event)}
+                  style={{ borderLeftColor: SEVERITY_COLORS[event.severity] }}
+                  className={`flex w-full items-center gap-2.5 rounded-lg border-l-4 bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/15 ${
+                    event.id === selectedEventId ? 'bg-white/15' : ''
+                  }`}
+                >
+                  <img
+                    src={ICONS_BY_KIND[event.kind][event.severity]}
+                    alt=""
+                    className="h-7 w-7 flex-none"
+                  />
+                  <span className="flex min-w-0 flex-col">
+                    <span className="truncate text-sm font-semibold">{event.title}</span>
+                    <span className="text-xs text-white/70">{event.ratingText}</span>
+                    <span className="truncate text-xs text-white/70">{timeLine}</span>
+                  </span>
+                </button>
+              </li>
+            )
+          })}
         </ul>
       </aside>
     </>

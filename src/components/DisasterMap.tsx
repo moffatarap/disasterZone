@@ -100,7 +100,11 @@ export function DisasterMap({
       ))}
 
       {selectedEvent && (
-        <EventDetailPopup event={selectedEvent} onClose={onDeselectEvent} />
+        <EventDetailPopup
+          event={selectedEvent}
+          userLocation={userLocation}
+          onClose={onDeselectEvent}
+        />
       )}
     </Map>
   )

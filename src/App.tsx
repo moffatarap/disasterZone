@@ -81,6 +81,7 @@ function App() {
         selectedEventId={selectedEventId}
         onSelectEvent={selectEvent}
         onClose={() => setSidebarOpen(false)}
+        userLocation={location}
       />
     </div>
   )
