@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { DisasterMap } from './components/DisasterMap'
 import { EventsSidebar } from './components/EventsSidebar'
+import { LocationStatus } from './components/LocationStatus'
 import { Navbar } from './components/Navbar'
 import { NewEventToast } from './components/NewEventToast'
 import { SeverityKey } from './components/SeverityKey'
@@ -8,6 +9,7 @@ import { FILTERABLE_SEVERITY_LEVELS, type SeverityLevel } from './constants/seve
 import { useDemoEvent } from './hooks/useDemoEvent'
 import { useEarthquakes } from './hooks/useEarthquakes'
 import { useGeolocation } from './hooks/useGeolocation'
+import { useManualLocation } from './hooks/useManualLocation'
 import { useNewEvents } from './hooks/useNewEvents'
 import { useReverseGeocode } from './hooks/useReverseGeocode'
 import { useVolcanoes } from './hooks/useVolcanoes'
@@ -22,7 +24,15 @@ const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
 
 function App() {
   const { location, error: locationError } = useGeolocation()
-  const { data: address } = useReverseGeocode(location)
+  const { manualLocation, submit: submitManualAddress, clear: clearManualLocation, isSubmitting, notFound } =
+    useManualLocation()
+  // Manual entry is sticky once set - it doesn't get silently overridden if
+  // geolocation later succeeds, since the user made a deliberate choice.
+  const effectiveLocation = manualLocation?.coords ?? location
+  // No point reverse-geocoding the GPS location while a manual address is
+  // active - we already have its display name from the forward-geocode result.
+  const { data: reverseGeocodedAddress } = useReverseGeocode(manualLocation ? null : location)
+  const displayAddress = manualLocation?.displayName ?? reverseGeocodedAddress ?? null
   const { data: earthquakes } = useEarthquakes()
   const { data: volcanoes } = useVolcanoes()
   const demoEvent = useDemoEvent()
@@ -113,11 +123,16 @@ function App() {
 
   return (
     <div className="flex h-full flex-col">
-      <Navbar address={address ?? null} onToggleSidebar={() => setSidebarOpen((open) => !open)} />
+      <Navbar onToggleSidebar={() => setSidebarOpen((open) => !open)} />
 
-      <div className="relative min-h-0 flex-1">
+      {/* overflow-hidden clips the sidebar's closed (translated off-screen)
+          state - EventsSidebar is `sm:absolute` within this container rather
+          than fixed-to-viewport (so it no longer overlaps the navbar), but
+          that means its off-screen translate now counts toward this
+          container's scrollable width unless clipped here. */}
+      <div className="relative min-h-0 flex-1 overflow-hidden">
         <DisasterMap
-          userLocation={location}
+          userLocation={effectiveLocation}
           events={filteredEvents}
           selectedEvent={selectedEvent}
           onSelectEvent={selectEvent}
@@ -145,28 +160,27 @@ function App() {
           ))}
         </div>
 
-        {locationError && (
-          <div className="absolute bottom-4 left-1/2 z-[6] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
-            <h3 className="text-sm font-semibold">Disaster Zone Needs Your Location.</h3>
-            <p className="mt-1 text-xs text-white/85">
-              To display realtime information on disasters around you and across New
-              Zealand, Disaster Zone needs to access your geolocation. If your browser
-              asks you to allow this, please click Allow.
-            </p>
-          </div>
-        )}
-      </div>
+        <LocationStatus
+          address={displayAddress}
+          isManualAddress={manualLocation !== null}
+          locationError={locationError}
+          onSubmitAddress={submitManualAddress}
+          onClearManual={clearManualLocation}
+          isSubmitting={isSubmitting}
+          notFound={notFound}
+        />
 
-      <EventsSidebar
-        events={filteredEvents}
-        isOpen={sidebarOpen}
-        selectedEventId={selectedEventId}
-        onSelectEvent={selectEvent}
-        onClose={() => setSidebarOpen(false)}
-        userLocation={location}
-        newEventIds={newEventIds}
-        isFiltered={isFiltered}
-      />
+        <EventsSidebar
+          events={filteredEvents}
+          isOpen={sidebarOpen}
+          selectedEventId={selectedEventId}
+          onSelectEvent={selectEvent}
+          onClose={() => setSidebarOpen(false)}
+          userLocation={effectiveLocation}
+          newEventIds={newEventIds}
+          isFiltered={isFiltered}
+        />
+      </div>
     </div>
   )
 }

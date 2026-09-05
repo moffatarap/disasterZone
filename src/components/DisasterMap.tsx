@@ -9,6 +9,7 @@ import type { DisasterEvent } from '../types/event'
 import { AlertCircle } from './AlertCircle'
 import { EventDetailPopup } from './EventDetailPopup'
 import { EventMarker } from './EventMarker'
+import { UserLocationMarker } from './UserLocationMarker'
 
 interface DisasterMapProps {
   userLocation: UserLocation | null
@@ -124,6 +125,8 @@ export function DisasterMap({
         onZoomEnd={(evt: ViewStateChangeEvent) => setZoom(evt.viewState.zoom)}
       >
         <NavigationControl position="bottom-left" />
+
+        {userLocation && <UserLocationMarker location={userLocation} />}
 
         {visibleCircleEvents.map((event) => (
           <AlertCircle

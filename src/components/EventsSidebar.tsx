@@ -45,7 +45,7 @@ export function EventsSidebar({
         role="dialog"
         aria-modal="true"
         aria-label="Recent events"
-        className={`fixed inset-x-0 bottom-0 z-20 flex max-h-[65vh] flex-col rounded-t-2xl bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-80 sm:rounded-none ${
+        className={`fixed inset-x-0 bottom-0 z-20 flex max-h-[65vh] flex-col rounded-t-2xl bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:absolute sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-80 sm:rounded-none ${
           isOpen ? 'translate-y-0 sm:translate-x-0' : 'translate-y-full sm:translate-x-full sm:translate-y-0'
         }`}
       >
