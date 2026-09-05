@@ -22,18 +22,42 @@ interface DisasterMapProps {
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
 
-// Raw OSM raster tiles - no API key/billing, unlike the original's Google Maps setup.
-const OSM_STYLE: StyleSpecification = {
+// Esri's free "World Dark Gray Canvas" basemap - no API key/billing, unlike
+// the original's Google Maps setup - chosen (over plain OSM's bright default
+// green/yellow styling) to match the app's dark navy chrome, and it makes
+// the severity-coloured markers/circles read more vividly against it.
+// (CARTO's equivalent dark tiles now require an API key - verified by
+// actually inspecting a fetched tile's image content, not just its HTTP
+// status, since they return a 200 "API KEY REQUIRED" watermark tile instead
+// of an error.) Esri splits base terrain and place-name labels into two
+// separate raster layers, stacked here; note ArcGIS's tile URLs order
+// {z}/{y}/{x} (row before column) - reversed from every other provider's
+// standard {z}/{x}/{y} - easy to get backwards.
+const ESRI_DARK_GRAY_BASE =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+const ESRI_DARK_GRAY_LABELS =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'
+const ESRI_ATTRIBUTION = 'Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community'
+
+const BASEMAP_STYLE: StyleSpecification = {
   version: 8,
   sources: {
-    osm: {
+    basemap: {
       type: 'raster',
-      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tiles: [ESRI_DARK_GRAY_BASE],
       tileSize: 256,
-      attribution: '&copy; OpenStreetMap contributors',
+      attribution: ESRI_ATTRIBUTION,
+    },
+    labels: {
+      type: 'raster',
+      tiles: [ESRI_DARK_GRAY_LABELS],
+      tileSize: 256,
     },
   },
-  layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+  layers: [
+    { id: 'basemap', type: 'raster', source: 'basemap' },
+    { id: 'labels', type: 'raster', source: 'labels' },
+  ],
 }
 
 // At or above this zoom, alert circles are shown unconditionally - you're
@@ -94,7 +118,7 @@ export function DisasterMap({
       <Map
         ref={mapRef}
         initialViewState={DEFAULT_VIEW}
-        mapStyle={OSM_STYLE}
+        mapStyle={BASEMAP_STYLE}
         style={{ width: '100%', height: '100%' }}
         onClick={onDeselectEvent}
         onZoomEnd={(evt: ViewStateChangeEvent) => setZoom(evt.viewState.zoom)}
