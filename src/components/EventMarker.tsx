@@ -28,7 +28,7 @@ export function EventMarker({ event, isSelected, onSelect }: EventMarkerProps) {
       <img
         src={icon}
         alt={`${event.kind} - ${event.severity}`}
-        className={`event-marker-icon${isSelected ? ' event-marker-icon--selected' : ''}`}
+        className={`cursor-pointer drop-shadow-md ${isSelected ? 'h-9 w-9 sm:h-10 sm:w-10' : 'h-7 w-7 sm:h-8 sm:w-8'}`}
       />
     </Marker>
   )

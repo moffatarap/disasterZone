@@ -1,29 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,700&display=swap');
+@import 'tailwindcss';
 
-:root {
-  color-scheme: light;
-
-  --color-navbar: rgb(51, 87, 105);
-  --color-surface: #ffffff;
-  --color-surface-dim: rgba(25, 25, 25, 0.75);
-  --color-text: #232323;
-  --color-text-muted: #666666;
-
-  /* Must stay in sync with src/constants/severity.ts SEVERITY_COLORS */
-  --severity-none: #353535;
-  --severity-weak: #4ecbf2;
-  --severity-light: #31c95c;
-  --severity-moderate: #f2c92d;
-  --severity-strong: #f68824;
-  --severity-severe: #e52419;
-
-  font-family: 'Source Sans Pro', sans-serif;
+@theme {
+  --font-sans: 'Source Sans Pro', ui-sans-serif, sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-}
-
+/* #root sits in index.html, outside any component - can't move this into a className. */
 html,
 body,
 #root {
@@ -32,9 +14,5 @@ body,
 }
 
 body {
-  color: var(--color-text);
-}
-
-button {
-  font-family: inherit;
+  font-family: var(--font-sans);
 }

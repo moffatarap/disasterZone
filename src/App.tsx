@@ -9,7 +9,10 @@ import { useReverseGeocode } from './hooks/useReverseGeocode'
 import { useVolcanoes } from './hooks/useVolcanoes'
 import { earthquakeToEvent, volcanoToEvent } from './lib/events'
 import type { DisasterEvent } from './types/event'
-import './App.css'
+
+// Tailwind's `sm:` breakpoint (640px) is also where the events panel switches
+// from a mobile bottom sheet to a desktop/tablet side panel - see EventsSidebar.
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
 
 function App() {
   const { location, error: locationError } = useGeolocation()
@@ -35,25 +38,35 @@ function App() {
 
   const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
 
+  function selectEvent(event: DisasterEvent) {
+    setSelectedEventId(event.id)
+    // On mobile the events list is a bottom sheet sitting over the map - close it
+    // so the newly-opened popup underneath is actually visible. On tablet/desktop
+    // the side panel and the popup coexist, so it stays open.
+    if (window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches) {
+      setSidebarOpen(false)
+    }
+  }
+
   return (
-    <div className="app">
+    <div className="flex h-full flex-col">
       <Navbar address={address ?? null} onToggleSidebar={() => setSidebarOpen((open) => !open)} />
 
-      <div className="app__map-area">
+      <div className="relative min-h-0 flex-1">
         <DisasterMap
           userLocation={location}
           events={events}
           selectedEvent={selectedEvent}
-          onSelectEvent={(event) => setSelectedEventId(event.id)}
+          onSelectEvent={selectEvent}
           onDeselectEvent={() => setSelectedEventId(null)}
         />
 
         <SeverityKey />
 
         {locationError && (
-          <div className="app__location-error">
-            <h3>Disaster Zone Needs Your Location.</h3>
-            <p>
+          <div className="absolute bottom-4 left-1/2 z-[6] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
+            <h3 className="text-sm font-semibold">Disaster Zone Needs Your Location.</h3>
+            <p className="mt-1 text-xs text-white/85">
               To display realtime information on disasters around you and across New
               Zealand, Disaster Zone needs to access your geolocation. If your browser
               asks you to allow this, please click Allow.
@@ -66,7 +79,8 @@ function App() {
         events={events}
         isOpen={sidebarOpen}
         selectedEventId={selectedEventId}
-        onSelectEvent={(event) => setSelectedEventId(event.id)}
+        onSelectEvent={selectEvent}
+        onClose={() => setSidebarOpen(false)}
       />
     </div>
   )

@@ -13,7 +13,6 @@ import type { DisasterEvent } from '../types/event'
 import { AlertCircle } from './AlertCircle'
 import { EventDetailPopup } from './EventDetailPopup'
 import { EventMarker } from './EventMarker'
-import './DisasterMap.css'
 
 interface DisasterMapProps {
   userLocation: UserLocation | null
