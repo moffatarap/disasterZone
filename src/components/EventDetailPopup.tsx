@@ -19,7 +19,7 @@ const DARK_TEXT_SEVERITIES: SeverityLevel[] = ['light', 'moderate']
 
 // The original detail icons are drawn near-white for a dark card that never
 // shipped - `invert` maps that to near-black so they read on our light card.
-const DETAIL_ICON_CLASS = 'h-5 w-5 flex-none opacity-50 invert'
+const DETAIL_ICON_CLASS = 'h-6 w-6 flex-none opacity-50 invert'
 
 // Popup close button + tip are library-rendered DOM we don't control directly,
 // so they're restyled via Tailwind's arbitrary descendant-selector syntax.
@@ -67,17 +67,17 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       </div>
 
       <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 px-4 py-3">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2.5 text-sm text-slate-500">
           <img src={detailIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{event.detail}</span>
         </div>
         {distanceFromUserKm !== null && (
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2.5 text-sm text-slate-500">
             <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
             <span>{formatDistanceKm(distanceFromUserKm)} from you</span>
           </div>
         )}
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2.5 text-sm text-slate-500">
           <img src={timeIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{formatRelativeTime(event.time)}</span>
         </div>

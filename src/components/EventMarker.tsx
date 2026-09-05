@@ -25,14 +25,14 @@ export function EventMarker({ event, isSelected, onSelect }: EventMarkerProps) {
         onSelect(event)
       }}
     >
-      {/* min-h/w-11 gives a 44x44px tap target (WCAG 2.5.5) without visually
-          enlarging the pin itself - a bigger icon here would clutter dense
-          marker clusters, so the extra hit area is invisible padding instead. */}
+      {/* The wrapper's min-h/w-11 is a floor, not a cap - the icon itself is
+          already at least 44px, so the tap target and the visual size are
+          the same box here (no more invisible-padding gap between them). */}
       <div className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center">
         <img
           src={icon}
           alt={`${event.kind} - ${event.severity}`}
-          className={`drop-shadow-md ${isSelected ? 'h-11 w-11 sm:h-12 sm:w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}
+          className={`drop-shadow-md ${isSelected ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-11 w-11 sm:h-12 sm:w-12'}`}
         />
       </div>
     </Marker>
