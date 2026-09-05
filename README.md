@@ -45,25 +45,75 @@ this doesn't work over plain HTTP for anyone on the network but you:
 - Unit file: `~/.config/systemd/user/disaster-zone.service`
 - Runs `serve -s dist -l 8080 --ssl-cert .certs/localhost.crt --ssl-key
   .certs/localhost.key` from this project directory
-- `.certs/` holds a self-signed cert generated with `openssl` (see below) -
-  gitignored, machine-specific, never committed
 - `loginctl enable-linger $USER` is on, so it starts on boot without needing
   an active login session
 - After changing code: `npm run build && systemctl --user restart disaster-zone`
 - Logs: `journalctl --user -u disaster-zone -f`
 
-### Regenerating the self-signed certificate
+### TLS: a locally-trusted CA, not just a self-signed cert
 
-Needed if this machine's LAN IP changes, or the cert expires (825 days). The
-browser will show a "connection isn't private" / "invalid certificate"
-warning on first visit from each device - that's expected for a self-signed
-cert; click through it (Advanced -> Proceed) once. The connection is still
-genuinely encrypted and satisfies the browser's secure-context requirement
-for geolocation - the warning is just about trust, not encryption.
+A plain self-signed certificate encrypts the connection but isn't in any
+browser's trust store, so most browsers - Firefox in particular - keep
+showing "Connection not secure" even after you click through the warning,
+and withhold sensitive permissions (Geolocation included) from a connection
+they don't consider trustworthy. Clicking past the warning is not enough to
+get geolocation working.
+
+The fix used here: a small local Certificate Authority signs the server's
+certificate. Once a device trusts that one CA, every certificate it issues
+(including this one) is fully trusted with no warnings at all - not a
+per-site exception.
+
+- `.certs/` holds `ca.key`/`ca.crt` (the CA) and `localhost.key`/`localhost.crt`
+  (the server cert, signed by that CA) - all gitignored, machine-specific,
+  regenerated per machine, never committed
+- The CA's **public** certificate (not the key) is also copied to
+  `public/disaster-zone-ca.crt`, so it ships in every build and is
+  downloadable from the running site itself - that file is safe to commit,
+  it contains no private key material
+
+**One-time setup per device** that needs geolocation to work (phones included):
+1. Visit `https://<this-machine's-LAN-IP>:8080/disaster-zone-ca.crt` (you'll
+   still get the untrusted-cert warning for this one download - click through
+   it, downloading a file doesn't require trust) and save/open the file
+2. Android: Settings -> Security (or Encryption & Credentials) -> "Install a
+   certificate" -> **CA certificate** -> select the downloaded file. Android
+   will show a "network may be monitored" notice afterwards - expected and
+   harmless, it's just flagging that a user-installed CA is active
+3. Reload the site - the padlock/site info should now show fully secure, and
+   the Geolocation permission prompt should appear normally
+
+### Regenerating the certificates
+
+Needed if this machine's LAN IP changes, or a cert expires (CA: 10 years,
+server cert: 825 days). Re-running this replaces `.certs/*`; devices that
+already trust the CA (`ca.crt` unchanged) don't need to reinstall anything -
+only regenerate the CA itself (delete `ca.key`/`ca.crt` first) if you want to
+re-trust from scratch.
 
 ```bash
-hostname -I   # confirm the current LAN IP; update IP.2 below if it changed
-mkdir -p .certs && cd .certs
+hostname -I   # confirm the current LAN IP; update IP.2 in san.cnf below if it changed
+cd .certs
+
+# Only if ca.key/ca.crt don't already exist (skip if reusing the trusted CA):
+cat > ca.cnf << 'EOF'
+[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_ca
+prompt = no
+
+[req_distinguished_name]
+CN = Disaster Zone Local Dev CA
+
+[v3_ca]
+basicConstraints = critical, CA:true
+keyUsage = critical, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+EOF
+openssl req -x509 -nodes -newkey rsa:2048 -keyout ca.key -out ca.crt -days 3650 -config ca.cnf -extensions v3_ca
+cp ca.crt ../public/disaster-zone-ca.crt
+
+# Server cert (re-run any time - SAN list, expiry, etc.):
 cat > san.cnf << 'EOF'
 [req]
 distinguished_name = req_distinguished_name
@@ -83,8 +133,11 @@ DNS.1 = localhost
 IP.1 = 127.0.0.1
 IP.2 = 192.168.1.11
 EOF
-openssl req -x509 -nodes -newkey rsa:2048 -keyout localhost.key -out localhost.crt -days 825 -config san.cnf -extensions v3_req
-cd .. && systemctl --user restart disaster-zone
+openssl req -nodes -newkey rsa:2048 -keyout localhost.key -out localhost.csr -config san.cnf
+openssl x509 -req -in localhost.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out localhost.crt -days 825 -extfile san.cnf -extensions v3_req
+rm -f localhost.csr
+
+cd .. && npm run build && systemctl --user restart disaster-zone
 ```
 
 A GitHub Actions workflow (`.github/workflows/deploy.yml`) also exists to
