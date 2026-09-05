@@ -12,6 +12,7 @@ interface EventsSidebarProps {
   onClose: () => void
   userLocation: UserLocation | null
   newEventIds: Set<string>
+  isFiltered: boolean
 }
 
 const ICONS_BY_KIND = {
@@ -27,6 +28,7 @@ export function EventsSidebar({
   onClose,
   userLocation,
   newEventIds,
+  isFiltered,
 }: EventsSidebarProps) {
   return (
     <>
@@ -67,7 +69,11 @@ export function EventsSidebar({
 
         <ul className="flex flex-col gap-2 overflow-y-auto px-4 pb-4">
           {events.length === 0 && (
-            <li className="text-sm text-white/60">No events to show right now.</li>
+            <li className="text-sm text-white/60">
+              {isFiltered
+                ? 'No events match your filters.'
+                : 'No events to show right now.'}
+            </li>
           )}
           {events.map((event) => {
             const distanceFromUserKm =

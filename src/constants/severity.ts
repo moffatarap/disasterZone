@@ -28,6 +28,13 @@ export const SEVERITY_LEVELS = [
 
 export type SeverityLevel = (typeof SEVERITY_LEVELS)[number]
 
+// "none" is never actually shown on the map (volcanoes at level 0 are
+// filtered out, quakes are never classed "none"), so it's excluded from the
+// severity key and from the filter's "all severities visible" default.
+export const FILTERABLE_SEVERITY_LEVELS = SEVERITY_LEVELS.filter(
+  (level): level is Exclude<SeverityLevel, 'none'> => level !== 'none',
+)
+
 /** Base alert-circle radius in metres, indexed by severity level (0-5). */
 export const SEVERITY_RADIUS_METERS: Record<SeverityLevel, number> = {
   none: 650,
