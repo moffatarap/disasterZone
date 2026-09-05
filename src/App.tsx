@@ -18,9 +18,14 @@ import type { DisasterEvent, HazardKind } from './types/event'
 
 const ALL_KINDS: HazardKind[] = ['earthquake', 'volcano']
 
-// Tailwind's `sm:` breakpoint (640px) is also where the events panel switches
-// from a mobile bottom sheet to a desktop/tablet side panel - see EventsSidebar.
+// Three-tier breakpoints, matching Tailwind's `sm:`/`lg:` tokens so these
+// stay in sync with the CSS:
+//   mobile <640px | tablet 640-1023px | large >=1024px
+// `sm:` (640px) is where the events panel switches from a mobile bottom
+// sheet to a tablet/desktop side panel - see EventsSidebar. `lg:` (1024px)
+// only affects whether that side panel starts open by default, below.
 const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
+const LARGE_BREAKPOINT_QUERY = '(min-width: 1024px)'
 
 function App() {
   const { location, error: locationError } = useGeolocation()
@@ -37,11 +42,13 @@ function App() {
   const { data: volcanoes } = useVolcanoes()
   const demoEvent = useDemoEvent()
 
-  // Open by default on desktop/tablet, where the side panel coexists with
-  // the map rather than covering it like the mobile bottom sheet does.
-  // Checked once at mount, not kept in sync with later window resizes.
+  // Open by default on large screens only - tablet gets the same side-panel
+  // layout as desktop (not the mobile bottom sheet) but starts closed like
+  // mobile does, since it doesn't have the spare width desktop does to keep
+  // it open without crowding the map. Checked once at mount, not kept in
+  // sync with later window resizes.
   const [sidebarOpen, setSidebarOpen] = useState(
-    () => !window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches,
+    () => window.matchMedia(LARGE_BREAKPOINT_QUERY).matches,
   )
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [visibleKinds, setVisibleKinds] = useState<Set<HazardKind>>(new Set(ALL_KINDS))
@@ -145,7 +152,7 @@ function App() {
           newEventIds={newEventIds}
         />
 
-        <SeverityKey />
+        <SeverityKey sidebarOpen={sidebarOpen} />
 
         <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
           {visibleToastQueue.map((event) => (

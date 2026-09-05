@@ -15,24 +15,38 @@ const KIND_ENTRIES = [
 // wrapper sized to fit whichever child was widest, so the button visibly
 // shifted sideways whenever the panel toggled open/closed and changed that
 // wrapper's width. Each now has its own fixed `right-3` anchor instead.
-export function SeverityKey() {
-  const [expandedOnMobile, setExpandedOnMobile] = useState(false)
+//
+// Minimised by default on every breakpoint - it used to stay permanently
+// expanded on tablet/desktop with no way to collapse it there at all.
+interface SeverityKeyProps {
+  sidebarOpen: boolean
+}
+
+export function SeverityKey({ sidebarOpen }: SeverityKeyProps) {
+  const [expanded, setExpanded] = useState(false)
+
+  // The events sidebar is a `sm:w-80` (320px) panel anchored to the same
+  // right edge as this button/panel - now that the button renders at every
+  // breakpoint (not just mobile, where the sidebar is a bottom sheet that
+  // doesn't reach this corner), it needs to step aside on tablet/desktop
+  // whenever that panel is open, or it ends up covered and unclickable.
+  const rightOffsetClass = sidebarOpen ? 'sm:right-[332px]' : 'sm:right-3'
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setExpandedOnMobile((expanded) => !expanded)}
-        aria-expanded={expandedOnMobile}
+        onClick={() => setExpanded((current) => !current)}
+        aria-expanded={expanded}
         aria-label="Toggle map key"
-        className="absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md sm:hidden"
+        className={`absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md transition-[right] duration-300 ease-out ${rightOffsetClass}`}
       >
         i
       </button>
 
       <div
-        className={`absolute top-16 right-3 z-[5] rounded-lg bg-white/95 px-3.5 py-2.5 shadow-md sm:top-3 sm:block ${
-          expandedOnMobile ? 'block' : 'hidden'
+        className={`absolute top-16 right-3 z-[5] rounded-lg bg-white/95 px-3.5 py-2.5 shadow-md transition-[right] duration-300 ease-out ${rightOffsetClass} ${
+          expanded ? 'block' : 'hidden'
         }`}
       >
         <h4 className="mb-1.5 text-xs tracking-wide text-slate-500">KEY</h4>
