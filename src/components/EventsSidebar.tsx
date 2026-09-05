@@ -1,8 +1,16 @@
-import { EARTHQUAKE_ICONS, SEVERITY_COLORS, VOLCANO_ICONS } from '../constants/severity'
+import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
+import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
+import {
+  EARTHQUAKE_ICONS,
+  FILTERABLE_SEVERITY_LEVELS,
+  SEVERITY_COLORS,
+  VOLCANO_ICONS,
+  type SeverityLevel,
+} from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { formatDistanceKm, haversineDistanceKm } from '../lib/geo'
 import { formatRelativeTime } from '../lib/relativeTime'
-import type { DisasterEvent } from '../types/event'
+import type { DisasterEvent, HazardKind } from '../types/event'
 
 interface EventsSidebarProps {
   events: DisasterEvent[]
@@ -13,12 +21,25 @@ interface EventsSidebarProps {
   userLocation: UserLocation | null
   newEventIds: Set<string>
   isFiltered: boolean
+  visibleKinds: Set<HazardKind>
+  visibleSeverities: Set<SeverityLevel>
+  onToggleKind: (kind: HazardKind) => void
+  onToggleSeverity: (level: SeverityLevel) => void
+  onResetFilters: () => void
 }
 
 const ICONS_BY_KIND = {
   earthquake: EARTHQUAKE_ICONS,
   volcano: VOLCANO_ICONS,
 } as const
+
+const KIND_ENTRIES: { kind: HazardKind; icon: string; label: string }[] = [
+  { kind: 'earthquake', icon: earthquakeIcon, label: 'Earthquake' },
+  { kind: 'volcano', icon: volcanoIcon, label: 'Volcano' },
+]
+
+const CHIP_CLASS =
+  'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium capitalize transition-colors'
 
 export function EventsSidebar({
   events,
@@ -29,6 +50,11 @@ export function EventsSidebar({
   userLocation,
   newEventIds,
   isFiltered,
+  visibleKinds,
+  visibleSeverities,
+  onToggleKind,
+  onToggleSeverity,
+  onResetFilters,
 }: EventsSidebarProps) {
   return (
     <>
@@ -67,7 +93,56 @@ export function EventsSidebar({
           </button>
         </div>
 
-        <ul className="flex flex-col gap-2 overflow-y-auto px-4 pb-4">
+        <div className="flex flex-none flex-col gap-1.5 border-b border-white/10 px-4 pb-3">
+          <div className="flex flex-wrap gap-1.5">
+            {KIND_ENTRIES.map(({ kind, icon, label }) => {
+              const active = visibleKinds.has(kind)
+              return (
+                <button
+                  key={kind}
+                  type="button"
+                  onClick={() => onToggleKind(kind)}
+                  aria-pressed={active}
+                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
+                >
+                  <img src={icon} alt="" className="h-4 w-4" />
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {FILTERABLE_SEVERITY_LEVELS.map((level) => {
+              const active = visibleSeverities.has(level)
+              return (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => onToggleSeverity(level)}
+                  aria-pressed={active}
+                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
+                >
+                  <span
+                    className="h-2.5 w-2.5 flex-none rounded-full"
+                    style={{ backgroundColor: SEVERITY_COLORS[level] }}
+                  />
+                  {level}
+                </button>
+              )
+            })}
+          </div>
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="self-start text-xs font-semibold text-sky-400 hover:underline"
+            >
+              Reset filters
+            </button>
+          )}
+        </div>
+
+        <ul className="flex flex-col gap-2 overflow-y-auto px-4 py-3">
           {events.length === 0 && (
             <li className="text-sm text-white/60">
               {isFiltered

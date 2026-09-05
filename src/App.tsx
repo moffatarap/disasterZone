@@ -140,14 +140,7 @@ function App() {
           newEventIds={newEventIds}
         />
 
-        <SeverityKey
-          visibleKinds={visibleKinds}
-          visibleSeverities={visibleSeverities}
-          onToggleKind={toggleKind}
-          onToggleSeverity={toggleSeverity}
-          onReset={resetFilters}
-          isFiltered={isFiltered}
-        />
+        <SeverityKey />
 
         <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
           {visibleToastQueue.map((event) => (
@@ -179,6 +172,11 @@ function App() {
           userLocation={effectiveLocation}
           newEventIds={newEventIds}
           isFiltered={isFiltered}
+          visibleKinds={visibleKinds}
+          visibleSeverities={visibleSeverities}
+          onToggleKind={toggleKind}
+          onToggleSeverity={toggleSeverity}
+          onResetFilters={resetFilters}
         />
       </div>
     </div>
