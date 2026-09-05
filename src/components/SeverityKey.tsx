@@ -38,7 +38,7 @@ export function SeverityKey() {
         <ul className="flex flex-col gap-1">
           {KEY_ENTRIES.map((entry) => (
             <li key={entry.label} className="flex items-center gap-1.5 text-sm">
-              <img src={entry.icon} alt="" className="h-[18px] w-[18px]" />
+              <img src={entry.icon} alt="" className="h-6 w-6" />
               <span>{entry.label}</span>
             </li>
           ))}
@@ -51,7 +51,7 @@ export function SeverityKey() {
           {SEVERITY_LEGEND_LEVELS.map((level) => (
             <li key={level} className="flex items-center gap-1.5 text-sm capitalize">
               <span
-                className="h-2.5 w-2.5 flex-none rounded-full"
+                className="h-3.5 w-3.5 flex-none rounded-full"
                 style={{ backgroundColor: SEVERITY_COLORS[level] }}
               />
               <span>{level}</span>

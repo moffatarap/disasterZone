@@ -90,7 +90,7 @@ export function EventsSidebar({
                   <img
                     src={ICONS_BY_KIND[event.kind][event.severity]}
                     alt=""
-                    className="h-7 w-7 flex-none"
+                    className="h-9 w-9 flex-none"
                   />
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-sm font-semibold">{event.title}</span>

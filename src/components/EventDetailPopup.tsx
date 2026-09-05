@@ -19,7 +19,7 @@ const DARK_TEXT_SEVERITIES: SeverityLevel[] = ['light', 'moderate']
 
 // The original detail icons are drawn near-white for a dark card that never
 // shipped - `invert` maps that to near-black so they read on our light card.
-const DETAIL_ICON_CLASS = 'h-4 w-4 flex-none opacity-50 invert'
+const DETAIL_ICON_CLASS = 'h-5 w-5 flex-none opacity-50 invert'
 
 // Popup close button + tip are library-rendered DOM we don't control directly,
 // so they're restyled via Tailwind's arbitrary descendant-selector syntax.
