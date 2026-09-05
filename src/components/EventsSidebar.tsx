@@ -11,6 +11,7 @@ interface EventsSidebarProps {
   onSelectEvent: (event: DisasterEvent) => void
   onClose: () => void
   userLocation: UserLocation | null
+  newEventIds: Set<string>
 }
 
 const ICONS_BY_KIND = {
@@ -25,6 +26,7 @@ export function EventsSidebar({
   onSelectEvent,
   onClose,
   userLocation,
+  newEventIds,
 }: EventsSidebarProps) {
   return (
     <>
@@ -93,7 +95,14 @@ export function EventsSidebar({
                     className="h-11 w-11 flex-none"
                   />
                   <span className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-semibold">{event.title}</span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="truncate text-sm font-semibold">{event.title}</span>
+                      {newEventIds.has(event.id) && (
+                        <span className="flex-none rounded-full bg-sky-500 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase">
+                          New
+                        </span>
+                      )}
+                    </span>
                     <span className="text-xs text-white/70">{event.ratingText}</span>
                     <span className="truncate text-xs text-white/70">{timeLine}</span>
                   </span>

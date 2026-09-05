@@ -20,6 +20,7 @@ interface DisasterMapProps {
   selectedEvent: DisasterEvent | null
   onSelectEvent: (event: DisasterEvent) => void
   onDeselectEvent: () => void
+  newEventIds: Set<string>
 }
 
 // New Zealand-wide overview shown before the user's location resolves.
@@ -50,6 +51,7 @@ export function DisasterMap({
   selectedEvent,
   onSelectEvent,
   onDeselectEvent,
+  newEventIds,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const hasCenteredOnUser = useRef(false)
@@ -105,6 +107,7 @@ export function DisasterMap({
             key={event.id}
             event={event}
             isSelected={event.id === selectedEvent?.id}
+            isNew={newEventIds.has(event.id)}
             onSelect={onSelectEvent}
           />
         ))}

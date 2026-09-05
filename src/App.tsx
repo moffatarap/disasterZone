@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react'
 import { DisasterMap } from './components/DisasterMap'
 import { EventsSidebar } from './components/EventsSidebar'
 import { Navbar } from './components/Navbar'
+import { NewEventToast } from './components/NewEventToast'
 import { SeverityKey } from './components/SeverityKey'
 import { useEarthquakes } from './hooks/useEarthquakes'
 import { useGeolocation } from './hooks/useGeolocation'
+import { useNewEvents } from './hooks/useNewEvents'
 import { useReverseGeocode } from './hooks/useReverseGeocode'
 import { useVolcanoes } from './hooks/useVolcanoes'
 import { earthquakeToEvent, volcanoToEvent } from './lib/events'
@@ -37,9 +39,11 @@ function App() {
   }, [earthquakes, volcanoes])
 
   const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
+  const { newEventIds, toastQueue, acknowledge } = useNewEvents(events)
 
   function selectEvent(event: DisasterEvent) {
     setSelectedEventId(event.id)
+    acknowledge(event.id)
     // On mobile the events list is a bottom sheet sitting over the map - close it
     // so the newly-opened popup underneath is actually visible. On tablet/desktop
     // the side panel and the popup coexist, so it stays open.
@@ -59,9 +63,21 @@ function App() {
           selectedEvent={selectedEvent}
           onSelectEvent={selectEvent}
           onDeselectEvent={() => setSelectedEventId(null)}
+          newEventIds={newEventIds}
         />
 
         <SeverityKey />
+
+        <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
+          {toastQueue.map((event) => (
+            <NewEventToast
+              key={event.id}
+              event={event}
+              onView={selectEvent}
+              onDismiss={acknowledge}
+            />
+          ))}
+        </div>
 
         {locationError && (
           <div className="absolute bottom-4 left-1/2 z-[6] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
@@ -82,6 +98,7 @@ function App() {
         onSelectEvent={selectEvent}
         onClose={() => setSidebarOpen(false)}
         userLocation={location}
+        newEventIds={newEventIds}
       />
     </div>
   )
