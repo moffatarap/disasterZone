@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DisasterMap } from './components/DisasterMap'
 import { EventsSidebar } from './components/EventsSidebar'
 import { Navbar } from './components/Navbar'
 import { NewEventToast } from './components/NewEventToast'
 import { SeverityKey } from './components/SeverityKey'
+import { useDemoEvent } from './hooks/useDemoEvent'
 import { useEarthquakes } from './hooks/useEarthquakes'
 import { useGeolocation } from './hooks/useGeolocation'
 import { useNewEvents } from './hooks/useNewEvents'
@@ -15,36 +16,6 @@ import type { DisasterEvent } from './types/event'
 // Tailwind's `sm:` breakpoint (640px) is also where the events panel switches
 // from a mobile bottom sheet to a desktop/tablet side panel - see EventsSidebar.
 const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
-
-// TEMPORARY DEMO ONLY - remove after showing the new-event notification
-// feature live. Visiting the site with ?demoNewEvent=1 injects one fake
-// earthquake a few seconds after load, purely client-side, so the toast/
-// pulse/badge can be seen without waiting for (or faking) real GeoNet data.
-function useDemoEvent(): DisasterEvent | null {
-  const [demoEvent, setDemoEvent] = useState<DisasterEvent | null>(null)
-
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('demoNewEvent') !== '1') return
-
-    const timer = setTimeout(() => {
-      setDemoEvent({
-        id: 'demo-new-event',
-        kind: 'earthquake',
-        severity: 'strong',
-        title: '10km S of Lower Hutt',
-        subtitle: 'demo-only, not a real GeoNet event',
-        location: { lat: -41.32, lng: 174.95 },
-        ratingText: 'Magnitude 5.2',
-        time: new Date(),
-        detail: 'Depth 15km',
-      })
-    }, 4000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  return demoEvent
-}
 
 function App() {
   const { location, error: locationError } = useGeolocation()
