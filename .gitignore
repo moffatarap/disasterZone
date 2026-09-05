@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Self-signed TLS cert/key for local HTTPS hosting - machine-specific
+# (bound to this LAN IP), regenerate per-machine, never commit.
+.certs/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
