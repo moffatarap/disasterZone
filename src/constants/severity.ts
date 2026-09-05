@@ -1,0 +1,91 @@
+// Severity scale + colours + alert-circle sizing, ported directly from the
+// original app's alertCircleColorArray / alertCirlceRadiusArray
+// (Disaster Zone/js/api/geoLocationAPI.js) so the map reads the same way it
+// always has.
+
+import earthquakeNone from '../assets/media/img/mapKeys/key/earthquake.svg'
+import earthquakeWeak from '../assets/media/img/mapKeys/event/weak/earthquakeW.svg'
+import earthquakeLight from '../assets/media/img/mapKeys/event/light/earthquakeL.svg'
+import earthquakeModerate from '../assets/media/img/mapKeys/event/moderate/earthquakeM.svg'
+import earthquakeStrong from '../assets/media/img/mapKeys/event/strong/earthquakeST.svg'
+import earthquakeSevere from '../assets/media/img/mapKeys/event/severe/earthquakeS.svg'
+
+import volcanoNone from '../assets/media/img/mapKeys/key/volcano.svg'
+import volcanoWeak from '../assets/media/img/mapKeys/event/weak/volcanoW.svg'
+import volcanoLight from '../assets/media/img/mapKeys/event/light/volcanoL.svg'
+import volcanoModerate from '../assets/media/img/mapKeys/event/moderate/volcanoM.svg'
+import volcanoStrong from '../assets/media/img/mapKeys/event/strong/volcanoST.svg'
+import volcanoSevere from '../assets/media/img/mapKeys/event/severe/volcanoS.svg'
+
+export const SEVERITY_LEVELS = [
+  'none',
+  'weak',
+  'light',
+  'moderate',
+  'strong',
+  'severe',
+] as const
+
+export type SeverityLevel = (typeof SEVERITY_LEVELS)[number]
+
+/** Base alert-circle radius in metres, indexed by severity level (0-5). */
+export const SEVERITY_RADIUS_METERS: Record<SeverityLevel, number> = {
+  none: 650,
+  weak: 1500,
+  light: 5000,
+  moderate: 20000,
+  strong: 40000,
+  severe: 50000,
+}
+
+export const SEVERITY_COLORS: Record<SeverityLevel, string> = {
+  none: '#353535',
+  weak: '#4ecbf2',
+  light: '#31c95c',
+  moderate: '#f2c92d',
+  strong: '#f68824',
+  severe: '#e52419',
+}
+
+// The original multiplied the base radius per-hazard-type for visual effect
+// (a stylistic choice, not a scientific one) - preserved as-is.
+export const EARTHQUAKE_RADIUS_MULTIPLIER = 4
+export const VOLCANO_RADIUS_MULTIPLIER = 10
+
+export const EARTHQUAKE_ICONS: Record<SeverityLevel, string> = {
+  none: earthquakeNone,
+  weak: earthquakeWeak,
+  light: earthquakeLight,
+  moderate: earthquakeModerate,
+  strong: earthquakeStrong,
+  severe: earthquakeSevere,
+}
+
+export const VOLCANO_ICONS: Record<SeverityLevel, string> = {
+  none: volcanoNone,
+  weak: volcanoWeak,
+  light: volcanoLight,
+  moderate: volcanoModerate,
+  strong: volcanoStrong,
+  severe: volcanoSevere,
+}
+
+/** GeoNet's `intensity` string already matches our severity scale 1:1. */
+export function earthquakeIntensityToSeverity(intensity: string): SeverityLevel {
+  const normalized = intensity.toLowerCase()
+  return (SEVERITY_LEVELS as readonly string[]).includes(normalized)
+    ? (normalized as SeverityLevel)
+    : 'none'
+}
+
+/** GeoNet's Volcanic Alert Level is 0-5, aligned with our severity index order. */
+export function volcanoLevelToSeverity(level: number): SeverityLevel {
+  return SEVERITY_LEVELS[level] ?? 'none'
+}
+
+export function alertRadiusMeters(
+  severity: SeverityLevel,
+  multiplier: number,
+): number {
+  return SEVERITY_RADIUS_METERS[severity] * multiplier
+}
