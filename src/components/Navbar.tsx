@@ -17,7 +17,7 @@ export function Navbar({ address, onToggleSidebar }: NavbarProps) {
         type="button"
         onClick={onToggleSidebar}
         aria-label="Show and hide the list of recent events"
-        className="ml-auto flex h-9 w-9 flex-none items-center justify-center rounded-full text-lg transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+        className="ml-auto flex h-11 w-11 flex-none items-center justify-center rounded-full text-lg transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
       >
         ☰
       </button>

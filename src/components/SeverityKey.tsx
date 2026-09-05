@@ -24,7 +24,7 @@ export function SeverityKey() {
         onClick={() => setExpandedOnMobile((expanded) => !expanded)}
         aria-expanded={expandedOnMobile}
         aria-label="Toggle map key"
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md sm:hidden"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md sm:hidden"
       >
         i
       </button>

@@ -25,8 +25,11 @@ const DETAIL_ICON_CLASS = 'h-5 w-5 flex-none opacity-50 invert'
 // so they're restyled via Tailwind's arbitrary descendant-selector syntax.
 // MapLibre calls classList.add() on this string internally, which throws on
 // whitespace other than single spaces - so this has to stay one line.
+// The close button is sized to a full 44x44px touch target (WCAG 2.5.5 /
+// Apple HIG minimum) even though its visible "x" glyph stays small -
+// centered inside via flex, so the enlarged tap area doesn't look oversized.
 const POPUP_CLASSNAME =
-  '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:rounded-2xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-xl [&_.maplibregl-popup-content]:ring-1 [&_.maplibregl-popup-content]:ring-black/5 [&_.maplibregl-popup-close-button]:right-2.5 [&_.maplibregl-popup-close-button]:top-2.5 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-6 [&_.maplibregl-popup-close-button]:w-6 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-slate-400 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-slate-100 [&_.maplibregl-popup-close-button]:hover:text-slate-600 [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-slate-300'
+  '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:rounded-2xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-xl [&_.maplibregl-popup-content]:ring-1 [&_.maplibregl-popup-content]:ring-black/5 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-slate-400 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-slate-100 [&_.maplibregl-popup-close-button]:hover:text-slate-600 [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-slate-300'
 
 export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPopupProps) {
   const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
@@ -49,7 +52,7 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       maxWidth="calc(100vw - 2rem)"
       className={POPUP_CLASSNAME}
     >
-      <div className="flex items-start pt-4 pr-8 pl-4">
+      <div className="flex items-start pt-4 pr-14 pl-4">
         <span
           className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase ${badgeTextClass}`}
           style={{ backgroundColor: SEVERITY_COLORS[event.severity] }}

@@ -57,7 +57,7 @@ export function EventsSidebar({
             type="button"
             onClick={onClose}
             aria-label="Close recent events"
-            className="flex h-7 w-7 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
             ✕
           </button>

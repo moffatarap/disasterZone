@@ -71,41 +71,52 @@ export function DisasterMap({
   }, [selectedEvent])
 
   return (
-    <Map
-      ref={mapRef}
-      initialViewState={DEFAULT_VIEW}
-      mapStyle={OSM_STYLE}
-      style={{ width: '100%', height: '100%' }}
-      onClick={onDeselectEvent}
-    >
-      <NavigationControl position="bottom-left" />
+    // MapLibre's own zoom/compass buttons default to 29x29px - grown here to
+    // a 44x44px touch target (WCAG 2.5.5) via a wrapper div, since <Map>
+    // doesn't forward className to its own container. The icon glyph inside
+    // stays its normal size (centered via background-position), same
+    // invisible-padding approach used for the map markers.
+    // `!` (important) is required: maplibre-gl.css sets width/height as plain,
+    // unlayered CSS, which always beats a Tailwind utility (Tailwind wraps
+    // utilities in @layer, and unlayered rules win over layered ones
+    // regardless of specificity) unless marked important.
+    <div className="h-full w-full [&_.maplibregl-ctrl-group_button]:!h-11 [&_.maplibregl-ctrl-group_button]:!w-11">
+      <Map
+        ref={mapRef}
+        initialViewState={DEFAULT_VIEW}
+        mapStyle={OSM_STYLE}
+        style={{ width: '100%', height: '100%' }}
+        onClick={onDeselectEvent}
+      >
+        <NavigationControl position="bottom-left" />
 
-      {events.map((event) => (
-        <AlertCircle
-          key={`circle-${event.id}`}
-          id={event.id}
-          center={event.location}
-          radiusMeters={alertRadiusMeters(event.severity, RADIUS_MULTIPLIER_BY_KIND[event.kind])}
-          color={SEVERITY_COLORS[event.severity]}
-        />
-      ))}
+        {events.map((event) => (
+          <AlertCircle
+            key={`circle-${event.id}`}
+            id={event.id}
+            center={event.location}
+            radiusMeters={alertRadiusMeters(event.severity, RADIUS_MULTIPLIER_BY_KIND[event.kind])}
+            color={SEVERITY_COLORS[event.severity]}
+          />
+        ))}
 
-      {events.map((event) => (
-        <EventMarker
-          key={event.id}
-          event={event}
-          isSelected={event.id === selectedEvent?.id}
-          onSelect={onSelectEvent}
-        />
-      ))}
+        {events.map((event) => (
+          <EventMarker
+            key={event.id}
+            event={event}
+            isSelected={event.id === selectedEvent?.id}
+            onSelect={onSelectEvent}
+          />
+        ))}
 
-      {selectedEvent && (
-        <EventDetailPopup
-          event={selectedEvent}
-          userLocation={userLocation}
-          onClose={onDeselectEvent}
-        />
-      )}
-    </Map>
+        {selectedEvent && (
+          <EventDetailPopup
+            event={selectedEvent}
+            userLocation={userLocation}
+            onClose={onDeselectEvent}
+          />
+        )}
+      </Map>
+    </div>
   )
 }

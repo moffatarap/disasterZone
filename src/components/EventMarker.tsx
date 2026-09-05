@@ -25,11 +25,16 @@ export function EventMarker({ event, isSelected, onSelect }: EventMarkerProps) {
         onSelect(event)
       }}
     >
-      <img
-        src={icon}
-        alt={`${event.kind} - ${event.severity}`}
-        className={`cursor-pointer drop-shadow-md ${isSelected ? 'h-11 w-11 sm:h-12 sm:w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}
-      />
+      {/* min-h/w-11 gives a 44x44px tap target (WCAG 2.5.5) without visually
+          enlarging the pin itself - a bigger icon here would clutter dense
+          marker clusters, so the extra hit area is invisible padding instead. */}
+      <div className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center">
+        <img
+          src={icon}
+          alt={`${event.kind} - ${event.severity}`}
+          className={`drop-shadow-md ${isSelected ? 'h-11 w-11 sm:h-12 sm:w-12' : 'h-9 w-9 sm:h-10 sm:w-10'}`}
+        />
+      </div>
     </Marker>
   )
 }
