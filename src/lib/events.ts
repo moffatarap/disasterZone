@@ -56,10 +56,26 @@ export function volcanoToEvent(feature: VolcanoFeature): DisasterEvent {
   }
 }
 
+// There's no direct "is this device set to 24-hour time" API, but a
+// browser's default-locale formatter already resolves that preference (an
+// OS's 24-hour toggle changes what its default locale reports here) - so we
+// borrow its hourCycle rather than hardcoding 12- or 24-hour.
+function detectPreferredHourCycle(): Intl.DateTimeFormatOptions['hourCycle'] {
+  if (typeof navigator === 'undefined') return 'h12'
+  try {
+    return new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).resolvedOptions()
+      .hourCycle
+  } catch {
+    return 'h12'
+  }
+}
+
 // Fixed to NZ time regardless of the viewer's device settings - this is a NZ
 // disaster app, so a quake's displayed time shouldn't shift depending on
 // where in the world the reader's device happens to be set. Uses the IANA
 // zone (not a hardcoded UTC+12/13 offset) so NZST/NZDT switch automatically.
+// Hour cycle (12h vs 24h) is the one thing that *does* follow the viewer's
+// own device setting, per user request.
 // (Spread out as explicit fields rather than dateStyle/timeStyle - the
 // Intl spec doesn't allow combining those with timeZoneName.)
 const timeFormatter = new Intl.DateTimeFormat('en-NZ', {
@@ -68,7 +84,7 @@ const timeFormatter = new Intl.DateTimeFormat('en-NZ', {
   year: 'numeric',
   hour: 'numeric',
   minute: '2-digit',
-  hour12: true,
+  hourCycle: detectPreferredHourCycle(),
   timeZone: 'Pacific/Auckland',
   timeZoneName: 'short',
 })
