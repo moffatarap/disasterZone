@@ -1,5 +1,5 @@
 import { Marker } from 'react-map-gl/maplibre'
-import { EARTHQUAKE_ICONS, SEVERITY_COLORS, VOLCANO_ICONS } from '../constants/severity'
+import { EARTHQUAKE_ICONS, VOLCANO_ICONS } from '../constants/severity'
 import type { DisasterEvent } from '../types/event'
 
 interface EventMarkerProps {
@@ -31,11 +31,13 @@ export function EventMarker({ event, isSelected, isNew, onSelect }: EventMarkerP
           already at least 44px, so the tap target and the visual size are
           the same box here (no more invisible-padding gap between them). */}
       <div className="relative flex min-h-11 min-w-11 cursor-pointer items-center justify-center">
+        {/* White + dark outline rather than the event's severity color, so
+            the pulse stays visible even against a same-hue alert-radius
+            circle underneath it (which would otherwise blend right in). */}
         {isNew && (
           <span
             aria-hidden="true"
-            className={`absolute animate-ping rounded-full opacity-75 ${sizeClass}`}
-            style={{ backgroundColor: SEVERITY_COLORS[event.severity] }}
+            className={`absolute animate-ping rounded-full bg-white opacity-90 ring-1 ring-slate-900/30 ${sizeClass}`}
           />
         )}
         <img
