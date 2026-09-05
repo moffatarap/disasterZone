@@ -56,9 +56,21 @@ export function volcanoToEvent(feature: VolcanoFeature): DisasterEvent {
   }
 }
 
+// Fixed to NZ time regardless of the viewer's device settings - this is a NZ
+// disaster app, so a quake's displayed time shouldn't shift depending on
+// where in the world the reader's device happens to be set. Uses the IANA
+// zone (not a hardcoded UTC+12/13 offset) so NZST/NZDT switch automatically.
+// (Spread out as explicit fields rather than dateStyle/timeStyle - the
+// Intl spec doesn't allow combining those with timeZoneName.)
 const timeFormatter = new Intl.DateTimeFormat('en-NZ', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+  timeZone: 'Pacific/Auckland',
+  timeZoneName: 'short',
 })
 
 export function formatEventTime(time: Date | null): string {
