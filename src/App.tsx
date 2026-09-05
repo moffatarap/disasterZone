@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DisasterMap } from './components/DisasterMap'
 import { EventsSidebar } from './components/EventsSidebar'
 import { Navbar } from './components/Navbar'
@@ -16,11 +16,42 @@ import type { DisasterEvent } from './types/event'
 // from a mobile bottom sheet to a desktop/tablet side panel - see EventsSidebar.
 const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
 
+// TEMPORARY DEMO ONLY - remove after showing the new-event notification
+// feature live. Visiting the site with ?demoNewEvent=1 injects one fake
+// earthquake a few seconds after load, purely client-side, so the toast/
+// pulse/badge can be seen without waiting for (or faking) real GeoNet data.
+function useDemoEvent(): DisasterEvent | null {
+  const [demoEvent, setDemoEvent] = useState<DisasterEvent | null>(null)
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('demoNewEvent') !== '1') return
+
+    const timer = setTimeout(() => {
+      setDemoEvent({
+        id: 'demo-new-event',
+        kind: 'earthquake',
+        severity: 'strong',
+        title: '10km S of Lower Hutt',
+        subtitle: 'demo-only, not a real GeoNet event',
+        location: { lat: -41.32, lng: 174.95 },
+        ratingText: 'Magnitude 5.2',
+        time: new Date(),
+        detail: 'Depth 15km',
+      })
+    }, 4000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  return demoEvent
+}
+
 function App() {
   const { location, error: locationError } = useGeolocation()
   const { data: address } = useReverseGeocode(location)
   const { data: earthquakes } = useEarthquakes()
   const { data: volcanoes } = useVolcanoes()
+  const demoEvent = useDemoEvent()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
@@ -35,11 +66,19 @@ function App() {
       .filter((feature) => feature.properties.level > 0)
       .map(volcanoToEvent)
 
-    return [...earthquakeEvents, ...volcanoEvents]
-  }, [earthquakes, volcanoes])
+    // TEMPORARY DEMO ONLY - see useDemoEvent above.
+    return demoEvent
+      ? [demoEvent, ...earthquakeEvents, ...volcanoEvents]
+      : [...earthquakeEvents, ...volcanoEvents]
+  }, [earthquakes, volcanoes, demoEvent])
 
   const selectedEvent = events.find((event) => event.id === selectedEventId) ?? null
-  const { newEventIds, toastQueue, acknowledge } = useNewEvents(events)
+  // Earthquakes and volcanoes are two independent queries that resolve at
+  // different times - seeding "new" tracking off whichever one happens to
+  // load first would wrongly flag the other's data as new the moment it
+  // arrives a beat later. Wait for both before treating anything as a baseline.
+  const initialDataLoaded = earthquakes !== undefined && volcanoes !== undefined
+  const { newEventIds, toastQueue, acknowledge } = useNewEvents(events, initialDataLoaded)
 
   function selectEvent(event: DisasterEvent) {
     setSelectedEventId(event.id)

@@ -14,17 +14,20 @@ interface NewEventsResult {
 
 /**
  * Distinguishes "just arrived while the app was open" from "was already
- * there on first load" - the first fetch seeds the known-IDs set without
- * flagging anything as new, so a fresh page load doesn't light up every
- * event already on screen.
+ * there on first load". Seeding is gated on `isReady` (both underlying
+ * queries having resolved at least once) rather than `events.length > 0` -
+ * earthquakes and volcanoes load independently, so gating on the combined
+ * list being merely non-empty would seed against whichever one happened to
+ * respond first, then wrongly flag the other's data as new the moment it
+ * arrives a beat later.
  */
-export function useNewEvents(events: DisasterEvent[]): NewEventsResult {
+export function useNewEvents(events: DisasterEvent[], isReady: boolean): NewEventsResult {
   const knownIds = useRef<Set<string> | null>(null)
   const [newEventIds, setNewEventIds] = useState<Set<string>>(new Set())
   const [toastQueue, setToastQueue] = useState<DisasterEvent[]>([])
 
   useEffect(() => {
-    if (events.length === 0) return
+    if (!isReady) return
 
     if (knownIds.current === null) {
       knownIds.current = new Set(events.map((event) => event.id))
@@ -41,7 +44,7 @@ export function useNewEvents(events: DisasterEvent[]): NewEventsResult {
       return next
     })
     setToastQueue((current) => [...arrived, ...current].slice(0, MAX_TOASTS))
-  }, [events])
+  }, [events, isReady])
 
   function acknowledge(id: string) {
     setNewEventIds((current) => {
