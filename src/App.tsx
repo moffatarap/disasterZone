@@ -37,7 +37,12 @@ function App() {
   const { data: volcanoes } = useVolcanoes()
   const demoEvent = useDemoEvent()
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  // Open by default on desktop/tablet, where the side panel coexists with
+  // the map rather than covering it like the mobile bottom sheet does.
+  // Checked once at mount, not kept in sync with later window resizes.
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => !window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches,
+  )
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
   const [visibleKinds, setVisibleKinds] = useState<Set<HazardKind>>(new Set(ALL_KINDS))
   const [visibleSeverities, setVisibleSeverities] = useState<Set<SeverityLevel>>(
