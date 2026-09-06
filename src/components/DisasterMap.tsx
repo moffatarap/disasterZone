@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Map, {
-  Layer,
-  NavigationControl,
-  Source,
-  type MapRef,
-  type ViewStateChangeEvent,
-} from 'react-map-gl/maplibre'
+import Map, { Layer, NavigationControl, Source, type MapRef } from 'react-map-gl/maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { SEVERITY_COLORS } from '../constants/severity'
@@ -78,11 +72,6 @@ const BASEMAP_STYLE: StyleSpecification = {
   ],
 }
 
-// At or above this zoom, alert circles are shown unconditionally - you're
-// looking closely enough at one area that overlap-declutter no longer
-// matters, and it matches the zoom flyTo already uses for a selected event.
-const ZOOM_SHOW_ALL_CIRCLES = 9
-
 export function DisasterMap({
   userLocation,
   events,
@@ -94,7 +83,6 @@ export function DisasterMap({
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const hasCenteredOnUser = useRef(false)
-  const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom)
   const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
 
   // Fetched once, the first time the toggle is switched on - not on initial
@@ -131,12 +119,14 @@ export function DisasterMap({
   // recomputed whenever the event list changes, not on every render.
   const suppressedCircleIds = useMemo(() => computeStackedCircleSuppressions(events), [events])
 
-  const visibleCircleEvents =
-    zoom >= ZOOM_SHOW_ALL_CIRCLES
-      ? events
-      : events.filter(
-          (event) => event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id),
-        )
+  // Applies at every zoom level, not just zoomed-out - the suppression
+  // distance is now a real epicenter-to-epicenter threshold (20-50km, see
+  // circleDensity.ts), not the old inflated-visual-radius test, so two
+  // genuinely nearby quakes still clutter each other's circles even zoomed
+  // in close. Selecting an event still always reveals its circle regardless.
+  const visibleCircleEvents = events.filter(
+    (event) => event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id),
+  )
 
   return (
     // MapLibre's own zoom/compass buttons default to 29x29px - grown here to
@@ -155,7 +145,6 @@ export function DisasterMap({
         mapStyle={BASEMAP_STYLE}
         style={{ width: '100%', height: '100%' }}
         onClick={onDeselectEvent}
-        onZoomEnd={(evt: ViewStateChangeEvent) => setZoom(evt.viewState.zoom)}
       >
         <NavigationControl position="bottom-left" />
 
