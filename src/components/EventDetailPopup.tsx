@@ -95,6 +95,16 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
           <img src={detailIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{event.detail}</span>
         </div>
+        {/* GeoNet's `hazards` field (volcanoes only) - there's no separate
+            "latest bulletins" API to pull from (GeoNet's actual bulletins
+            are website content, not exposed via their documented API), so
+            this is the closest real, already-fetched data to that request. */}
+        {event.hazards && (
+          <div className="flex items-center gap-2.5 text-sm text-white/70">
+            <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
+            <span>{event.hazards}</span>
+          </div>
+        )}
         {distanceFromUserKm !== null && (
           <div className="flex items-center gap-2.5 text-sm text-white/70">
             <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
