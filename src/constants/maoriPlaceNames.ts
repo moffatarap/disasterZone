@@ -12,23 +12,26 @@
 //
 // 2. Traditional/historical Māori names with no Gazetteer record at all,
 //    verified against Te Ara (Encyclopedia of NZ) and/or Wikipedia to
-//    confirm both correct spelling (macrons matter - a missing macron is
-//    a different word) and that the name genuinely refers to the town
-//    itself, not merely a river/harbour/bay/district it sits in or near.
-//    That last check matters: several plausible-looking candidates were
-//    rejected specifically because they name an adjacent feature, not the
-//    town - Wellington's "Te Whanganui-a-Tara" names the harbour,
-//    Gisborne's "Tūranganui-a-Kiwa" is officially gazetted for Poverty Bay
-//    only (confirmed via Beehive/LINZ documentation), Lower Hutt's
-//    "Awakairangi" and Ashburton's "Hakatere" name their rivers, and
-//    Hastings' "Heretaunga" names the surrounding plains/district. Also
-//    rejected: names that turned out unattested or likely transcription
-//    errors when checked (Alexandra "Areketanara" is a modern phonetic
-//    transliteration with no historical use; Dannevirke "Taniwaka" isn't
-//    documented anywhere and closely resembles "taniwha," probably a
-//    mix-up; Masterton "Te Oreore" is actually Te Ore Ore, a marae near
-//    Masterton, not the town's own name; Upper Hutt "Whakatiki" is
-//    unattested and likely a garbling of the nearby Whakatīkei River).
+//    confirm correct spelling (macrons matter - a missing macron is a
+//    different word) and genuine historical attestation. This includes
+//    names for a river, harbour, or land block the town is built on or
+//    named after (Wellington/Te Whanganui-a-Tara, the harbour; Gisborne/
+//    Tūranganui-a-Kiwa, officially gazetted for Poverty Bay specifically;
+//    Lower Hutt/Awakairangi and Ashburton/Hakatere, their rivers;
+//    Hastings/Heretaunga, the land block Hastings was built on) - initially
+//    left out on a "must name the town, not an adjacent feature" test, but
+//    that's a Western administrative distinction that doesn't fit how
+//    Māori place-naming actually works, where a settlement's identity and
+//    its river/harbour are often the same naming tradition rather than
+//    separate namespaces. Kept out instead: names that turned out
+//    unattested or likely transcription errors when checked (Alexandra
+//    "Areketanara" is a modern phonetic transliteration with no historical
+//    use; Dannevirke "Taniwaka" isn't documented anywhere and closely
+//    resembles "taniwha," probably a mix-up; Masterton "Te Oreore" is
+//    actually Te Ore Ore, a marae near Masterton, not the town's own name;
+//    Upper Hutt "Whakatiki" is unattested and likely a garbling of the
+//    nearby Whakatīkei River) - those are excluded for not being real
+//    attested names at all, not for naming the "wrong" kind of feature.
 export const DUAL_NAMES: Record<string, string> = {
   // Tier 1: LINZ Gazetteer record (Official or Unofficial status)
   'White Island': 'Whakaari', // Gazetteer: "Whakaari / White Island", Official
@@ -38,7 +41,7 @@ export const DUAL_NAMES: Record<string, string> = {
   'Great Barrier Island': 'Aotea', // Gazetteer: "Great Barrier Island (Aotea Island)", Unofficial
 
   // Tier 2: traditional/historical name, no Gazetteer record, verified
-  // town-specific via Te Ara/Wikipedia
+  // via Te Ara/Wikipedia
   Napier: 'Ahuriri',
   Feilding: 'Aorangi',
   Thames: 'Parawai',
@@ -53,6 +56,11 @@ export const DUAL_NAMES: Record<string, string> = {
   Blenheim: 'Waiharakeke',
   Invercargill: 'Waihōpai',
   Nelson: 'Whakatū',
+  Wellington: 'Te Whanganui-a-Tara', // names Wellington Harbour
+  Gisborne: 'Tūranganui-a-Kiwa', // Gazetteer: "Tūranganui-a-Kiwa / Poverty Bay", Official (names the bay)
+  'Lower Hutt': 'Awakairangi', // names the Hutt River / Te Awa Kairangi
+  Ashburton: 'Hakatere', // Gazetteer: "Ashburton River/Hakatere", Official (names the river)
+  Hastings: 'Heretaunga', // names the land block Hastings was built on
 }
 
 /** "English" -> "Māori (English)" for places with a recorded dual name; unchanged otherwise. */
