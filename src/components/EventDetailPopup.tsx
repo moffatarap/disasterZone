@@ -17,9 +17,10 @@ interface EventDetailPopupProps {
 // The lighter severity colors (light/moderate) need dark text for contrast; the rest read fine in white.
 const DARK_TEXT_SEVERITIES: SeverityLevel[] = ['light', 'moderate']
 
-// The original detail icons are drawn near-white for a dark card that never
-// shipped - `invert` maps that to near-black so they read on our light card.
-const DETAIL_ICON_CLASS = 'h-6 w-6 flex-none opacity-50 invert'
+// The icons are drawn near-white - no longer inverted now that the card
+// itself is dark again (a `invert` step used to flip them near-black for a
+// light card; removed along with the light card itself).
+const DETAIL_ICON_CLASS = 'h-6 w-6 flex-none opacity-60'
 
 // Popup close button + tip are library-rendered DOM we don't control directly,
 // so they're restyled via Tailwind's arbitrary descendant-selector syntax.
@@ -28,8 +29,22 @@ const DETAIL_ICON_CLASS = 'h-6 w-6 flex-none opacity-50 invert'
 // The close button is sized to a full 44x44px touch target (WCAG 2.5.5 /
 // Apple HIG minimum) even though its visible "x" glyph stays small -
 // centered inside via flex, so the enlarged tap area doesn't look oversized.
+//
+// `!` (important) on rounded-2xl/bg/p-0/shadow/ring/close-button-rounded-full:
+// maplibre-gl.css ships its own border-radius/background/padding/box-shadow
+// for .maplibregl-popup-content (and its own border-radius for the close
+// button) as plain unlayered CSS, which beats any Tailwind utility (Tailwind
+// wraps utilities in @layer, and unlayered rules always win over layered
+// ones regardless of specificity) unless marked important - the same fix
+// already used for the map's zoom control size. Without it the card silently
+// stayed white with square corners despite rounded-2xl being present in the
+// class list, and the close button rendered as a barely-rounded rectangle
+// instead of the intended circle. The tip triangle needs the same treatment:
+// `anchor="bottom"` (fixed, below) means MapLibre always applies
+// `.maplibregl-popup-anchor-bottom`, whose only active tip rule is
+// `border-top-color`, so only that one side needs overriding.
 const POPUP_CLASSNAME =
-  '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:rounded-2xl [&_.maplibregl-popup-content]:p-0 [&_.maplibregl-popup-content]:shadow-xl [&_.maplibregl-popup-content]:ring-1 [&_.maplibregl-popup-content]:ring-black/5 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-slate-400 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-slate-100 [&_.maplibregl-popup-close-button]:hover:text-slate-600 [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-slate-300'
+  '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:!rounded-2xl [&_.maplibregl-popup-content]:!bg-slate-900 [&_.maplibregl-popup-content]:!p-0 [&_.maplibregl-popup-content]:!shadow-xl [&_.maplibregl-popup-content]:!ring-1 [&_.maplibregl-popup-content]:!ring-white/10 [&_.maplibregl-popup-tip]:!border-t-slate-900 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:!rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-white/60 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-white/10 [&_.maplibregl-popup-close-button]:hover:text-white [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-white/30'
 
 export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPopupProps) {
   const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
@@ -62,29 +77,29 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       </div>
 
       <div className="px-4 pt-3">
-        <h3 className="text-sm font-semibold text-slate-900">{event.title}</h3>
-        <p className="mt-0.5 text-lg font-bold text-slate-800">{event.ratingText}</p>
+        <h3 className="text-sm font-semibold text-white">{event.title}</h3>
+        <p className="mt-0.5 text-lg font-bold text-white">{event.ratingText}</p>
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 px-4 py-3">
-        <div className="flex items-center gap-2.5 text-sm text-slate-500">
+      <div className="mt-3 flex flex-col gap-2 border-t border-white/10 px-4 py-3">
+        <div className="flex items-center gap-2.5 text-sm text-white/70">
           <img src={detailIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{event.detail}</span>
         </div>
         {distanceFromUserKm !== null && (
-          <div className="flex items-center gap-2.5 text-sm text-slate-500">
+          <div className="flex items-center gap-2.5 text-sm text-white/70">
             <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
             <span>{formatDistanceKm(distanceFromUserKm)} from you</span>
           </div>
         )}
-        <div className="flex items-center gap-2.5 text-sm text-slate-500">
+        <div className="flex items-center gap-2.5 text-sm text-white/70">
           <img src={timeIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{formatRelativeTime(event.time)}</span>
         </div>
       </div>
 
       {event.subtitle && (
-        <p className="border-t border-slate-100 px-4 py-2 text-[10px] text-slate-400">
+        <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/40">
           Event ID: {event.subtitle}
         </p>
       )}
