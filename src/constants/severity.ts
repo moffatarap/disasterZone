@@ -35,6 +35,11 @@ export const FILTERABLE_SEVERITY_LEVELS = SEVERITY_LEVELS.filter(
   (level): level is Exclude<SeverityLevel, 'none'> => level !== 'none',
 )
 
+// Display order only (severe first) for the filter row and the map key -
+// SEVERITY_LEVELS itself must stay ascending since volcanoLevelToSeverity
+// indexes into it positionally by GeoNet's 0-5 alert level.
+export const FILTERABLE_SEVERITY_LEVELS_DESC = [...FILTERABLE_SEVERITY_LEVELS].reverse()
+
 /** Base alert-circle radius in metres, indexed by severity level (0-5). */
 export const SEVERITY_RADIUS_METERS: Record<SeverityLevel, number> = {
   none: 650,

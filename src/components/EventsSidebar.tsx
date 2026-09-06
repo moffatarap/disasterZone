@@ -2,7 +2,7 @@ import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
 import {
   EARTHQUAKE_ICONS,
-  FILTERABLE_SEVERITY_LEVELS,
+  FILTERABLE_SEVERITY_LEVELS_DESC,
   SEVERITY_COLORS,
   VOLCANO_ICONS,
   type SeverityLevel,
@@ -38,8 +38,12 @@ const KIND_ENTRIES: { kind: HazardKind; icon: string; label: string }[] = [
   { kind: 'volcano', icon: volcanoIcon, label: 'Volcano' },
 ]
 
+// Sized up from an earlier, much smaller/subtler chip design per explicit
+// feedback that the filters weren't prominent enough - `flex-none` keeps
+// each chip full-size inside the severity row's horizontal-scroll container
+// below rather than shrinking to fit.
 const CHIP_CLASS =
-  'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium capitalize transition-colors'
+  'flex flex-none items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold capitalize transition-colors'
 
 export function EventsSidebar({
   events,
@@ -93,8 +97,8 @@ export function EventsSidebar({
           </button>
         </div>
 
-        <div className="flex flex-none flex-col gap-1.5 border-b border-white/10 px-4 pb-3">
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-none flex-col gap-2 border-b border-white/10 px-4 pb-3">
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4">
             {KIND_ENTRIES.map(({ kind, icon, label }) => {
               const active = visibleKinds.has(kind)
               return (
@@ -105,14 +109,18 @@ export function EventsSidebar({
                   aria-pressed={active}
                   className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
                 >
-                  <img src={icon} alt="" className="h-4 w-4" />
+                  <img src={icon} alt="" className="h-5 w-5" />
                   {label}
                 </button>
               )
             })}
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {FILTERABLE_SEVERITY_LEVELS.map((level) => {
+          {/* Kept to a single row (severe-to-weak, matching the map key) per
+              explicit request - five full-size chips don't all fit on a
+              narrow phone screen, so this scrolls horizontally there rather
+              than wrapping or shrinking the chips down again. */}
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+            {FILTERABLE_SEVERITY_LEVELS_DESC.map((level) => {
               const active = visibleSeverities.has(level)
               return (
                 <button
@@ -123,7 +131,7 @@ export function EventsSidebar({
                   className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
                 >
                   <span
-                    className="h-2.5 w-2.5 flex-none rounded-full"
+                    className="h-3 w-3 flex-none rounded-full"
                     style={{ backgroundColor: SEVERITY_COLORS[level] }}
                   />
                   {level}

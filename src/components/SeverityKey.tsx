@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
-import { FILTERABLE_SEVERITY_LEVELS, SEVERITY_COLORS } from '../constants/severity'
+import { FILTERABLE_SEVERITY_LEVELS_DESC, SEVERITY_COLORS } from '../constants/severity'
 
 // Fire/flood/hurricane/tornado are intentionally left out of the key for now -
 // they aren't wired to real data yet (see the placeholder-events phase).
@@ -63,7 +63,7 @@ export function SeverityKey({ sidebarOpen }: SeverityKeyProps) {
           INTENSITY
         </h4>
         <ul className="flex flex-col gap-1">
-          {FILTERABLE_SEVERITY_LEVELS.map((level) => (
+          {FILTERABLE_SEVERITY_LEVELS_DESC.map((level) => (
             <li key={level} className="flex items-center gap-1.5 text-sm capitalize">
               <span
                 className="h-4 w-4 flex-none rounded-full"
