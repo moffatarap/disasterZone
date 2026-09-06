@@ -16,15 +16,20 @@ export interface CityImage {
 
 import auckland from '../assets/media/img/cities/auckland.jpg'
 import christchurch from '../assets/media/img/cities/christchurch.jpg'
+import dunedin from '../assets/media/img/cities/dunedin.jpg'
+import gisborne from '../assets/media/img/cities/gisborne.jpg'
+import hamilton from '../assets/media/img/cities/hamilton.jpg'
 import hastings from '../assets/media/img/cities/hastings.jpg'
 import kaikoura from '../assets/media/img/cities/kaikoura.jpg'
 import napier from '../assets/media/img/cities/napier.jpg'
 import nelson from '../assets/media/img/cities/nelson.jpg'
+import palmerstonNorth from '../assets/media/img/cities/palmerston_north.jpg'
 import queenstown from '../assets/media/img/cities/queenstown.jpg'
 import rotoruaCity from '../assets/media/img/cities/rotorua_city.jpg'
 import tauranga from '../assets/media/img/cities/tauranga.jpg'
 import timaru from '../assets/media/img/cities/timaru.jpg'
 import wellington from '../assets/media/img/cities/wellington.jpg'
+import whanganui from '../assets/media/img/cities/whanganui.jpg'
 
 // Keyed by the exact `name` strings used in data/nzLocalities.ts.
 export const CITY_IMAGES: Record<string, CityImage> = {
@@ -93,5 +98,35 @@ export const CITY_IMAGES: Record<string, CityImage> = {
     credit: 'Bernard Spragg',
     licenseName: 'CC0',
     licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  },
+  Hamilton: {
+    src: hamilton,
+    credit: 'Pseudopanax',
+    licenseName: 'Public domain',
+    licenseUrl: null,
+  },
+  Gisborne: {
+    src: gisborne,
+    credit: 'Wikimedia Commons',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+  },
+  Whanganui: {
+    src: whanganui,
+    credit: 'Ang Wickham',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+  },
+  'Palmerston North': {
+    src: palmerstonNorth,
+    credit: 'Michal Klajban',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+  Dunedin: {
+    src: dunedin,
+    credit: 'Diego Delso',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
   },
 }
