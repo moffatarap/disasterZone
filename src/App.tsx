@@ -150,8 +150,12 @@ function App() {
           state - EventsSidebar is `sm:absolute` within this container rather
           than fixed-to-viewport (so it no longer overlaps the navbar), but
           that means its off-screen translate now counts toward this
-          container's scrollable width unless clipped here. */}
-      <div className="relative min-h-0 flex-1 overflow-hidden">
+          container's scrollable width unless clipped here.
+          `<main>`, not `<div>`, so this region (and everything inside it,
+          including MapLibre's own attribution control) sits inside a
+          landmark - an axe-core best-practice audit flagged the map's
+          attribution text as unlandmarked content. */}
+      <main className="relative min-h-0 flex-1 overflow-hidden">
         <DisasterMap
           userLocation={effectiveLocation}
           events={filteredEvents}
@@ -205,7 +209,7 @@ function App() {
           onToggleSeverity={toggleSeverity}
           onResetFilters={resetFilters}
         />
-      </div>
+      </main>
     </div>
   )
 }

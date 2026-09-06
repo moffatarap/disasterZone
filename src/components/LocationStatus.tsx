@@ -79,7 +79,18 @@ export function LocationStatus({
 
   if (address) {
     return (
-      <div className="absolute bottom-4 left-1/2 z-[6] flex w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 items-center gap-2 rounded-full bg-slate-900/90 px-4 py-2 text-white shadow-lg">
+      // bottom-16, not bottom-4 - at bottom-4 this card sat on top of
+      // MapLibre's own attribution control at the bottom of the map,
+      // making the required attribution link unreadable underneath it
+      // (found via an accessibility audit's bounding-box check, confirmed
+      // with a screenshot). bottom-16 clears its ~44px height with margin.
+      // left-20/right-4 (not centered) - a centered card at that height
+      // extends into the bottom-left zoom control's ~54px-wide column,
+      // partially obscuring it (another audit finding, this one a target-
+      // size violation). Insetting the left edge past that column, then
+      // letting mx-auto center the card within the remaining space, clears
+      // it without needing to push the card even higher.
+      <div className="absolute bottom-16 left-20 right-4 z-[6] mx-auto flex max-w-sm items-center gap-2 rounded-full bg-slate-900/90 px-4 py-2 text-white shadow-lg">
         <img src={locationIcon} alt="" className="h-4 w-4 flex-none" />
         <span className="min-w-0 flex-1 truncate text-xs">{address}</span>
         {isManualAddress && (
@@ -97,8 +108,13 @@ export function LocationStatus({
 
   if (locationError) {
     return (
-      <div className="absolute bottom-4 left-1/2 z-[6] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
-        <h3 className="text-sm font-semibold">Can't get your location</h3>
+      // See the bottom-16/left-20 notes on the address-pill branch above -
+      // same attribution-overlap and zoom-control-overlap fixes apply here.
+      <div className="absolute bottom-16 left-20 right-4 z-[6] mx-auto max-w-sm rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
+        {/* h2, not h3 - see the matching note in EventDetailPopup.tsx: this
+            floating card is its own top-level section, not nested under
+            anything else on the page. */}
+        <h2 className="text-sm font-semibold">Can't get your location</h2>
         <p className="mt-1 text-xs text-white/85">
           Enter your address instead to see how far events are from you.
         </p>
@@ -109,7 +125,7 @@ export function LocationStatus({
             onChange={(event) => setInputValue(event.target.value)}
             placeholder="e.g. Lambton Quay, Wellington"
             autoComplete="off"
-            className="min-w-0 flex-1 rounded-md bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:bg-white/15 focus:outline-none"
+            className="min-w-0 flex-1 rounded-md bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/55 focus:bg-white/15 focus:outline-none"
           />
           <button
             type="submit"

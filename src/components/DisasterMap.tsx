@@ -138,7 +138,16 @@ export function DisasterMap({
     // unlayered CSS, which always beats a Tailwind utility (Tailwind wraps
     // utilities in @layer, and unlayered rules win over layered ones
     // regardless of specificity) unless marked important.
-    <div className="h-full w-full [&_.maplibregl-ctrl-group_button]:!h-11 [&_.maplibregl-ctrl-group_button]:!w-11">
+    //
+    // The attribution link gets the same treatment for a different reason:
+    // an axe-core audit flagged it as failing "distinguishable without
+    // relying on color" (WCAG 1.4.1) - MapLibre's default styles give it
+    // color:rgba(0,0,0,.75) and no underline, and against the semi-
+    // transparent attribution bar sitting over a dark map, that measured
+    // as low as 2.02:1 in this app with no other visual distinction from
+    // the surrounding text. An underline resolves it regardless of the
+    // exact background it ends up over.
+    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-group_button]:!h-11 [&_.maplibregl-ctrl-group_button]:!w-11">
       <Map
         ref={mapRef}
         initialViewState={DEFAULT_VIEW}

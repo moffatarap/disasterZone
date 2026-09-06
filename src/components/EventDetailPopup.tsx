@@ -2,7 +2,7 @@ import { Popup } from 'react-map-gl/maplibre'
 import depthIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQDepth.svg'
 import epicenterIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQEpicenter.svg'
 import timeIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsTime.svg'
-import { SEVERITY_COLORS, type SeverityLevel } from '../constants/severity'
+import { SEVERITY_COLORS } from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { haversineDistanceKm, formatDistanceKm } from '../lib/geo'
 import { formatRelativeTime } from '../lib/relativeTime'
@@ -13,9 +13,6 @@ interface EventDetailPopupProps {
   userLocation: UserLocation | null
   onClose: () => void
 }
-
-// The lighter severity colors (light/moderate) need dark text for contrast; the rest read fine in white.
-const DARK_TEXT_SEVERITIES: SeverityLevel[] = ['light', 'moderate']
 
 // The icons are drawn near-white - no longer inverted now that the card
 // itself is dark again (a `invert` step used to flip them near-black for a
@@ -47,9 +44,6 @@ const POPUP_CLASSNAME =
   '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:!rounded-2xl [&_.maplibregl-popup-content]:!bg-slate-900 [&_.maplibregl-popup-content]:!p-0 [&_.maplibregl-popup-content]:!shadow-xl [&_.maplibregl-popup-content]:!ring-1 [&_.maplibregl-popup-content]:!ring-white/10 [&_.maplibregl-popup-tip]:!border-t-slate-900 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:!rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-white/60 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-white/10 [&_.maplibregl-popup-close-button]:hover:text-white [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-white/30'
 
 export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPopupProps) {
-  const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
-    ? 'text-slate-800'
-    : 'text-white'
   const detailIcon = event.kind === 'earthquake' ? depthIcon : epicenterIcon
   const distanceFromUserKm =
     event.kind === 'earthquake' && userLocation
@@ -68,8 +62,11 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       className={POPUP_CLASSNAME}
     >
       <div className="flex items-start pt-4 pr-14 pl-4">
+        {/* White text uniformly - every SEVERITY_COLORS value now clears
+            4.5:1 against white (see the comment there), so no more
+            per-severity dark-text special-casing needed here. */}
         <span
-          className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase ${badgeTextClass}`}
+          className="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide text-white uppercase"
           style={{ backgroundColor: SEVERITY_COLORS[event.severity] }}
         >
           {event.severity}
@@ -77,7 +74,11 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       </div>
 
       <div className="px-4 pt-3">
-        <h3 className="text-sm font-semibold text-white">{event.title}</h3>
+        {/* h2, not h3 - a floating popup is its own top-level section, a
+            sibling to the page's other floating panels, not nested under
+            any of them (an axe-core heading-order audit flagged this
+            jumping straight from the page's one h1 to h3). */}
+        <h2 className="text-sm font-semibold text-white">{event.title}</h2>
         <p className="mt-0.5 text-lg font-bold text-white">{event.ratingText}</p>
       </div>
 
@@ -98,8 +99,11 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
         </div>
       </div>
 
+      {/* text-white/50, not /40 - the fainter value measured 3.8:1 against
+          the card's slate-900 background (needs 4.5:1), found by the same
+          axe-core audit as the severity badge fix above. */}
       {event.subtitle && (
-        <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/40">
+        <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/50">
           Event ID: {event.subtitle}
         </p>
       )}

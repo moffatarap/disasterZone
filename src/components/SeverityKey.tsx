@@ -51,7 +51,12 @@ export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }:
           expanded ? 'block' : 'hidden'
         }`}
       >
-        <h4 className="mb-1.5 text-xs tracking-wide text-slate-500">KEY</h4>
+        {/* h2/h3, not h4 - this panel's headings previously jumped straight
+            from the page's one h1 (the navbar title) to h4, skipping levels
+            (flagged by an axe-core heading-order audit). KEY is a top-level
+            sibling section to the page's other floating panels (h2);
+            INTENSITY nests one level under it (h3). */}
+        <h2 className="mb-1.5 text-xs tracking-wide text-slate-500">KEY</h2>
         <ul className="flex flex-col gap-1">
           {KIND_ENTRIES.map((entry) => (
             <li key={entry.label} className="flex items-center gap-1.5 text-sm">
@@ -61,9 +66,9 @@ export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }:
           ))}
         </ul>
 
-        <h4 className="mt-3 mb-1.5 border-t border-slate-100 pt-2.5 text-xs tracking-wide text-slate-500">
+        <h3 className="mt-3 mb-1.5 border-t border-slate-100 pt-2.5 text-xs tracking-wide text-slate-500">
           INTENSITY
-        </h4>
+        </h3>
         <ul className="flex flex-col gap-1">
           {FILTERABLE_SEVERITY_LEVELS_DESC.map((level) => (
             <li key={level} className="flex items-center gap-1.5 text-sm capitalize">

@@ -71,9 +71,13 @@ export function EventsSidebar({
         }`}
       />
 
+      {/* No role="dialog"/aria-modal here (an axe-core audit flagged
+          "dialog" as an invalid role for <aside>) - and it would have been
+          semantically wrong anyway: this panel has no focus trap or Escape
+          handling, so it was never actually behaving as a modal dialog.
+          <aside> already carries an implicit "complementary" landmark role
+          on its own, which is what this actually is. */}
       <aside
-        role="dialog"
-        aria-modal="true"
         aria-label="Recent events"
         className={`fixed inset-x-0 bottom-0 z-20 flex max-h-[65vh] flex-col rounded-t-2xl bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:absolute sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-80 sm:rounded-none ${
           isOpen ? 'translate-y-0 sm:translate-x-0' : 'translate-y-full sm:translate-x-full sm:translate-y-0'
@@ -107,7 +111,7 @@ export function EventsSidebar({
                   type="button"
                   onClick={() => onToggleKind(kind)}
                   aria-pressed={active}
-                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
+                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/50'}`}
                 >
                   <img src={icon} alt="" className="h-5 w-5" />
                   {label}
@@ -128,7 +132,7 @@ export function EventsSidebar({
                   type="button"
                   onClick={() => onToggleSeverity(level)}
                   aria-pressed={active}
-                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/40'}`}
+                  className={`${CHIP_CLASS} ${active ? 'bg-white/15 text-white' : 'bg-white/5 text-white/50'}`}
                 >
                   <span
                     className="h-3 w-3 flex-none rounded-full"

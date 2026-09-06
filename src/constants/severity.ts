@@ -75,13 +75,24 @@ export const SEVERITY_RADIUS_METERS: Record<SeverityLevel, number> = {
   severe: 50000,
 }
 
+// Darkened from the original palette (weak/light/moderate/strong were all
+// near-pastel: e.g. weak was #4ecbf2) after an axe-core color-contrast audit
+// found white text/icon glyphs on top of them failing WCAG - as low as
+// 1.57:1 for moderate's original yellow, against a 4.5:1 AA text minimum (or
+// 3:1 for the graphical icon glyphs). Every value here now clears >=4.5:1
+// with white foreground content, so a single white-text/white-glyph
+// treatment works uniformly across every severity (see EventDetailPopup,
+// which used to need per-severity dark-text overrides for the paler ones).
+// Also now shared exactly with the marker SVGs (src/assets/.../event/*/*.svg),
+// which previously used very slightly different hex values for the same
+// severities - one unintentional inconsistency fixed alongside the audit.
 export const SEVERITY_COLORS: Record<SeverityLevel, string> = {
   none: '#353535',
-  weak: '#4ecbf2',
-  light: '#31c95c',
-  moderate: '#f2c92d',
-  strong: '#f68824',
-  severe: '#e52419',
+  weak: '#097698',
+  light: '#157431',
+  moderate: '#756100',
+  strong: '#ac5e00',
+  severe: '#e72101',
 }
 
 // The original multiplied the base radius per-hazard-type for visual effect
