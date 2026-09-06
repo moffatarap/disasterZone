@@ -3,6 +3,7 @@ import {
   SEVERITY_PROXIMITY_SUPPRESSION_KM,
   VOLCANO_RADIUS_MULTIPLIER,
   alertRadiusMeters,
+  isSeverityAtLeast,
 } from '../constants/severity'
 import type { DisasterEvent } from '../types/event'
 import { haversineDistanceKm } from './geo'
@@ -48,10 +49,18 @@ function suppressionRadiusKm(a: DisasterEvent, b: DisasterEvent): number {
  * locations, they represent an ongoing alert level rather than a discrete
  * timestamped event, and "more recent" isn't a meaningful comparison for
  * them - the actual crowding problem this targets is earthquake swarms.
+ *
+ * Only moderate-and-above earthquakes take part at all, on either side of
+ * the comparison - a weak or light quake's circle is never suppressed, and
+ * never suppresses anything else either. Below moderate, "which one wins"
+ * isn't worth the clutter tradeoff - these are minor enough that just
+ * showing all of them is fine.
  */
 export function computeStackedCircleSuppressions(events: DisasterEvent[]): Set<string> {
   const suppressed = new Set<string>()
-  const quakes = events.filter((event) => event.kind === 'earthquake')
+  const quakes = events.filter(
+    (event) => event.kind === 'earthquake' && isSeverityAtLeast(event.severity, 'moderate'),
+  )
 
   for (const event of quakes) {
     const eventTime = event.time?.getTime() ?? 0

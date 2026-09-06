@@ -28,6 +28,11 @@ export const SEVERITY_LEVELS = [
 
 export type SeverityLevel = (typeof SEVERITY_LEVELS)[number]
 
+/** True if `severity` is at least as severe as `threshold`, per SEVERITY_LEVELS' ascending order. */
+export function isSeverityAtLeast(severity: SeverityLevel, threshold: SeverityLevel): boolean {
+  return SEVERITY_LEVELS.indexOf(severity) >= SEVERITY_LEVELS.indexOf(threshold)
+}
+
 // "none" is never actually shown on the map (volcanoes at level 0 are
 // filtered out, quakes are never classed "none"), so it's excluded from the
 // severity key and from the filter's "all severities visible" default.
