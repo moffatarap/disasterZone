@@ -1,4 +1,9 @@
-import { EARTHQUAKE_RADIUS_MULTIPLIER, VOLCANO_RADIUS_MULTIPLIER, alertRadiusMeters } from '../constants/severity'
+import {
+  EARTHQUAKE_RADIUS_MULTIPLIER,
+  SEVERITY_PROXIMITY_SUPPRESSION_KM,
+  VOLCANO_RADIUS_MULTIPLIER,
+  alertRadiusMeters,
+} from '../constants/severity'
 import type { DisasterEvent } from '../types/event'
 import { haversineDistanceKm } from './geo'
 
@@ -12,13 +17,32 @@ export function eventAlertRadiusMeters(event: DisasterEvent): number {
 }
 
 /**
- * When two earthquakes' alert circles overlap, showing both floods the map
- * with overlapping colour washes and can bury a smaller/older event's
- * marker entirely (the problem this exists to solve). Instead, an event's
- * circle is suppressed if a *more recent* earthquake's circle overlaps it -
- * the newest event in an overlapping cluster "wins" and stays visible by
- * default, with everything else revealed again on zoom-in or selection
- * (handled by the caller, not here).
+ * The more severe of the two events sets how close together they need to be
+ * to count as "the same cluster" - a severe quake's aftershock zone is
+ * physically wider than a weak one's.
+ */
+function suppressionRadiusKm(a: DisasterEvent, b: DisasterEvent): number {
+  return Math.max(
+    SEVERITY_PROXIMITY_SUPPRESSION_KM[a.severity],
+    SEVERITY_PROXIMITY_SUPPRESSION_KM[b.severity],
+  )
+}
+
+/**
+ * When two earthquakes happen close together, showing both circles floods
+ * the map with overlapping colour washes and can bury a smaller/older
+ * event's marker entirely (the problem this exists to solve). An event's
+ * circle is suppressed if a *more recent* nearby earthquake exists - the
+ * newest event in a cluster "wins" and stays visible by default, with
+ * everything else revealed again on zoom-in or selection (handled by the
+ * caller, not here).
+ *
+ * "Nearby" is real epicenter-to-epicenter distance (see
+ * SEVERITY_PROXIMITY_SUPPRESSION_KM), not whether the two events' *visual*
+ * alert circles happen to overlap on screen - that radius scales with
+ * severity multiplier and balloons past 200km for a severe quake, which
+ * would suppress unrelated severe quakes on opposite ends of the country
+ * just because their inflated circles overlapped.
  *
  * Volcanoes are exempt: there are only ever a handful of fixed, well-known
  * locations, they represent an ongoing alert level rather than a discrete
@@ -31,19 +55,17 @@ export function computeStackedCircleSuppressions(events: DisasterEvent[]): Set<s
 
   for (const event of quakes) {
     const eventTime = event.time?.getTime() ?? 0
-    const eventRadius = eventAlertRadiusMeters(event)
 
-    const hasNewerOverlap = quakes.some((other) => {
+    const hasNewerNearby = quakes.some((other) => {
       if (other.id === event.id) return false
       const otherTime = other.time?.getTime() ?? 0
       if (otherTime <= eventTime) return false
 
-      const otherRadius = eventAlertRadiusMeters(other)
-      const distanceMeters = haversineDistanceKm(event.location, other.location) * 1000
-      return distanceMeters < eventRadius + otherRadius
+      const distanceKm = haversineDistanceKm(event.location, other.location)
+      return distanceKm <= suppressionRadiusKm(event, other)
     })
 
-    if (hasNewerOverlap) suppressed.add(event.id)
+    if (hasNewerNearby) suppressed.add(event.id)
   }
 
   return suppressed

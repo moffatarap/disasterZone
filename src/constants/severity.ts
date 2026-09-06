@@ -40,6 +40,26 @@ export const FILTERABLE_SEVERITY_LEVELS = SEVERITY_LEVELS.filter(
 // indexes into it positionally by GeoNet's 0-5 alert level.
 export const FILTERABLE_SEVERITY_LEVELS_DESC = [...FILTERABLE_SEVERITY_LEVELS].reverse()
 
+/**
+ * How close together (in km, real-world epicenter distance) two earthquakes
+ * need to be for the older one's alert circle to be suppressed in favour of
+ * a newer nearby one - see computeStackedCircleSuppressions. Scales with
+ * severity (a bigger quake's "this is the same cluster" radius is larger)
+ * but capped to realistic distances, unlike the visual alert-circle radius
+ * below which balloons past 200km for a severe quake and was previously
+ * (wrongly) used as the overlap test itself - two unrelated severe quakes on
+ * opposite ends of the country could suppress each other purely because
+ * their inflated *visual* circles overlapped on screen.
+ */
+export const SEVERITY_PROXIMITY_SUPPRESSION_KM: Record<SeverityLevel, number> = {
+  none: 20,
+  weak: 20,
+  light: 27.5,
+  moderate: 35,
+  strong: 42.5,
+  severe: 50,
+}
+
 /** Base alert-circle radius in metres, indexed by severity level (0-5). */
 export const SEVERITY_RADIUS_METERS: Record<SeverityLevel, number> = {
   none: 650,
