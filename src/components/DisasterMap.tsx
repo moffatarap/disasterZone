@@ -173,7 +173,13 @@ export function DisasterMap({
           />
         ))}
 
-        {events.map((event) => (
+        {/* `events` arrives newest-first (App.tsx sorts earthquakes that way
+            for the sidebar's benefit) - rendered in that order, the newest
+            marker would be earliest in the DOM and so paint *underneath*
+            every older one it overlaps, backwards from the intended "newest
+            on top". Reversed here, for marker stacking only, so the last
+            one painted - and therefore the one on top - is the newest. */}
+        {[...events].reverse().map((event) => (
           <EventMarker
             key={event.id}
             event={event}
