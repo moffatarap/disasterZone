@@ -15,9 +15,9 @@ function parseGeonetTime(origintime: string): Date {
 // GeoNet's felt-quake feed gives only coordinates and an opaque ID
 // (e.g. "2026p666955") - no place name - so we build a human-readable
 // description ourselves, the same way GeoNet/USGS phrase their own quake
-// summaries. withMaoriName() shows "Māori (English)" for the couple of
-// localities (e.g. Milford Sound) with an officially gazetted dual name;
-// unchanged for everywhere else, which is most places - see
+// summaries. withMaoriName() shows "Māori (English)" for the handful of
+// localities (e.g. Milford Sound) with a real Gazetteer-recorded dual
+// name; unchanged for everywhere else, which is most places - see
 // constants/maoriPlaceNames.ts for why this list is short and deliberate.
 function describeEarthquakeLocation(name: string, distanceKm: number, bearing: CompassDirection): string {
   const displayName = withMaoriName(name)
