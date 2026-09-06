@@ -2,6 +2,7 @@ import {
   earthquakeIntensityToSeverity,
   volcanoLevelToSeverity,
 } from '../constants/severity'
+import { withMaoriName } from '../constants/maoriPlaceNames'
 import { formatDistanceKm, nearestLocality, type CompassDirection } from './geo'
 import type { EarthquakeFeature, VolcanoFeature } from '../types/geonet'
 import type { DisasterEvent } from '../types/event'
@@ -14,10 +15,14 @@ function parseGeonetTime(origintime: string): Date {
 // GeoNet's felt-quake feed gives only coordinates and an opaque ID
 // (e.g. "2026p666955") - no place name - so we build a human-readable
 // description ourselves, the same way GeoNet/USGS phrase their own quake
-// summaries.
+// summaries. withMaoriName() shows "Māori (English)" for the couple of
+// localities (e.g. Milford Sound) with an officially gazetted dual name;
+// unchanged for everywhere else, which is most places - see
+// constants/maoriPlaceNames.ts for why this list is short and deliberate.
 function describeEarthquakeLocation(name: string, distanceKm: number, bearing: CompassDirection): string {
-  if (distanceKm < 2) return `Near ${name}`
-  return `${formatDistanceKm(distanceKm)} ${bearing} of ${name}`
+  const displayName = withMaoriName(name)
+  if (distanceKm < 2) return `Near ${displayName}`
+  return `${formatDistanceKm(distanceKm)} ${bearing} of ${displayName}`
 }
 
 export function earthquakeToEvent(feature: EarthquakeFeature): DisasterEvent {
@@ -51,7 +56,7 @@ export function volcanoToEvent(feature: VolcanoFeature): DisasterEvent {
     id: feature.properties.volcanoID,
     kind: 'volcano',
     severity,
-    title: feature.properties.volcanoTitle,
+    title: withMaoriName(feature.properties.volcanoTitle),
     location: { lat, lng },
     ratingText: `Alert Level ${feature.properties.level}`,
     time: null,
