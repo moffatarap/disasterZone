@@ -3,6 +3,7 @@ import depthIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQDep
 import epicenterIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQEpicenter.svg'
 import timeIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsTime.svg'
 import { SEVERITY_COLORS, type SeverityLevel } from '../constants/severity'
+import { VOLCANO_IMAGES } from '../constants/volcanoImages'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { haversineDistanceKm, formatDistanceKm } from '../lib/geo'
 import { formatRelativeTime } from '../lib/relativeTime'
@@ -64,6 +65,10 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
   const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
     ? 'text-slate-800'
     : 'text-white'
+  // `event.id` is the volcano's GeoNet volcanoID for volcano events (see
+  // volcanoToEvent) - reused directly as the lookup key rather than adding
+  // a separate field just for this.
+  const volcanoImage = event.kind === 'volcano' ? VOLCANO_IMAGES[event.id] : undefined
   const detailIcon = event.kind === 'earthquake' ? depthIcon : epicenterIcon
   const distanceFromUserKm =
     event.kind === 'earthquake' && userLocation
@@ -81,6 +86,31 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       maxWidth="calc(100vw - 2rem)"
       className={POPUP_CLASSNAME}
     >
+      {/* Illustrative, not live - see the comment in constants/volcanoImages.ts
+          for why (no reliable way to source GeoNet's actual live crater-cam
+          images from a static, backend-less frontend). Full-bleed against
+          the card's own rounded-2xl + overflow-hidden, so no padding here -
+          the close button (MapLibre-rendered, top-right) sits on top of it. */}
+      {volcanoImage && (
+        <div>
+          <img
+            src={volcanoImage.src}
+            alt={`${event.title} volcano`}
+            className="h-32 w-full object-cover"
+          />
+          <p className="px-4 pt-1.5 text-[9px] text-white/50">
+            Photo: {volcanoImage.credit} ·{' '}
+            {volcanoImage.licenseUrl ? (
+              <a href={volcanoImage.licenseUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {volcanoImage.licenseName}
+              </a>
+            ) : (
+              volcanoImage.licenseName
+            )}
+          </p>
+        </div>
+      )}
+
       <div className="flex items-start pt-4 pr-14 pl-4">
         <span
           className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase ${badgeTextClass}`}
