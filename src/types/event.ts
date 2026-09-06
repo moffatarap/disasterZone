@@ -16,4 +16,6 @@ export interface DisasterEvent {
   /** e.g. quake origin time; omitted for volcanoes (GeoNet doesn't timestamp alert-level changes) */
   time: Date | null
   detail: string
+  /** Nearest named locality (earthquakes only) - used to look up a curated city photo, when one exists. */
+  nearestLocalityName?: string
 }

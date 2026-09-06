@@ -2,7 +2,7 @@ import {
   earthquakeIntensityToSeverity,
   volcanoLevelToSeverity,
 } from '../constants/severity'
-import { formatDistanceKm, nearestLocality, type LatLng } from './geo'
+import { formatDistanceKm, nearestLocality, type CompassDirection } from './geo'
 import type { EarthquakeFeature, VolcanoFeature } from '../types/geonet'
 import type { DisasterEvent } from '../types/event'
 
@@ -15,8 +15,7 @@ function parseGeonetTime(origintime: string): Date {
 // (e.g. "2026p666955") - no place name - so we build a human-readable
 // description ourselves, the same way GeoNet/USGS phrase their own quake
 // summaries.
-function describeEarthquakeLocation(point: LatLng): string {
-  const { name, distanceKm, bearing } = nearestLocality(point)
+function describeEarthquakeLocation(name: string, distanceKm: number, bearing: CompassDirection): string {
   if (distanceKm < 2) return `Near ${name}`
   return `${formatDistanceKm(distanceKm)} ${bearing} of ${name}`
 }
@@ -26,17 +25,21 @@ export function earthquakeToEvent(feature: EarthquakeFeature): DisasterEvent {
   const location = { lat, lng }
   const severity = earthquakeIntensityToSeverity(feature.properties.intensity)
   const magnitude = Math.round(feature.properties.magnitude * 10) / 10
+  const { name: localityName, distanceKm, bearing } = nearestLocality(location)
 
   return {
     id: feature.id,
     kind: 'earthquake',
     severity,
-    title: describeEarthquakeLocation(location),
+    title: describeEarthquakeLocation(localityName, distanceKm, bearing),
     subtitle: feature.properties.publicid,
     location,
     ratingText: `Magnitude ${magnitude}`,
     time: parseGeonetTime(feature.properties.origintime),
     detail: `Depth ${Math.round(feature.properties.depth)}km`,
+    // Reused by EventDetailPopup to look up a curated illustrative photo
+    // for the nearest major city, when one exists - see constants/cityImages.ts.
+    nearestLocalityName: localityName,
   }
 }
 

@@ -3,6 +3,7 @@ import depthIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQDep
 import epicenterIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQEpicenter.svg'
 import timeIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsTime.svg'
 import { SEVERITY_COLORS, type SeverityLevel } from '../constants/severity'
+import { CITY_IMAGES } from '../constants/cityImages'
 import { VOLCANO_IMAGES } from '../constants/volcanoImages'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { haversineDistanceKm, formatDistanceKm } from '../lib/geo'
@@ -65,10 +66,19 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
   const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
     ? 'text-slate-800'
     : 'text-white'
-  // `event.id` is the volcano's GeoNet volcanoID for volcano events (see
-  // volcanoToEvent) - reused directly as the lookup key rather than adding
-  // a separate field just for this.
-  const volcanoImage = event.kind === 'volcano' ? VOLCANO_IMAGES[event.id] : undefined
+  // Volcanoes: `event.id` is the GeoNet volcanoID (see volcanoToEvent),
+  // reused directly as the lookup key. Earthquakes: looked up by nearest
+  // locality name (see events.ts) against a curated shortlist, not the
+  // full 65-town nzLocalities.ts list - see the comment in
+  // constants/cityImages.ts for why. Either lookup silently returns
+  // undefined when there's no match, which is expected far more often
+  // than not for earthquakes.
+  const eventImage =
+    event.kind === 'volcano'
+      ? VOLCANO_IMAGES[event.id]
+      : event.nearestLocalityName
+        ? CITY_IMAGES[event.nearestLocalityName]
+        : undefined
   const detailIcon = event.kind === 'earthquake' ? depthIcon : epicenterIcon
   const distanceFromUserKm =
     event.kind === 'earthquake' && userLocation
@@ -86,26 +96,28 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       maxWidth="calc(100vw - 2rem)"
       className={POPUP_CLASSNAME}
     >
-      {/* Illustrative, not live - see the comment in constants/volcanoImages.ts
-          for why (no reliable way to source GeoNet's actual live crater-cam
-          images from a static, backend-less frontend). Full-bleed against
-          the card's own rounded-2xl + overflow-hidden, so no padding here -
-          the close button (MapLibre-rendered, top-right) sits on top of it. */}
-      {volcanoImage && (
+      {/* Illustrative, not live - a volcano photo depicts the volcano itself
+          (see constants/volcanoImages.ts for why not GeoNet's actual live
+          crater-cams), while an earthquake's photo depicts its nearest
+          curated city, not the epicenter (see constants/cityImages.ts).
+          Full-bleed against the card's own rounded-2xl + overflow-hidden,
+          so no padding here - the close button (MapLibre-rendered,
+          top-right) sits on top of it. */}
+      {eventImage && (
         <div>
           <img
-            src={volcanoImage.src}
-            alt={`${event.title} volcano`}
+            src={eventImage.src}
+            alt={event.kind === 'volcano' ? `${event.title} volcano` : `${event.nearestLocalityName}`}
             className="h-32 w-full object-cover"
           />
           <p className="px-4 pt-1.5 text-[9px] text-white/50">
-            Photo: {volcanoImage.credit} ·{' '}
-            {volcanoImage.licenseUrl ? (
-              <a href={volcanoImage.licenseUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                {volcanoImage.licenseName}
+            Photo: {eventImage.credit} ·{' '}
+            {eventImage.licenseUrl ? (
+              <a href={eventImage.licenseUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {eventImage.licenseName}
               </a>
             ) : (
-              volcanoImage.licenseName
+              eventImage.licenseName
             )}
           </p>
         </div>
