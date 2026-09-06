@@ -55,3 +55,29 @@ export async function forwardGeocode(query: string): Promise<ForwardGeocodeResul
 
   return { lat: Number(first.lat), lng: Number(first.lon), displayName: first.display_name }
 }
+
+/**
+ * Multiple candidate matches for an in-progress address, for an
+ * autocomplete-style dropdown - callers are responsible for debouncing
+ * (Nominatim's usage policy caps this at ~1 request/second) and for not
+ * firing on very short queries.
+ */
+export async function searchAddresses(query: string): Promise<ForwardGeocodeResult[]> {
+  const url = new URL('https://nominatim.openstreetmap.org/search')
+  url.searchParams.set('q', query)
+  url.searchParams.set('format', 'jsonv2')
+  url.searchParams.set('countrycodes', 'nz')
+  url.searchParams.set('limit', '5')
+
+  const response = await fetch(url, { headers: { Accept: 'application/json' } })
+  if (!response.ok) {
+    throw new Error(`Nominatim address search failed: ${response.status}`)
+  }
+
+  const results = await response.json()
+  return results.map((result: { lat: string; lon: string; display_name: string }) => ({
+    lat: Number(result.lat),
+    lng: Number(result.lon),
+    displayName: result.display_name,
+  }))
+}

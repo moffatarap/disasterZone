@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
-import { forwardGeocode } from '../api/nominatim'
+import { forwardGeocode, type ForwardGeocodeResult } from '../api/nominatim'
 import { readJSON, removeItem, writeJSON } from '../lib/browserStorage'
 import type { UserLocation } from './useGeolocation'
 
@@ -19,6 +19,12 @@ interface ManualLocationResult {
   manualLocation: ManualLocation | null
   /** Looks up an address and, if found, sets it as the manual location. */
   submit: (address: string) => void
+  /**
+   * Applies an already-resolved autocomplete suggestion directly, skipping
+   * a redundant re-geocode of the same text (and avoiding any mismatch if a
+   * second lookup happened to return a different top result).
+   */
+  selectResult: (result: ForwardGeocodeResult) => void
   /** Reverts to relying on geolocation again. */
   clear: () => void
   isSubmitting: boolean
@@ -37,20 +43,23 @@ export function useManualLocation(): ManualLocationResult {
     readJSON<ManualLocation>(LAST_MANUAL_LOCATION_KEY),
   )
 
+  function applyResult(result: ForwardGeocodeResult) {
+    const next = { coords: { lat: result.lat, lng: result.lng }, displayName: result.displayName }
+    writeJSON(LAST_MANUAL_LOCATION_KEY, next)
+    setManualLocation(next)
+  }
+
   const mutation = useMutation({
     mutationFn: forwardGeocode,
     onSuccess: (result) => {
-      if (result) {
-        const next = { coords: { lat: result.lat, lng: result.lng }, displayName: result.displayName }
-        writeJSON(LAST_MANUAL_LOCATION_KEY, next)
-        setManualLocation(next)
-      }
+      if (result) applyResult(result)
     },
   })
 
   return {
     manualLocation,
     submit: (address: string) => mutation.mutate(address),
+    selectResult: applyResult,
     clear: () => {
       removeItem(LAST_MANUAL_LOCATION_KEY)
       setManualLocation(null)

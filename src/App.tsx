@@ -29,8 +29,14 @@ const LARGE_BREAKPOINT_QUERY = '(min-width: 1024px)'
 
 function App() {
   const { location, error: locationError } = useGeolocation()
-  const { manualLocation, submit: submitManualAddress, clear: clearManualLocation, isSubmitting, notFound } =
-    useManualLocation()
+  const {
+    manualLocation,
+    submit: submitManualAddress,
+    selectResult: selectManualSuggestion,
+    clear: clearManualLocation,
+    isSubmitting,
+    notFound,
+  } = useManualLocation()
   // Manual entry is sticky once set - it doesn't get silently overridden if
   // geolocation later succeeds, since the user made a deliberate choice.
   const effectiveLocation = manualLocation?.coords ?? location
@@ -170,6 +176,7 @@ function App() {
           isManualAddress={manualLocation !== null}
           locationError={locationError}
           onSubmitAddress={submitManualAddress}
+          onSelectSuggestion={selectManualSuggestion}
           onClearManual={clearManualLocation}
           isSubmitting={isSubmitting}
           notFound={notFound}
