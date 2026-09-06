@@ -15,14 +15,17 @@ export interface CityImage {
 }
 
 import auckland from '../assets/media/img/cities/auckland.jpg'
+import blenheim from '../assets/media/img/cities/blenheim.jpg'
 import christchurch from '../assets/media/img/cities/christchurch.jpg'
 import dunedin from '../assets/media/img/cities/dunedin.jpg'
 import gisborne from '../assets/media/img/cities/gisborne.jpg'
 import hamilton from '../assets/media/img/cities/hamilton.jpg'
 import hastings from '../assets/media/img/cities/hastings.jpg'
+import invercargill from '../assets/media/img/cities/invercargill.jpg'
 import kaikoura from '../assets/media/img/cities/kaikoura.jpg'
 import napier from '../assets/media/img/cities/napier.jpg'
 import nelson from '../assets/media/img/cities/nelson.jpg'
+import newPlymouth from '../assets/media/img/cities/new_plymouth.jpg'
 import palmerstonNorth from '../assets/media/img/cities/palmerston_north.jpg'
 import queenstown from '../assets/media/img/cities/queenstown.jpg'
 import rotoruaCity from '../assets/media/img/cities/rotorua_city.jpg'
@@ -128,5 +131,23 @@ export const CITY_IMAGES: Record<string, CityImage> = {
     credit: 'Diego Delso',
     licenseName: 'CC BY-SA 3.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+  },
+  'New Plymouth': {
+    src: newPlymouth,
+    credit: 'Mknz24',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+  },
+  Blenheim: {
+    src: blenheim,
+    credit: 'Chris Hadfield',
+    licenseName: 'Public domain',
+    licenseUrl: null,
+  },
+  Invercargill: {
+    src: invercargill,
+    credit: 'Phillip Capper',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
 }
