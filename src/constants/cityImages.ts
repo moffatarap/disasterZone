@@ -5,13 +5,16 @@
 // data has no image field at all.
 //
 // Sourced Wikipedia-first (a town's own Wikipedia article usually has a
-// clean, CC-licensed lead photo); a handful needed a second look because
-// the default thumbnail was a multi-panel collage or genuinely the wrong
-// subject entirely (Te Awamutu's original pick was a collage of war
-// memorial photos; Waiouru's was a passing train, not the town) - replaced
-// with a better Commons photo in those cases, same vetting as the original
-// curated 19. All CC-licensed or public domain; attribution shown in the
-// popup itself.
+// clean, CC-licensed lead photo), with a second "postcard" pass afterward:
+// 33 of the 65 were swapped from Wikipedia's often-mundane default photo
+// (main streets, civic buildings, car parks, welcome signs) to a more
+// scenic/iconic alternative found on Openverse or elsewhere on Wikimedia
+// Commons - a waterfall, beach, lake, mountain view, or a town's genuine
+// landmark, rather than its municipal infrastructure. License priority
+// throughout: Public Domain first, then CC BY/BY-SA; no NC-licensed image
+// was needed anywhere. This pass was self-evaluated rather than reviewed
+// with the user - see the "postcard-image-review-followup" memory note for
+// the still-outstanding human review.
 export interface CityImage {
   src: string
   credit: string
@@ -101,21 +104,21 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Rotorua: {
     src: rotoruaCity,
-    credit: 'Krzysztof Golik',
+    credit: 'AnnWoolliams',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Napier: {
     src: napier,
-    credit: 'Jakob | TheLoyalOrder',
-    licenseName: 'CC BY 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/4.0',
+    credit: 'Andrew McMillan',
+    licenseName: 'Public domain',
+    licenseUrl: null,
   },
   Hastings: {
     src: hastings,
-    credit: 'Pseudopanax',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'Gemma Longman',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Wellington: {
     src: wellington,
@@ -137,15 +140,15 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Christchurch: {
     src: christchurch,
-    credit: 'Bernard Spragg',
-    licenseName: 'CC0',
-    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    credit: 'flissphil',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Timaru: {
     src: timaru,
-    credit: 'Thomei08',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'Thomas Berwing',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Queenstown: {
     src: queenstown,
@@ -161,9 +164,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Gisborne: {
     src: gisborne_existing,
-    credit: 'Wikimedia Commons',
-    licenseName: 'CC BY 2.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+    credit: 'Pseudopanax',
+    licenseName: 'Public domain',
+    licenseUrl: null,
   },
   Whanganui: {
     src: whanganui_existing,
@@ -173,9 +176,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   'Palmerston North': {
     src: palmerstonNorth,
-    credit: 'Michal Klajban',
-    licenseName: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    credit: 'Geoff McKay',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Dunedin: {
     src: dunedin_existing,
@@ -191,55 +194,55 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Blenheim: {
     src: blenheim_existing,
-    credit: 'Chris Hadfield',
-    licenseName: 'Public domain',
-    licenseUrl: null,
-  },
-  Invercargill: {
-    src: invercargill_existing,
-    credit: 'Phillip Capper',
-    licenseName: 'CC BY 2.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
-  },
-  Whangarei: {
-    src: whangarei,
-    credit: 'Uarangi',
+    credit: 'AnnWoolliams',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
+  Invercargill: {
+    src: invercargill_existing,
+    credit: 'Verodemortillet',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+  },
+  Whangarei: {
+    src: whangarei,
+    credit: 'amanderson2',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+  },
   Kaitaia: {
     src: kaitaia,
-    credit: 'Phillip Capper',
+    credit: 'asherkwilliams07',
     licenseName: 'CC BY 2.0',
     licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Manukau: {
     src: manukau,
-    credit: 'Ingolfson',
-    licenseName: 'Public domain',
-    licenseUrl: null,
-  },
-  Pukekohe: {
-    src: pukekohe,
-    credit: 'Skyviewphotography',
+    credit: 'Prosperosity',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
+  Pukekohe: {
+    src: pukekohe,
+    credit: 'Nathaniel Smith',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+  },
   Thames: {
     src: thames,
-    credit: 'Ulrich Lange',
-    licenseName: 'CC BY 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
+    credit: 'Krzysztof Golik',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Whitianga: {
     src: whitianga,
-    credit: 'Ulrich Lange',
-    licenseName: 'CC BY 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
+    credit: 'Pseudopanax',
+    licenseName: 'Public domain',
+    licenseUrl: null,
   },
   'Te Awamutu': {
     src: teawamutu,
-    credit: 'Krzysztof Golik',
+    credit: 'Johnragla',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
@@ -269,21 +272,21 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Kawerau: {
     src: kawerau,
-    credit: 'Air55',
-    licenseName: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    credit: 'Phillip Capper',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Opotiki: {
     src: opotiki,
-    credit: 'Ulrich Lange',
+    credit: 'Ulrich Lange, Bochum, Germany',
     licenseName: 'CC BY-SA 3.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
   },
   Wairoa: {
     src: wairoa,
-    credit: 'Pseudopanax',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'Alexander Klink',
+    licenseName: 'CC BY 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
   },
   Dannevirke: {
     src: dannevirke,
@@ -293,33 +296,33 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Turangi: {
     src: turangi,
-    credit: 'Krzysztof Golik',
-    licenseName: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    credit: 'Brian New Zealand',
+    licenseName: 'CC BY 2.5',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.5',
   },
   Ohakune: {
     src: ohakune,
-    credit: 'Stagking',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'Duane Wilkins',
+    licenseName: 'CC BY 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
   },
   Taumarunui: {
     src: taumarunui,
-    credit: 'Bgabel',
-    licenseName: 'CC BY-SA 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    credit: 'Duane Wilkins',
+    licenseName: 'CC BY 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
   },
   Waiouru: {
     src: waiouru,
-    credit: 'Krzysztof Golik',
+    credit: 'Panamitsu',
     licenseName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Stratford: {
     src: stratford,
-    credit: 'MSeses',
-    licenseName: 'CC BY-SA 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    credit: 'Michal Klajban',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Hawera: {
     src: hawera,
@@ -335,21 +338,21 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Levin: {
     src: levin,
-    credit: 'IdiotSavant',
-    licenseName: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    credit: 'Phillip Capper',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Masterton: {
     src: masterton,
-    credit: 'Matthew25187',
-    licenseName: 'CC BY-SA 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    credit: 'russellstreet',
+    licenseName: 'CC BY-SA 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0',
   },
   Paraparaumu: {
     src: paraparaumu,
-    credit: 'Gurtej Singh',
-    licenseName: 'CC BY-SA 2.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0',
+    credit: 'Panamitsu',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   Porirua: {
     src: porirua,
@@ -359,9 +362,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   'Upper Hutt': {
     src: upperhutt,
-    credit: 'Rudolph89',
-    licenseName: 'CC BY-SA 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    credit: 'Jeff Hitchcock',
+    licenseName: 'CC BY 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
   },
   'Lower Hutt': {
     src: lowerhutt,
@@ -383,15 +386,15 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Picton: {
     src: picton,
-    credit: 'Mr Bullitt',
-    licenseName: 'CC BY 2.5',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.5',
+    credit: 'Pseudopanax',
+    licenseName: 'Public domain',
+    licenseUrl: null,
   },
   Westport: {
     src: westport,
-    credit: 'Mattinbgn',
-    licenseName: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    credit: 'Carters27',
+    licenseName: 'CC0',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
   },
   Greymouth: {
     src: greymouth,
@@ -419,9 +422,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Fairlie: {
     src: fairlie,
-    credit: 'Mattinbgn',
-    licenseName: 'CC BY 3.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
+    credit: 'Francis Vallance (Heritage Warrior)',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Oamaru: {
     src: oamaru,
@@ -449,9 +452,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Gore: {
     src: gore,
-    credit: 'Mr Bungle',
-    licenseName: 'CC BY 2.5',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.5',
+    credit: 'AlasdairW',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
   },
   'Te Anau': {
     src: teanau,
@@ -467,9 +470,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   'Franz Josef': {
     src: franzjosef,
-    credit: 'Pseudopanax',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'Krzysztof Golik',
+    licenseName: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   },
   'Great Barrier Island': {
     src: greatbarrier,
