@@ -1,12 +1,19 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { forwardGeocode } from '../api/nominatim'
+import { readJSON, removeItem, writeJSON } from '../lib/browserStorage'
 import type { UserLocation } from './useGeolocation'
 
 export interface ManualLocation {
   coords: UserLocation
   displayName: string
 }
+
+// Browser-only, per the "remember last known location" request - a manually
+// entered address is already "sticky" for the rest of a session (see below);
+// persisting it here makes that stick across reloads/visits too, until the
+// user explicitly clears it via `clear`.
+const LAST_MANUAL_LOCATION_KEY = 'disasterZone.lastManualLocation'
 
 interface ManualLocationResult {
   manualLocation: ManualLocation | null
@@ -26,13 +33,17 @@ interface ManualLocationResult {
  * deliberate choice); reverting requires explicitly calling `clear`.
  */
 export function useManualLocation(): ManualLocationResult {
-  const [manualLocation, setManualLocation] = useState<ManualLocation | null>(null)
+  const [manualLocation, setManualLocation] = useState<ManualLocation | null>(() =>
+    readJSON<ManualLocation>(LAST_MANUAL_LOCATION_KEY),
+  )
 
   const mutation = useMutation({
     mutationFn: forwardGeocode,
     onSuccess: (result) => {
       if (result) {
-        setManualLocation({ coords: { lat: result.lat, lng: result.lng }, displayName: result.displayName })
+        const next = { coords: { lat: result.lat, lng: result.lng }, displayName: result.displayName }
+        writeJSON(LAST_MANUAL_LOCATION_KEY, next)
+        setManualLocation(next)
       }
     },
   })
@@ -41,6 +52,7 @@ export function useManualLocation(): ManualLocationResult {
     manualLocation,
     submit: (address: string) => mutation.mutate(address),
     clear: () => {
+      removeItem(LAST_MANUAL_LOCATION_KEY)
       setManualLocation(null)
       mutation.reset()
     },
