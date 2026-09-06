@@ -2,7 +2,7 @@ import { Popup } from 'react-map-gl/maplibre'
 import depthIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQDepth.svg'
 import epicenterIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsEQEpicenter.svg'
 import timeIcon from '../assets/media/img/mapKeys/eventDetails/detailIconsTime.svg'
-import { SEVERITY_COLORS } from '../constants/severity'
+import { SEVERITY_COLORS, type SeverityLevel } from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { haversineDistanceKm, formatDistanceKm } from '../lib/geo'
 import { formatRelativeTime } from '../lib/relativeTime'
@@ -13,6 +13,14 @@ interface EventDetailPopupProps {
   userLocation: UserLocation | null
   onClose: () => void
 }
+
+// The lighter severity colors need dark text for contrast; the rest read
+// fine in white. Restored after the SEVERITY_COLORS darkening (which had
+// let this go uniformly white) was reverted back to the original pale
+// palette per request - without this, white text on weak/light/moderate's
+// pale backgrounds fails WCAG contrast again (weak measured 1.88:1 against
+// a 4.5:1 minimum).
+const DARK_TEXT_SEVERITIES: SeverityLevel[] = ['weak', 'light', 'moderate']
 
 // The icons are drawn near-white - no longer inverted now that the card
 // itself is dark again (a `invert` step used to flip them near-black for a
@@ -44,6 +52,9 @@ const POPUP_CLASSNAME =
   '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:!rounded-2xl [&_.maplibregl-popup-content]:!bg-slate-900 [&_.maplibregl-popup-content]:!p-0 [&_.maplibregl-popup-content]:!shadow-xl [&_.maplibregl-popup-content]:!ring-1 [&_.maplibregl-popup-content]:!ring-white/10 [&_.maplibregl-popup-tip]:!border-t-slate-900 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:!rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-white/60 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-white/10 [&_.maplibregl-popup-close-button]:hover:text-white [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-white/30'
 
 export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPopupProps) {
+  const badgeTextClass = DARK_TEXT_SEVERITIES.includes(event.severity)
+    ? 'text-slate-800'
+    : 'text-white'
   const detailIcon = event.kind === 'earthquake' ? depthIcon : epicenterIcon
   const distanceFromUserKm =
     event.kind === 'earthquake' && userLocation
@@ -62,11 +73,8 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
       className={POPUP_CLASSNAME}
     >
       <div className="flex items-start pt-4 pr-14 pl-4">
-        {/* White text uniformly - every SEVERITY_COLORS value now clears
-            4.5:1 against white (see the comment there), so no more
-            per-severity dark-text special-casing needed here. */}
         <span
-          className="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide text-white uppercase"
+          className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase ${badgeTextClass}`}
           style={{ backgroundColor: SEVERITY_COLORS[event.severity] }}
         >
           {event.severity}
