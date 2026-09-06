@@ -61,6 +61,9 @@ function App() {
   const [visibleSeverities, setVisibleSeverities] = useState<Set<SeverityLevel>>(
     new Set(FILTERABLE_SEVERITY_LEVELS),
   )
+  // Off by default - an optional reference layer, not a live hazard, so it
+  // shouldn't compete with the map's actual purpose until asked for.
+  const [showFaultLines, setShowFaultLines] = useState(false)
 
   const events = useMemo<DisasterEvent[]>(() => {
     const earthquakeEvents = (earthquakes ?? [])
@@ -156,9 +159,14 @@ function App() {
           onSelectEvent={selectEvent}
           onDeselectEvent={() => setSelectedEventId(null)}
           newEventIds={newEventIds}
+          showFaultLines={showFaultLines}
         />
 
-        <SeverityKey sidebarOpen={sidebarOpen} />
+        <SeverityKey
+          sidebarOpen={sidebarOpen}
+          showFaultLines={showFaultLines}
+          onToggleFaultLines={() => setShowFaultLines((current) => !current)}
+        />
 
         <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
           {visibleToastQueue.map((event) => (

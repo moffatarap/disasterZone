@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Map, { NavigationControl, type MapRef, type ViewStateChangeEvent } from 'react-map-gl/maplibre'
+import Map, {
+  Layer,
+  NavigationControl,
+  Source,
+  type MapRef,
+  type ViewStateChangeEvent,
+} from 'react-map-gl/maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { SEVERITY_COLORS } from '../constants/severity'
@@ -18,7 +24,18 @@ interface DisasterMapProps {
   onSelectEvent: (event: DisasterEvent) => void
   onDeselectEvent: () => void
   newEventIds: Set<string>
+  showFaultLines: boolean
 }
+
+// GNS Science's NZ Active Faults Database (1:250,000 scale), fetched from
+// their public ArcGIS feature service and flattened into one static file
+// (500 named faults, merged from ~10,000 digitized segments) rather than
+// queried live - the geometry barely changes, and this avoids depending on
+// an external service the same way the basemap already avoids CARTO's key
+// requirement. At ~500KB gzipped it's meaningfully heavier than any other
+// asset here, so it's fetched lazily on first toggle-on (see the effect
+// below), not bundled into the initial page load.
+const FAULT_LINES_URL = '/data/nz-active-faults.geojson'
 
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
@@ -73,10 +90,26 @@ export function DisasterMap({
   onSelectEvent,
   onDeselectEvent,
   newEventIds,
+  showFaultLines,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const hasCenteredOnUser = useRef(false)
   const [zoom, setZoom] = useState(DEFAULT_VIEW.zoom)
+  const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
+
+  // Fetched once, the first time the toggle is switched on - not on initial
+  // load regardless of toggle state, since most sessions will never turn
+  // this on and shouldn't pay for it.
+  useEffect(() => {
+    if (!showFaultLines || faultLinesData) return
+    fetch(FAULT_LINES_URL)
+      .then((response) => response.json())
+      .then(setFaultLinesData)
+      .catch(() => {
+        // Optional reference layer - a failed fetch just means the toggle
+        // silently shows nothing, not worth surfacing as an app error.
+      })
+  }, [showFaultLines, faultLinesData])
 
   useEffect(() => {
     if (userLocation && !hasCenteredOnUser.current) {
@@ -125,6 +158,19 @@ export function DisasterMap({
         onZoomEnd={(evt: ViewStateChangeEvent) => setZoom(evt.viewState.zoom)}
       >
         <NavigationControl position="bottom-left" />
+
+        {/* Declared before every hazard marker/circle below, so MapLibre
+            stacks it underneath them - reads as background context, never
+            competing with the map's actual purpose. */}
+        {showFaultLines && faultLinesData && (
+          <Source id="nz-active-faults" type="geojson" data={faultLinesData}>
+            <Layer
+              id="nz-active-faults-line"
+              type="line"
+              paint={{ 'line-color': '#94a3b8', 'line-width': 1.25, 'line-opacity': 0.65 }}
+            />
+          </Source>
+        )}
 
         {userLocation && <UserLocationMarker location={userLocation} />}
 

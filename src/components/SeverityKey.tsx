@@ -20,9 +20,11 @@ const KIND_ENTRIES = [
 // expanded on tablet/desktop with no way to collapse it there at all.
 interface SeverityKeyProps {
   sidebarOpen: boolean
+  showFaultLines: boolean
+  onToggleFaultLines: () => void
 }
 
-export function SeverityKey({ sidebarOpen }: SeverityKeyProps) {
+export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }: SeverityKeyProps) {
   const [expanded, setExpanded] = useState(false)
 
   // The events sidebar is a `sm:w-80` (320px) panel anchored to the same
@@ -77,6 +79,21 @@ export function SeverityKey({ sidebarOpen }: SeverityKeyProps) {
         <p className="mt-1.5 max-w-[160px] text-[10px] leading-snug text-slate-400">
           Quakes: how strongly it was felt. Volcanoes: official alert level.
         </p>
+
+        {/* The one interactive control in an otherwise plain legend -
+            fault lines are optional reference context (off by default, see
+            App.tsx) rather than part of the hazard legend itself, so it's
+            set apart with its own divider rather than folded into the lists
+            above. */}
+        <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-slate-100 pt-2.5 text-xs text-slate-600">
+          <input
+            type="checkbox"
+            checked={showFaultLines}
+            onChange={onToggleFaultLines}
+            className="h-3.5 w-3.5 rounded border-slate-300 text-sky-500 focus:ring-2 focus:ring-sky-400"
+          />
+          Show fault lines
+        </label>
       </div>
     </>
   )
