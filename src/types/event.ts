@@ -16,6 +16,4 @@ export interface DisasterEvent {
   /** e.g. quake origin time; omitted for volcanoes (GeoNet doesn't timestamp alert-level changes) */
   time: Date | null
   detail: string
-  /** GeoNet's `hazards` field for volcanoes (e.g. "Volcanic unrest hazards, potential for eruption hazards."); absent for earthquakes. */
-  hazards?: string
 }

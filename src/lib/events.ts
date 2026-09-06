@@ -53,7 +53,6 @@ export function volcanoToEvent(feature: VolcanoFeature): DisasterEvent {
     ratingText: `Alert Level ${feature.properties.level}`,
     time: null,
     detail: feature.properties.activity,
-    hazards: feature.properties.hazards,
   }
 }
 

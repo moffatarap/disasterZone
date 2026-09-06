@@ -48,6 +48,15 @@ const DETAIL_ICON_CLASS = 'h-6 w-6 flex-none opacity-60'
 // `anchor="bottom"` (fixed, below) means MapLibre always applies
 // `.maplibregl-popup-anchor-bottom`, whose only active tip rule is
 // `border-top-color`, so only that one side needs overriding.
+// GeoNet's actual "Latest Volcanic Activity Bulletins" are website content,
+// not exposed via their documented API (checked: no JSON/RSS feed backs
+// that page, just server-rendered HTML) - a link out to GeoNet's own page
+// is the reliable option, rather than trying to reproduce bulletin content
+// here. No per-volcano deep link exists either: the page's volcano filter
+// is a POST form, not a URL query param, so this always points to the
+// general bulletins hub.
+const VOLCANO_BULLETINS_URL = 'https://www.geonet.org.nz/volcano/vab'
+
 const POPUP_CLASSNAME =
   '[&_.maplibregl-popup-content]:w-64 [&_.maplibregl-popup-content]:overflow-hidden [&_.maplibregl-popup-content]:!rounded-2xl [&_.maplibregl-popup-content]:!bg-slate-900 [&_.maplibregl-popup-content]:!p-0 [&_.maplibregl-popup-content]:!shadow-xl [&_.maplibregl-popup-content]:!ring-1 [&_.maplibregl-popup-content]:!ring-white/10 [&_.maplibregl-popup-tip]:!border-t-slate-900 [&_.maplibregl-popup-close-button]:right-1 [&_.maplibregl-popup-close-button]:top-1 [&_.maplibregl-popup-close-button]:flex [&_.maplibregl-popup-close-button]:h-11 [&_.maplibregl-popup-close-button]:w-11 [&_.maplibregl-popup-close-button]:items-center [&_.maplibregl-popup-close-button]:justify-center [&_.maplibregl-popup-close-button]:!rounded-full [&_.maplibregl-popup-close-button]:text-base [&_.maplibregl-popup-close-button]:leading-none [&_.maplibregl-popup-close-button]:text-white/60 [&_.maplibregl-popup-close-button]:transition-colors [&_.maplibregl-popup-close-button]:hover:bg-white/10 [&_.maplibregl-popup-close-button]:hover:text-white [&_.maplibregl-popup-close-button]:focus:outline-none [&_.maplibregl-popup-close-button]:focus-visible:ring-2 [&_.maplibregl-popup-close-button]:focus-visible:ring-white/30'
 
@@ -95,16 +104,6 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
           <img src={detailIcon} alt="" className={DETAIL_ICON_CLASS} />
           <span>{event.detail}</span>
         </div>
-        {/* GeoNet's `hazards` field (volcanoes only) - there's no separate
-            "latest bulletins" API to pull from (GeoNet's actual bulletins
-            are website content, not exposed via their documented API), so
-            this is the closest real, already-fetched data to that request. */}
-        {event.hazards && (
-          <div className="flex items-center gap-2.5 text-sm text-white/70">
-            <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
-            <span>{event.hazards}</span>
-          </div>
-        )}
         {distanceFromUserKm !== null && (
           <div className="flex items-center gap-2.5 text-sm text-white/70">
             <img src={epicenterIcon} alt="" className={DETAIL_ICON_CLASS} />
@@ -116,6 +115,19 @@ export function EventDetailPopup({ event, userLocation, onClose }: EventDetailPo
           <span>{formatRelativeTime(event.time)}</span>
         </div>
       </div>
+
+      {event.kind === 'volcano' && (
+        <div className="border-t border-white/10 px-4 py-2.5">
+          <a
+            href={VOLCANO_BULLETINS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold text-sky-400 hover:underline"
+          >
+            View latest bulletins on GeoNet ↗
+          </a>
+        </div>
+      )}
 
       {/* text-white/50, not /40 - the fainter value measured 3.8:1 against
           the card's slate-900 background (needs 4.5:1), found by the same
