@@ -14,7 +14,7 @@ interface LocationStatusProps {
    * Ask the browser for a fresh one-shot GPS fix (the "Use my location" item).
    * `onSuccess` runs only if a position comes back.
    */
-  onRequestLocation: (onSuccess?: () => void) => void
+  onRequestLocation: (options?: { onSuccess?: () => void; onError?: () => void }) => void
   isSubmitting: boolean
   notFound: boolean
   /**
@@ -32,6 +32,11 @@ const SEARCH_DEBOUNCE_MS = 300
 const MIN_QUERY_LENGTH = 3
 
 const NO_SUGGESTIONS = { query: '', results: [] as ForwardGeocodeResult[] }
+
+// How long a failed "Use my location" is reported before the bar goes back to
+// showing the address it kept. Long enough to read, short enough that the bar
+// returns to its job.
+const LOCATION_ERROR_VISIBLE_MS = 5000
 
 const ICON_CLASS = 'h-4 w-4 flex-none'
 
@@ -121,6 +126,11 @@ export function LocationStatus({
 }: LocationStatusProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
+  // Status of an explicit "Use my location" request. Tracked separately from
+  // the ambient geolocation state because that state can't express it: a
+  // failed request deliberately keeps the existing address, so `address` stays
+  // truthy and both the spinner and the error would be hidden behind it.
+  const [locationRequest, setLocationRequest] = useState<'idle' | 'pending' | 'failed'>('idle')
   const [inputValue, setInputValue] = useState('')
   // Results carry the query that produced them, so a list fetched for an
   // earlier query is never rendered against what's in the box now.
@@ -213,6 +223,15 @@ export function LocationStatus({
     }
   }, [menuOpen, editing])
 
+  // A reported failure is transient: the address the request kept is what the
+  // bar is for, so hand it back after a few seconds. If there's no address the
+  // ambient locationError keeps the message up anyway.
+  useEffect(() => {
+    if (locationRequest !== 'failed') return
+    const timer = setTimeout(() => setLocationRequest('idle'), LOCATION_ERROR_VISIBLE_MS)
+    return () => clearTimeout(timer)
+  }, [locationRequest])
+
   // Move focus into the menu when it opens so it's keyboard-operable.
   useEffect(() => {
     if (!menuOpen) return
@@ -250,9 +269,16 @@ export function LocationStatus({
 
   function handleUseMyLocation() {
     setMenuOpen(false)
-    // Drop the manual override only once a real fix lands - if geolocation
-    // fails, the typed address stays put rather than falling back to nothing.
-    onRequestLocation(onClearManual)
+    setLocationRequest('pending')
+    onRequestLocation({
+      // Drop the manual override only once a real fix lands - if geolocation
+      // fails, the typed address stays put rather than falling back to nothing.
+      onSuccess: () => {
+        setLocationRequest('idle')
+        onClearManual()
+      },
+      onError: () => setLocationRequest('failed'),
+    })
   }
 
   function handleEnterAddress() {
@@ -260,15 +286,25 @@ export function LocationStatus({
     setEditing(true)
   }
 
-  const mainText =
-    address ??
-    (locationError
-      ? `${locationError} - add an address`
-      : isLocating
-        ? 'Finding your location…'
-        : 'No location set - add an address')
+  const isRequestingLocation = locationRequest === 'pending'
+  const requestFailed = locationRequest === 'failed'
 
-  const showSpinner = isLocating && !address && !locationError && !editing
+  // An explicit request reports itself over the top of whatever address is
+  // showing; otherwise fall back to the ambient state.
+  const mainText = isRequestingLocation
+    ? 'Finding your location…'
+    : requestFailed
+      ? (locationError ?? 'Could not get your location')
+      : (address ??
+        (locationError
+          ? `${locationError} - add an address`
+          : isLocating
+            ? 'Finding your location…'
+            : 'No location set - add an address'))
+
+  const showAddressText = address !== null && !isRequestingLocation && !requestFailed
+  const showSpinner =
+    !editing && (isRequestingLocation || (isLocating && !address && !locationError))
 
   const menuItemClass =
     'flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-normal text-white/90 transition-colors hover:bg-white/10 hover:text-white'
@@ -349,7 +385,7 @@ export function LocationStatus({
           )}
 
           <p className="min-w-0 flex-1 truncate text-sm">
-            <span className={address ? undefined : 'text-white/70'}>{mainText}</span>
+            <span className={showAddressText ? undefined : 'text-white/70'}>{mainText}</span>
           </p>
 
           <button

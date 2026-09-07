@@ -20,9 +20,10 @@ interface GeolocationState extends PositionState {
    * recovering after an earlier timeout, or a permission the user has since
    * granted - it backs the "Use my location" menu item. `onSuccess` runs only
    * if a position actually comes back, so the caller can e.g. drop a manual
-   * address override without losing it when the fix fails.
+   * address override without losing it when the fix fails; `onError` runs on
+   * every failure path, so the caller can report one.
    */
-  requestLocation: (onSuccess?: () => void) => void
+  requestLocation: (options?: { onSuccess?: () => void; onError?: () => void }) => void
 }
 
 /** Watches the browser's geolocation. */
@@ -79,14 +80,18 @@ export function useGeolocation(): GeolocationState {
   }, [applyPosition, applyError])
 
   const requestLocation = useCallback(
-    (onSuccess?: () => void) => {
-      if (!isGeolocationSupported) return
+    (options?: { onSuccess?: () => void; onError?: () => void }) => {
+      if (!isGeolocationSupported) {
+        options?.onError?.()
+        return
+      }
       if (!window.isSecureContext) {
         setState((current) => ({
           ...current,
           error: 'Location needs a trusted HTTPS connection',
           loading: false,
         }))
+        options?.onError?.()
         return
       }
       // Clear the previous error as well as flagging the load: the bar's
@@ -97,9 +102,12 @@ export function useGeolocation(): GeolocationState {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           applyPosition(position)
-          onSuccess?.()
+          options?.onSuccess?.()
         },
-        applyError,
+        (positionError) => {
+          applyError(positionError)
+          options?.onError?.()
+        },
         POSITION_OPTIONS,
       )
     },
