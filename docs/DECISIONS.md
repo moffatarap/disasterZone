@@ -271,6 +271,11 @@ it between a ~210px floor and full height. Height lives in component state as
 a percent and survives a close/reopen within the session. At `>= sm` the `sm:`
 classes take over and it's a fixed-width rail again; the grip is `sm:hidden`.
 
+A drag can shrink the sheet *below* the floor as a pull-to-close hint;
+released under ~130px it calls `onClose()` (then resets the stored height
+after the slide-out so it reopens at a sensible size), otherwise it snaps
+back to the floor. Keyboard resize never closes - that's a touch gesture.
+
 ### Filter chips are deliberately large
 
 Sized up from a smaller, subtler chip design after feedback that the filters

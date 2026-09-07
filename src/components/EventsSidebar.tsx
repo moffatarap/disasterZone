@@ -55,11 +55,14 @@ const CHIP_CLASS =
 
 // Mobile bottom-sheet height, as a % of the map area. Draggable between a
 // compact size (handle + filters + a row or two) and full height, where the
-// top edge meets the navbar. Ignored at >= sm, where the panel is a fixed-
-// width side rail.
+// top edge meets the navbar. Dragging the grip below SHEET_CLOSE_PX and
+// releasing dismisses the sheet. Ignored at >= sm, where the panel is a
+// fixed-width side rail.
 const SHEET_MIN_PX = 210
+const SHEET_CLOSE_PX = 130
 const SHEET_DEFAULT_PCT = 62
 const SHEET_KEYBOARD_STEP_PCT = 8
+const SHEET_EXIT_MS = 300
 
 export function EventsSidebar({
   events,
@@ -93,6 +96,13 @@ export function EventsSidebar({
     return Math.max(minPct, Math.min(100, pct))
   }
 
+  // Live height for a drag position - no lower clamp, so the sheet can shrink
+  // past the normal floor as a "pull to close" hint.
+  function dragPct(drag: { startY: number; startPct: number; mapH: number }, clientY: number) {
+    const deltaPct = ((drag.startY - clientY) / drag.mapH) * 100
+    return Math.max(0, Math.min(100, drag.startPct + deltaPct))
+  }
+
   function onHandlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     event.currentTarget.setPointerCapture(event.pointerId)
     dragRef.current = { startY: event.clientY, startPct: sheetPct, mapH: mapHeight() }
@@ -101,15 +111,24 @@ export function EventsSidebar({
   function onHandlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     const drag = dragRef.current
     if (!drag) return
-    // Dragging up (clientY decreasing) grows the sheet.
-    const deltaPct = ((drag.startY - event.clientY) / drag.mapH) * 100
-    setSheetPct(clampPct(drag.startPct + deltaPct, drag.mapH))
+    setSheetPct(dragPct(drag, event.clientY))
   }
 
   function onHandlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current
     dragRef.current = null
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    if (!drag) return
+    const endPct = dragPct(drag, event.clientY)
+    if ((endPct / 100) * drag.mapH < SHEET_CLOSE_PX) {
+      // Dragged below the close threshold - let it slide out, then reset the
+      // height so it reopens at a sensible size.
+      onClose()
+      window.setTimeout(() => setSheetPct(SHEET_DEFAULT_PCT), SHEET_EXIT_MS)
+    } else {
+      setSheetPct(clampPct(endPct, drag.mapH))
     }
   }
 
