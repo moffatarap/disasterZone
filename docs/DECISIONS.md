@@ -1,0 +1,352 @@
+# Decision log
+
+The "why" behind choices that aren't obvious from the code, kept here so the
+source comments can stay short and describe only what the code does *now*.
+When you change something a note here explains, update the note.
+
+Entries are dated where the date matters. Newest context last within each
+section.
+
+---
+
+## Stack and hosting
+
+### React + TypeScript + Vite, MapLibre GL, TanStack Query
+
+A 2026 rebuild of a 2016-2018 university project (MDDN352, Victoria University
+of Wellington). The original is preserved on the `gh-pages` branch and the
+`legacy-v1` tag - that branch is history only, not the deploy target.
+
+### Hosted on GitHub Pages, deployed from Actions
+
+- **A pure static site.** No backend, no server-side state; everything it
+  needs at runtime comes from public APIs. Pages is a natural fit and needs
+  no infrastructure to keep running.
+- **Deployed with `actions/deploy-pages`, not a `gh-pages` branch.** The
+  artifact-based flow keeps the built output out of git entirely and leaves
+  the `gh-pages` branch free to hold the archived original.
+- **HTTPS comes for free.** The Geolocation API refuses to run in a
+  non-secure context; `*.github.io` is served over HTTPS with a valid cert,
+  so every visitor gets geolocation with no setup. (`localhost` also counts
+  as secure, so `npm run dev` works without a certificate too.)
+- **`base: '/disasterZone/'`.** A project page is served from a subpath, so
+  Vite needs the base set and any runtime-built URL uses
+  `import.meta.env.BASE_URL`. Rename the repo and this has to change with it.
+
+---
+
+## Map and basemap
+
+### Esri "World Dark Gray Canvas" raster tiles
+
+- **No API key, no billing** - unlike the original's Google Maps setup.
+- Chosen over plain OSM's bright default styling because its dark palette
+  matches the app's navy chrome and makes the severity-coloured markers and
+  alert circles read more vividly.
+- **CARTO's equivalent dark tiles were rejected** - they now require an API
+  key. This wasn't obvious from the HTTP status: CARTO returns a `200` with an
+  "API KEY REQUIRED" watermark tile rather than an error, so it was only
+  caught by inspecting a fetched tile's actual image content.
+- Esri splits base terrain and place-name labels into two separate raster
+  layers, stacked in `BASEMAP_STYLE`.
+- **ArcGIS tile URLs order `{z}/{y}/{x}`** (row before column), reversed from
+  every other provider's `{z}/{x}/{y}`. Easy to get backwards.
+
+### NZ Active Faults reference layer
+
+- GNS Science's NZ Active Faults Database (1:250,000 scale), ~500 named faults
+  merged from ~10,000 digitised segments, flattened from their ArcGIS feature
+  service into one static GeoJSON file in `public/data/`.
+- **Bundled, not queried live**: the geometry barely changes, and this avoids
+  depending on an external service - the same reasoning as the keyless
+  basemap.
+- **Fetched lazily on first toggle-on**, not at page load. At ~500KB gzipped
+  it's heavier than any other asset, and most sessions never turn it on.
+- **Off by default** - it's an optional reference layer, not a live hazard,
+  so it shouldn't compete with the map's purpose until asked for.
+- Declared before the hazard markers in the JSX so MapLibre stacks it
+  underneath them.
+
+### Marker paint order
+
+`events` arrives newest-first (App sorts earthquakes that way for the
+sidebar). Markers painted later in the DOM sit on top, so the marker list is
+reversed at render time - newest marker painted last, hence on top. This is
+for stacking only; it doesn't affect the sidebar or anything else.
+
+---
+
+## Severity scale, colours, alert circles
+
+Ported directly from the original app's `alertCircleColorArray` /
+`alertCirlceRadiusArray` (`Disaster Zone/js/api/geoLocationAPI.js`) so the map
+reads the way it always has.
+
+### `SEVERITY_LEVELS` stays in ascending order
+
+`volcanoLevelToSeverity` indexes into it positionally by GeoNet's 0-5 alert
+level, so the order is load-bearing. Display order (severe first, for the
+filter row and map key) is a separate reversed constant.
+
+### The pale colour palette, and dark text on the light three
+
+- The palette went through a round of being darkened for contrast, then was
+  **reverted to the original pale colours** by request.
+- With the pale palette, white text on the `weak` / `light` / `moderate`
+  backgrounds fails WCAG contrast (white on `weak` measured **1.88:1**,
+  against a 4.5:1 minimum). `DARK_TEXT_SEVERITIES` in `EventDetailPopup` lists
+  those three and gives them dark text; the darker severities read fine in
+  white.
+
+### Circle suppression for clustered earthquakes
+
+Showing every alert circle for a swarm of nearby quakes floods the map with
+overlapping colour washes and can bury a smaller or older event's marker.
+`computeStackedCircleSuppressions` hides an event's circle when a *more
+recent* nearby earthquake exists - the newest in a cluster wins and stays
+visible; the rest come back on zoom-in or selection (handled by the caller).
+
+- **"Nearby" is real epicenter-to-epicenter distance**
+  (`SEVERITY_PROXIMITY_SUPPRESSION_KM`, 20-50km scaled by severity), **not**
+  whether the two events' visual alert circles overlap on screen. The visual
+  radius scales with a per-hazard multiplier and balloons past 200km for a
+  severe quake; using that as the overlap test (as an earlier version did)
+  let two unrelated severe quakes at opposite ends of the country suppress
+  each other purely because their inflated circles touched.
+- Because the threshold is now a genuine ground distance, suppression applies
+  at every zoom level, not just zoomed out.
+- **Only moderate-and-above earthquakes take part**, on either side of the
+  comparison. Below moderate the events are minor enough that just showing
+  all of them is fine.
+- **Volcanoes are exempt**: a handful of fixed known locations, representing
+  an ongoing alert level rather than a discrete timestamped event, so "more
+  recent" isn't meaningful. The crowding problem this targets is earthquake
+  swarms.
+
+### The radius multipliers are stylistic
+
+`EARTHQUAKE_RADIUS_MULTIPLIER` (4) and `VOLCANO_RADIUS_MULTIPLIER` (10) are
+carried over from the original, which multiplied the base radius per hazard
+type for visual effect - not a scientific figure.
+
+---
+
+## Event popups
+
+### Illustrative photos, never live imagery
+
+- **Volcano popups** show a bundled Wikimedia Commons photo of the volcano
+  itself. GeoNet doesn't expose volcano photos via its API; the nearest
+  thing, live crater-cam snapshots, exists for only a couple of volcanoes
+  (Ruapehu, Whakaari), with filenames timestamped every 10 minutes and no
+  "latest" alias, so it isn't usable from a static frontend with no backend
+  proxy. Northland has no entry - it's a diffuse field of small scoria cones
+  with no single landmark - and the popup just omits the image.
+- **Earthquake popups** show a photo of the *nearest curated town*, not the
+  epicenter - GeoNet's felt-quake data has no image field at all. Lookup is
+  by nearest locality name against the curated list in
+  `constants/cityImages.ts`; a miss silently shows no image, which is the
+  common case.
+- Full sourcing and licensing methodology lives in the header comments of
+  `constants/cityImages.ts`, `constants/volcanoImages.ts` and
+  `constants/maoriPlaceNames.ts` - deliberately kept in-file so provenance
+  travels with the data.
+
+### Detail icons are drawn near-white
+
+They sit on a dark card. An earlier light-card design flipped them near-black
+with an `invert` step; that card and the invert are both gone.
+
+### Volcano "latest bulletins" is an external link
+
+GeoNet's "Latest Volcanic Activity Bulletins" are website content, not part
+of their documented API - no JSON or RSS feed backs that page. There's no
+per-volcano deep link either: the page's volcano filter is a POST form, not a
+URL query param. So the popup links to the general bulletins hub rather than
+reproducing bulletin content.
+
+### `!important` on popup styles
+
+`maplibre-gl.css` ships its own border-radius, background, padding, box-shadow
+and close-button styling for `.maplibregl-popup-*` as plain unlayered CSS,
+which beats any Tailwind utility (Tailwind wraps utilities in `@layer`, and
+unlayered rules always win over layered ones regardless of specificity).
+Overriding them needs `!`. Same fix is used for the map's zoom control and
+attribution link. The class string must also stay on one line - MapLibre
+calls `classList.add()` on it internally and that throws on non-space
+whitespace.
+
+---
+
+## Layout and accessibility
+
+Several of these came out of axe-core accessibility audits.
+
+### Heading levels on floating panels
+
+The event popup's title and the "can't get your location" card use `<h2>`,
+not `<h3>`/`<h4>`. Each floating panel is its own top-level section - a
+sibling to the page's other floating panels, not nested under any of them. An
+axe-core heading-order audit flagged the page jumping straight from its one
+`<h1>` to `<h3>`. The severity key's internal headings follow the same
+reasoning (`<h2>` then `<h3>` for the nested "intensity" list).
+
+### `LocationStatus` card position (`bottom-16 left-20 right-4`)
+
+- **`bottom-16`, not `bottom-4`**: at `bottom-4` the card sat on top of
+  MapLibre's attribution control, making the required attribution link
+  unreadable (found via an audit's bounding-box check, confirmed with a
+  screenshot). `bottom-16` clears the control's ~44px height with margin.
+- **`left-20` (not centred)**: a centred card at that height extended into
+  the bottom-left zoom control's ~54px-wide column and partly obscured it (a
+  target-size violation). Insetting the left edge past that column, then
+  letting `mx-auto` centre the card in the remaining space, clears it without
+  pushing the card higher.
+- Both the address-pill and the error-form branches share these values.
+
+### `LocationStatus` shows one thing at a time
+
+The address pill and the "can't get your location" form never make sense
+together, so they share one screen slot with no layout conflict to resolve.
+
+### Map controls and attribution sit inside a landmark
+
+The map region is a `<main>`, not a `<div>`, so MapLibre's own attribution
+control is inside a landmark - an axe-core best-practice audit flagged it as
+unlandmarked content. The `overflow-hidden` on that container also clips the
+events sidebar's off-screen (translated) closed state, which would otherwise
+add to the container's scrollable width.
+
+### Touch targets
+
+Interactive controls are sized to a 44x44px minimum (WCAG 2.5.5 / Apple HIG):
+MapLibre's zoom/compass buttons (default 29px), the popup close button (small
+visible glyph, enlarged tap area centred via flex), and the map markers
+(invisible padding around a smaller icon).
+
+### Events sidebar isn't a modal
+
+No `role="dialog"` / `aria-modal` - an axe-core audit flagged those as
+misused here. On tablet/desktop it's a persistent side panel; on mobile it's
+a bottom sheet with a backdrop. It behaves as a panel, not a modal dialog.
+
+### Filter chips are deliberately large
+
+Sized up from a smaller, subtler chip design after feedback that the filters
+weren't prominent enough. `flex-none` keeps each chip full-size inside the
+severity row's horizontal-scroll container rather than letting them shrink or
+wrap. The severity row is kept to a single line (severe-to-weak, matching the
+map key).
+
+### Severity key: button and panel positioned independently
+
+They each anchor to their own `right-3` rather than sharing one `absolute`
+wrapper. With a shared wrapper sized to whichever child was widest, the
+button visibly shifted sideways whenever the panel toggled. The key is also
+minimised by default at every breakpoint (it previously stayed permanently
+expanded on tablet/desktop with no way to collapse it). When the events
+sidebar (a 320px `sm:w-80` panel on the same edge) is open on
+tablet/desktop, the key's button steps aside so it isn't covered.
+
+### User location marker is visually distinct
+
+A circular compass-style icon, versus the teardrop hazard pins, so "where you
+are" never reads as another event.
+
+### Fire / flood / hurricane / tornado left out of the key
+
+They aren't wired to real data yet (they were placeholder-only in the
+original too), so they're omitted from the severity key for now.
+
+---
+
+## Data sources
+
+### GeoNet, polled once a minute
+
+Felt-earthquake and volcano-alert-level data from GeoNet's public API
+(`api.geonet.org.nz`, no key). GeoNet publishes on its own schedule; the
+original app's few-second `setInterval` just wasted requests. A minute is
+plenty responsive.
+
+### OSM Nominatim for geocoding, rate-limited
+
+Reverse geocoding (coords -> address) and forward/autocomplete (address ->
+coords) via `nominatim.openstreetmap.org`. Their usage policy caps this at
+~1 request/second, so:
+
+- Reverse geocode coordinates are rounded to ~100m before use, so small GPS
+  jitter reuses the cached query instead of re-hitting the endpoint every
+  tick.
+- The address search box debounces (450ms) and requires 3+ characters rather
+  than firing per keystroke.
+- Forward geocoding is biased to NZ (`countrycodes=nz`) since a bare street
+  name is otherwise ambiguous worldwide.
+
+### Bundled NZ localities for "nearest town"
+
+`data/nzLocalities.ts` is a hand-picked set of ~65 towns/cities for offline
+nearest-town lookups - no geocoding API, no rate limits, resolves every event
+at once instantly. Not exhaustive; aims for reasonable regional coverage
+across both islands, including sparsely-populated regions so distant events
+still resolve to something honest.
+
+### Time display
+
+- Quake times are shown fixed to NZ time (`Pacific/Auckland` IANA zone, so
+  NZST/NZDT switch automatically) regardless of the viewer's device - this is
+  an NZ disaster app, so a quake's time shouldn't shift with where the reader
+  happens to be.
+- The one thing that *does* follow the viewer's device is 12h vs 24h: there's
+  no direct "is this device 24-hour" API, but the browser's default-locale
+  formatter already reflects that OS setting, so its `hourCycle` is borrowed.
+  (Requested behaviour.)
+- Relative time ("12 min ago") is used for the first 24 hours, then an
+  absolute date/time - relative time answers "did I just feel that" but gets
+  vague for older lookups.
+
+### `localStorage` conveniences swallow errors
+
+`lib/browserStorage.ts` wraps `localStorage` and swallows every failure
+(private browsing, quota, disabled storage). These are "remember this for
+next time" conveniences - the last GPS fix, a manually entered address - and
+losing one isn't worth surfacing an error.
+
+### Manual address entry is sticky
+
+Once a user types an address, it isn't silently overridden if geolocation
+later succeeds - they made a deliberate choice. It persists across reloads
+and only clears when they explicitly clear it.
+
+### "New event" tracking waits for both queries
+
+Earthquakes and volcanoes are independent queries that resolve at different
+times. Seeding the "seen on first load" baseline off whichever responds first
+would wrongly flag the other's data as new the moment it arrives. Seeding is
+gated on both having resolved at least once, not on the combined list merely
+being non-empty. Filtering is applied *after* new-event tracking sees the
+full list, so hiding an event and un-hiding it doesn't make it reappear as
+"new".
+
+### `?demoNewEvent=1`
+
+Injects one fake client-side earthquake a few seconds after load (never
+touches real GeoNet data) so the new-event toast/pulse/badge can be
+demonstrated without waiting for a real quake.
+
+---
+
+## Relationship to the 2016-2018 original
+
+The original source is on the `gh-pages` branch and the `legacy-v1` tag.
+Where current modules deliberately mirror it, the mapping is:
+
+| Now | Original |
+|---|---|
+| `constants/severity.ts` | `alertCircleColorArray` / `alertCirlceRadiusArray` in `js/api/geoLocationAPI.js` |
+| `hooks/useGeolocation.ts` | `geoLocateUser` / `geolocationSuccess` / `geolocationError` in `js/api/geoLocationAPI.js` |
+| `lib/geoCircle.ts` | `google.maps.Circle` (radius in metres) |
+| volcano filter in `App.tsx` | `VolcanoSortLoop` (only volcanoes with active unrest) |
+
+Not yet ported: the original's fire/flood/hurricane/tornado placeholder
+events, which were never wired to real data there either.

@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchFeltEarthquakes } from '../api/geonet'
 
-// GeoNet publishes felt-earthquake data on its own schedule; polling every
-// few seconds (as the original app's setInterval loop did) just wastes
-// requests. A minute is plenty responsive for this data source.
+// GeoNet publishes on its own schedule; a minute is responsive enough and
+// polling faster just wastes requests.
 const REFRESH_INTERVAL_MS = 60_000
 
 export function useEarthquakes() {

@@ -17,13 +17,9 @@ body {
   font-family: var(--font-sans);
 }
 
-/* One-shot entrance for a marker that arrives while the map is already open
-   (see EventMarker's `isNew`) - a plain CSS @keyframes rather than a
-   component-level timer, since a stable animation-name on an element that
-   never remounts plays exactly once and then holds at the 100% state, with
-   no JS bookkeeping needed to stop it from replaying on re-render. Can't be
-   authored as a Tailwind arbitrary-value utility because Tailwind can't
-   express a multi-step keyframe list inline. */
+/* One-shot entrance for a marker that arrives while the map is open (see
+   EventMarker's `isNew`). A multi-step keyframe list can't be a Tailwind
+   arbitrary-value utility, so it lives here. */
 @keyframes marker-drop-in {
   0% {
     transform: translateY(-28px) scale(0.5);

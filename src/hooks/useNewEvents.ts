@@ -13,13 +13,10 @@ interface NewEventsResult {
 }
 
 /**
- * Distinguishes "just arrived while the app was open" from "was already
- * there on first load". Seeding is gated on `isReady` (both underlying
- * queries having resolved at least once) rather than `events.length > 0` -
- * earthquakes and volcanoes load independently, so gating on the combined
- * list being merely non-empty would seed against whichever one happened to
- * respond first, then wrongly flag the other's data as new the moment it
- * arrives a beat later.
+ * Distinguishes "arrived while the app was open" from "was there on first
+ * load". The baseline is seeded only once `isReady` is true - both queries
+ * have resolved - so the slower query's first batch isn't flagged as new
+ * (see docs/DECISIONS.md).
  */
 export function useNewEvents(events: DisasterEvent[], isReady: boolean): NewEventsResult {
   const knownIds = useRef<Set<string> | null>(null)

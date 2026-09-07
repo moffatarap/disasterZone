@@ -13,19 +13,12 @@ interface GeolocationState {
   loading: boolean
 }
 
-/**
- * Watches the browser's geolocation, replacing the original app's
- * geoLocateUser/geolocationSuccess/geolocationError trio
- * (Disaster Zone/js/api/geoLocationAPI.js).
- */
+/** Watches the browser's geolocation. */
 const isGeolocationSupported = 'geolocation' in navigator
 
-// Browser-only, per the "remember last known location" request - the most
-// recent successful GPS fix is cached here so the map/distances have
-// something to show immediately on a fresh page load instead of a blank
-// wait, then get silently replaced the moment a fresh fix comes in. A
-// transient error never clears this - losing GPS for a moment (or having it
-// denied) shouldn't erase a location that was genuinely known a moment ago.
+// The last successful fix is cached so a fresh load has something to show
+// immediately, then replaced when a new fix arrives. A transient error or a
+// denial never clears it.
 const LAST_GPS_LOCATION_KEY = 'disasterZone.lastGpsLocation'
 
 export function useGeolocation(): GeolocationState {

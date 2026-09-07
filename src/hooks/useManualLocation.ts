@@ -9,10 +9,7 @@ export interface ManualLocation {
   displayName: string
 }
 
-// Browser-only, per the "remember last known location" request - a manually
-// entered address is already "sticky" for the rest of a session (see below);
-// persisting it here makes that stick across reloads/visits too, until the
-// user explicitly clears it via `clear`.
+// Persisted so a manually entered address survives reloads, until `clear`.
 const LAST_MANUAL_LOCATION_KEY = 'disasterZone.lastManualLocation'
 
 interface ManualLocationResult {

@@ -30,31 +30,11 @@ function suppressionRadiusKm(a: DisasterEvent, b: DisasterEvent): number {
 }
 
 /**
- * When two earthquakes happen close together, showing both circles floods
- * the map with overlapping colour washes and can bury a smaller/older
- * event's marker entirely (the problem this exists to solve). An event's
- * circle is suppressed if a *more recent* nearby earthquake exists - the
- * newest event in a cluster "wins" and stays visible by default, with
- * everything else revealed again on zoom-in or selection (handled by the
- * caller, not here).
- *
- * "Nearby" is real epicenter-to-epicenter distance (see
- * SEVERITY_PROXIMITY_SUPPRESSION_KM), not whether the two events' *visual*
- * alert circles happen to overlap on screen - that radius scales with
- * severity multiplier and balloons past 200km for a severe quake, which
- * would suppress unrelated severe quakes on opposite ends of the country
- * just because their inflated circles overlapped.
- *
- * Volcanoes are exempt: there are only ever a handful of fixed, well-known
- * locations, they represent an ongoing alert level rather than a discrete
- * timestamped event, and "more recent" isn't a meaningful comparison for
- * them - the actual crowding problem this targets is earthquake swarms.
- *
- * Only moderate-and-above earthquakes take part at all, on either side of
- * the comparison - a weak or light quake's circle is never suppressed, and
- * never suppresses anything else either. Below moderate, "which one wins"
- * isn't worth the clutter tradeoff - these are minor enough that just
- * showing all of them is fine.
+ * Suppresses an earthquake's alert circle when a more recent one exists
+ * within SEVERITY_PROXIMITY_SUPPRESSION_KM (real ground distance) - the
+ * newest in a cluster wins and stays visible; the caller re-reveals the rest
+ * on zoom-in or selection. Only moderate-and-above quakes take part, on
+ * either side; volcanoes are exempt. Rationale in docs/DECISIONS.md.
  */
 export function computeStackedCircleSuppressions(events: DisasterEvent[]): Set<string> {
   const suppressed = new Set<string>()

@@ -13,15 +13,12 @@ interface LocationStatusProps {
   notFound: boolean
 }
 
-// Debounced rather than firing per-keystroke - Nominatim's usage policy caps
-// this at ~1 request/second, and a debounce that only fires once typing
-// pauses stays well under that regardless of typing speed.
+// Debounced to stay under Nominatim's ~1 request/second policy.
 const SEARCH_DEBOUNCE_MS = 450
 const MIN_QUERY_LENGTH = 3
 
-// Shares one screen slot for whichever state applies - showing an address
-// pill and the "can't get your location" form at the same time never makes
-// sense, so there's no layout conflict to resolve between them.
+// One screen slot, one state at a time: the address pill and the "can't get
+// your location" form never show together.
 export function LocationStatus({
   address,
   isManualAddress,
@@ -34,15 +31,13 @@ export function LocationStatus({
 }: LocationStatusProps) {
   const [inputValue, setInputValue] = useState('')
   const [suggestions, setSuggestions] = useState<ForwardGeocodeResult[]>([])
-  // Guards against a slower, earlier request's results landing after a
-  // faster, later one's - only the response matching the most recent query
-  // is ever applied.
+  // Only the response matching the most recent query is applied (guards
+  // against out-of-order responses).
   const latestRequestId = useRef(0)
 
   const trimmedQuery = inputValue.trim()
-  // Rendered instead of stored: short-circuiting here means the effect below
-  // never needs to synchronously clear `suggestions` itself when the query
-  // gets too short, just skip firing a new search.
+  // Derived, not stored - so the effect below never has to clear stale
+  // suggestions when the query gets too short.
   const visibleSuggestions = trimmedQuery.length >= MIN_QUERY_LENGTH ? suggestions : []
 
   useEffect(() => {
@@ -79,17 +74,8 @@ export function LocationStatus({
 
   if (address) {
     return (
-      // bottom-16, not bottom-4 - at bottom-4 this card sat on top of
-      // MapLibre's own attribution control at the bottom of the map,
-      // making the required attribution link unreadable underneath it
-      // (found via an accessibility audit's bounding-box check, confirmed
-      // with a screenshot). bottom-16 clears its ~44px height with margin.
-      // left-20/right-4 (not centered) - a centered card at that height
-      // extends into the bottom-left zoom control's ~54px-wide column,
-      // partially obscuring it (another audit finding, this one a target-
-      // size violation). Insetting the left edge past that column, then
-      // letting mx-auto center the card within the remaining space, clears
-      // it without needing to push the card even higher.
+      // bottom-16 / left-20 keep this card clear of MapLibre's attribution
+      // control and the bottom-left zoom control (see docs/DECISIONS.md).
       <div className="absolute bottom-16 left-20 right-4 z-[6] mx-auto flex max-w-sm items-center gap-2 rounded-full bg-slate-900/90 px-4 py-2 text-white shadow-lg">
         <img src={locationIcon} alt="" className="h-4 w-4 flex-none" />
         <span className="min-w-0 flex-1 truncate text-xs">{address}</span>
@@ -108,12 +94,9 @@ export function LocationStatus({
 
   if (locationError) {
     return (
-      // See the bottom-16/left-20 notes on the address-pill branch above -
-      // same attribution-overlap and zoom-control-overlap fixes apply here.
+      // Same bottom-16 / left-20 positioning as the address-pill branch.
       <div className="absolute bottom-16 left-20 right-4 z-[6] mx-auto max-w-sm rounded-lg bg-slate-900/90 px-4 py-3 text-white shadow-lg">
-        {/* h2, not h3 - see the matching note in EventDetailPopup.tsx: this
-            floating card is its own top-level section, not nested under
-            anything else on the page. */}
+        {/* h2: its own top-level section (see docs/DECISIONS.md). */}
         <h2 className="text-sm font-semibold">Can't get your location</h2>
         <p className="mt-1 text-xs text-white/85">
           Enter your address instead to see how far events are from you.

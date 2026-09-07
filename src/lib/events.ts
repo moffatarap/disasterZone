@@ -12,13 +12,9 @@ function parseGeonetTime(origintime: string): Date {
   return new Date(`${origintime.replace(' ', 'T')}Z`)
 }
 
-// GeoNet's felt-quake feed gives only coordinates and an opaque ID
-// (e.g. "2026p666955") - no place name - so we build a human-readable
-// description ourselves, the same way GeoNet/USGS phrase their own quake
-// summaries. withMaoriName() shows "Māori (English)" for the handful of
-// localities (e.g. Milford Sound) with a real Gazetteer-recorded dual
-// name; unchanged for everywhere else, which is most places - see
-// constants/maoriPlaceNames.ts for why this list is short and deliberate.
+// The felt-quake feed has no place name, so we build one from the nearest
+// locality. withMaoriName() adds "Māori (English)" for the few localities
+// with a recorded dual name (see constants/maoriPlaceNames.ts).
 function describeEarthquakeLocation(name: string, distanceKm: number, bearing: CompassDirection): string {
   const displayName = withMaoriName(name)
   if (distanceKm < 2) return `Near ${displayName}`
@@ -42,8 +38,7 @@ export function earthquakeToEvent(feature: EarthquakeFeature): DisasterEvent {
     ratingText: `Magnitude ${magnitude}`,
     time: parseGeonetTime(feature.properties.origintime),
     detail: `Depth ${Math.round(feature.properties.depth)}km`,
-    // Reused by EventDetailPopup to look up a curated illustrative photo
-    // for the nearest major city, when one exists - see constants/cityImages.ts.
+    // EventDetailPopup looks up a curated photo by this name (constants/cityImages.ts).
     nearestLocalityName: localityName,
   }
 }
@@ -64,10 +59,8 @@ export function volcanoToEvent(feature: VolcanoFeature): DisasterEvent {
   }
 }
 
-// There's no direct "is this device set to 24-hour time" API, but a
-// browser's default-locale formatter already resolves that preference (an
-// OS's 24-hour toggle changes what its default locale reports here) - so we
-// borrow its hourCycle rather than hardcoding 12- or 24-hour.
+// No direct "is this device 24-hour" API, but the default-locale formatter
+// reflects that OS setting, so borrow its hourCycle.
 function detectPreferredHourCycle(): Intl.DateTimeFormatOptions['hourCycle'] {
   if (typeof navigator === 'undefined') return 'h12'
   try {
@@ -78,14 +71,10 @@ function detectPreferredHourCycle(): Intl.DateTimeFormatOptions['hourCycle'] {
   }
 }
 
-// Fixed to NZ time regardless of the viewer's device settings - this is a NZ
-// disaster app, so a quake's displayed time shouldn't shift depending on
-// where in the world the reader's device happens to be set. Uses the IANA
-// zone (not a hardcoded UTC+12/13 offset) so NZST/NZDT switch automatically.
-// Hour cycle (12h vs 24h) is the one thing that *does* follow the viewer's
-// own device setting, per user request.
-// (Spread out as explicit fields rather than dateStyle/timeStyle - the
-// Intl spec doesn't allow combining those with timeZoneName.)
+// Fixed to NZ time (IANA zone, so NZST/NZDT switch automatically) regardless
+// of the viewer's device; only 12h/24h follows the device. See
+// docs/DECISIONS.md. Explicit fields, not dateStyle/timeStyle - those can't
+// combine with timeZoneName.
 const timeFormatter = new Intl.DateTimeFormat('en-NZ', {
   day: 'numeric',
   month: 'short',

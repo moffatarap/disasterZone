@@ -1,7 +1,5 @@
-// Severity scale + colours + alert-circle sizing, ported directly from the
-// original app's alertCircleColorArray / alertCirlceRadiusArray
-// (Disaster Zone/js/api/geoLocationAPI.js) so the map reads the same way it
-// always has.
+// Severity scale + colours + alert-circle sizing, ported from the original
+// app so the map reads the same way (see docs/DECISIONS.md).
 
 import earthquakeNone from '../assets/media/img/mapKeys/key/earthquake.svg'
 import earthquakeWeak from '../assets/media/img/mapKeys/event/weak/earthquakeW.svg'
@@ -40,21 +38,15 @@ export const FILTERABLE_SEVERITY_LEVELS = SEVERITY_LEVELS.filter(
   (level): level is Exclude<SeverityLevel, 'none'> => level !== 'none',
 )
 
-// Display order only (severe first) for the filter row and the map key -
-// SEVERITY_LEVELS itself must stay ascending since volcanoLevelToSeverity
-// indexes into it positionally by GeoNet's 0-5 alert level.
+// Display order (severe first) for the filter row and map key.
+// SEVERITY_LEVELS itself stays ascending - volcanoLevelToSeverity indexes
+// into it positionally by GeoNet's 0-5 alert level.
 export const FILTERABLE_SEVERITY_LEVELS_DESC = [...FILTERABLE_SEVERITY_LEVELS].reverse()
 
 /**
- * How close together (in km, real-world epicenter distance) two earthquakes
- * need to be for the older one's alert circle to be suppressed in favour of
- * a newer nearby one - see computeStackedCircleSuppressions. Scales with
- * severity (a bigger quake's "this is the same cluster" radius is larger)
- * but capped to realistic distances, unlike the visual alert-circle radius
- * below which balloons past 200km for a severe quake and was previously
- * (wrongly) used as the overlap test itself - two unrelated severe quakes on
- * opposite ends of the country could suppress each other purely because
- * their inflated *visual* circles overlapped on screen.
+ * Epicenter-to-epicenter distance (km) within which an older earthquake's
+ * alert circle is suppressed in favour of a newer nearby one, scaled by
+ * severity. See computeStackedCircleSuppressions and docs/DECISIONS.md.
  */
 export const SEVERITY_PROXIMITY_SUPPRESSION_KM: Record<SeverityLevel, number> = {
   none: 20,
@@ -84,8 +76,8 @@ export const SEVERITY_COLORS: Record<SeverityLevel, string> = {
   severe: '#e52419',
 }
 
-// The original multiplied the base radius per-hazard-type for visual effect
-// (a stylistic choice, not a scientific one) - preserved as-is.
+// Per-hazard visual multiplier carried over from the original - stylistic,
+// not scientific.
 export const EARTHQUAKE_RADIUS_MULTIPLIER = 4
 export const VOLCANO_RADIUS_MULTIPLIER = 10
 

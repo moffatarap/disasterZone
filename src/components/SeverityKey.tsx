@@ -3,21 +3,16 @@ import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
 import { FILTERABLE_SEVERITY_LEVELS_DESC, SEVERITY_COLORS } from '../constants/severity'
 
-// Fire/flood/hurricane/tornado are intentionally left out of the key for now -
-// they aren't wired to real data yet (see the placeholder-events phase).
+// Earthquake and volcano only - the other hazards aren't wired to real data
+// yet (see docs/DECISIONS.md).
 const KIND_ENTRIES = [
   { icon: earthquakeIcon, label: 'Earthquake' },
   { icon: volcanoIcon, label: 'Volcano' },
 ]
 
-// Button and panel are independently positioned (not nested in a shared
-// shrink-to-fit container) on purpose: they used to share one `absolute`
-// wrapper sized to fit whichever child was widest, so the button visibly
-// shifted sideways whenever the panel toggled open/closed and changed that
-// wrapper's width. Each now has its own fixed `right-3` anchor instead.
-//
-// Minimised by default on every breakpoint - it used to stay permanently
-// expanded on tablet/desktop with no way to collapse it there at all.
+// Button and panel each anchor to their own `right-3` rather than a shared
+// wrapper, so the button doesn't shift when the panel toggles. Minimised by
+// default at every breakpoint. (See docs/DECISIONS.md.)
 interface SeverityKeyProps {
   sidebarOpen: boolean
   showFaultLines: boolean
@@ -27,11 +22,8 @@ interface SeverityKeyProps {
 export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }: SeverityKeyProps) {
   const [expanded, setExpanded] = useState(false)
 
-  // The events sidebar is a `sm:w-80` (320px) panel anchored to the same
-  // right edge as this button/panel - now that the button renders at every
-  // breakpoint (not just mobile, where the sidebar is a bottom sheet that
-  // doesn't reach this corner), it needs to step aside on tablet/desktop
-  // whenever that panel is open, or it ends up covered and unclickable.
+  // Step aside on tablet/desktop when the 320px events sidebar is open, or
+  // this gets covered and unclickable.
   const rightOffsetClass = sidebarOpen ? 'sm:right-[332px]' : 'sm:right-3'
 
   return (
@@ -51,11 +43,8 @@ export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }:
           expanded ? 'block' : 'hidden'
         }`}
       >
-        {/* h2/h3, not h4 - this panel's headings previously jumped straight
-            from the page's one h1 (the navbar title) to h4, skipping levels
-            (flagged by an axe-core heading-order audit). KEY is a top-level
-            sibling section to the page's other floating panels (h2);
-            INTENSITY nests one level under it (h3). */}
+        {/* KEY is a top-level section (h2); INTENSITY nests under it (h3).
+            See docs/DECISIONS.md on heading levels. */}
         <h2 className="mb-1.5 text-xs tracking-wide text-slate-500">KEY</h2>
         <ul className="flex flex-col gap-1">
           {KIND_ENTRIES.map((entry) => (
@@ -85,11 +74,8 @@ export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }:
           Quakes: how strongly it was felt. Volcanoes: official alert level.
         </p>
 
-        {/* The one interactive control in an otherwise plain legend -
-            fault lines are optional reference context (off by default, see
-            App.tsx) rather than part of the hazard legend itself, so it's
-            set apart with its own divider rather than folded into the lists
-            above. */}
+        {/* Fault lines are optional reference context, not part of the hazard
+            legend, so the toggle sits below its own divider. */}
         <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-slate-100 pt-2.5 text-xs text-slate-600">
           <input
             type="checkbox"

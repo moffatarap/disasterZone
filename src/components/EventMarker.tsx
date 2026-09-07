@@ -27,22 +27,16 @@ export function EventMarker({ event, isSelected, isNew, onSelect }: EventMarkerP
         onSelect(event)
       }}
     >
-      {/* The wrapper's min-h/w-11 is a floor, not a cap - the icon itself is
-          already at least 44px, so the tap target and the visual size are
-          the same box here (no more invisible-padding gap between them).
-          `animate-[marker-drop-in...]` (keyframes defined in index.css) is
-          only applied to a brand-new arrival, and only plays once - the
-          class stays on the element for as long as `isNew` is true, but a
-          CSS animation on an element that never remounts doesn't replay on
-          later re-renders, it just holds at its final frame. */}
+      {/* min-h/w-11 is the 44px touch-target floor. The drop-in animation
+          (keyframes in index.css) plays once on a new arrival and holds - it
+          doesn't replay on re-render since the element never remounts. */}
       <div
         className={`relative flex min-h-11 min-w-11 cursor-pointer items-center justify-center ${
           isNew ? 'animate-[marker-drop-in_500ms_ease-out]' : ''
         }`}
       >
-        {/* White + dark outline rather than the event's severity color, so
-            the pulse stays visible even against a same-hue alert-radius
-            circle underneath it (which would otherwise blend right in). */}
+        {/* White + dark outline, not the severity colour, so the pulse stays
+            visible over a same-hue alert circle. */}
         {isNew && (
           <span
             aria-hidden="true"

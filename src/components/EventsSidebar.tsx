@@ -38,10 +38,8 @@ const KIND_ENTRIES: { kind: HazardKind; icon: string; label: string }[] = [
   { kind: 'volcano', icon: volcanoIcon, label: 'Volcano' },
 ]
 
-// Sized up from an earlier, much smaller/subtler chip design per explicit
-// feedback that the filters weren't prominent enough - `flex-none` keeps
-// each chip full-size inside the severity row's horizontal-scroll container
-// below rather than shrinking to fit.
+// `flex-none` keeps each chip full-size in the horizontal-scroll row rather
+// than shrinking to fit (see docs/DECISIONS.md).
 const CHIP_CLASS =
   'flex flex-none items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold capitalize transition-colors'
 
@@ -71,12 +69,8 @@ export function EventsSidebar({
         }`}
       />
 
-      {/* No role="dialog"/aria-modal here (an axe-core audit flagged
-          "dialog" as an invalid role for <aside>) - and it would have been
-          semantically wrong anyway: this panel has no focus trap or Escape
-          handling, so it was never actually behaving as a modal dialog.
-          <aside> already carries an implicit "complementary" landmark role
-          on its own, which is what this actually is. */}
+      {/* <aside>, not a dialog: this is a persistent panel with no focus trap
+          or Escape handling, not a modal (see docs/DECISIONS.md). */}
       <aside
         aria-label="Recent events"
         className={`fixed inset-x-0 bottom-0 z-20 flex max-h-[65vh] flex-col rounded-t-2xl bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:absolute sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-80 sm:rounded-none ${
@@ -119,10 +113,8 @@ export function EventsSidebar({
               )
             })}
           </div>
-          {/* Kept to a single row (severe-to-weak, matching the map key) per
-              explicit request - five full-size chips don't all fit on a
-              narrow phone screen, so this scrolls horizontally there rather
-              than wrapping or shrinking the chips down again. */}
+          {/* Single row, severe-to-weak (matching the map key); scrolls
+              horizontally on a narrow screen rather than wrapping. */}
           <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
             {FILTERABLE_SEVERITY_LEVELS_DESC.map((level) => {
               const active = visibleSeverities.has(level)

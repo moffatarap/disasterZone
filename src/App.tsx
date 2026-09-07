@@ -48,11 +48,9 @@ function App() {
   const { data: volcanoes } = useVolcanoes()
   const demoEvent = useDemoEvent()
 
-  // Open by default on large screens only - tablet gets the same side-panel
-  // layout as desktop (not the mobile bottom sheet) but starts closed like
-  // mobile does, since it doesn't have the spare width desktop does to keep
-  // it open without crowding the map. Checked once at mount, not kept in
-  // sync with later window resizes.
+  // Open by default on large screens only - tablet uses the desktop side
+  // panel but starts closed, lacking the width to keep it open without
+  // crowding the map. Checked once at mount, not on later resizes.
   const [sidebarOpen, setSidebarOpen] = useState(
     () => window.matchMedia(LARGE_BREAKPOINT_QUERY).matches,
   )
@@ -70,7 +68,7 @@ function App() {
       .map(earthquakeToEvent)
       .sort((a, b) => (b.time?.getTime() ?? 0) - (a.time?.getTime() ?? 0))
 
-    // Mirrors the original's VolcanoSortLoop: only show volcanoes with active unrest.
+    // Only volcanoes with active unrest (level > 0).
     const volcanoEvents = (volcanoes ?? [])
       .filter((feature) => feature.properties.level > 0)
       .map(volcanoToEvent)
@@ -95,10 +93,8 @@ function App() {
   // closes itself automatically the moment a filter change hides it.
   const selectedEvent = filteredEvents.find((event) => event.id === selectedEventId) ?? null
 
-  // Earthquakes and volcanoes are two independent queries that resolve at
-  // different times - seeding "new" tracking off whichever one happens to
-  // load first would wrongly flag the other's data as new the moment it
-  // arrives a beat later. Wait for both before treating anything as a baseline.
+  // Both queries must resolve before "new" tracking has a baseline, or the
+  // slower one's first batch gets flagged as new (see useNewEvents).
   const initialDataLoaded = earthquakes !== undefined && volcanoes !== undefined
   const { newEventIds, toastQueue, acknowledge } = useNewEvents(events, initialDataLoaded)
   // Toasts are rendered independently of the (already-filtered) map/sidebar
@@ -146,15 +142,10 @@ function App() {
     <div className="flex h-full flex-col">
       <Navbar onToggleSidebar={() => setSidebarOpen((open) => !open)} />
 
-      {/* overflow-hidden clips the sidebar's closed (translated off-screen)
-          state - EventsSidebar is `sm:absolute` within this container rather
-          than fixed-to-viewport (so it no longer overlaps the navbar), but
-          that means its off-screen translate now counts toward this
-          container's scrollable width unless clipped here.
-          `<main>`, not `<div>`, so this region (and everything inside it,
-          including MapLibre's own attribution control) sits inside a
-          landmark - an axe-core best-practice audit flagged the map's
-          attribution text as unlandmarked content. */}
+      {/* overflow-hidden clips the sidebar's off-screen (translated) closed
+          state, which otherwise adds to this container's scroll width.
+          `<main>`, not `<div>`, so the map's attribution sits in a landmark
+          (see docs/DECISIONS.md). */}
       <main className="relative min-h-0 flex-1 overflow-hidden">
         <DisasterMap
           userLocation={effectiveLocation}

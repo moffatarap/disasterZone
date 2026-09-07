@@ -1,6 +1,5 @@
 // Builds a geodesic circle polygon so alert-radius circles are accurate in
-// real metres and scale correctly with the map, the way the original app's
-// google.maps.Circle (radius in metres) did.
+// real metres and scale correctly with the map.
 
 import type { Feature, Polygon } from 'geojson'
 
