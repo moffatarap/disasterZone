@@ -99,26 +99,18 @@ export function LocationStatus({
     closeEditor()
   }
 
-  const label = isManualAddress
-    ? 'Manual location'
-    : address
-      ? 'Your location'
-      : locationError
-        ? 'Location unavailable'
-        : 'Finding your location'
-
   const mainText =
     address ??
     (locationError
-      ? 'Enter an address to see distances to events'
+      ? 'Location unavailable - add an address'
       : isLocating
-        ? 'Checking your device location…'
-        : 'Set an address to see distances to events')
+        ? 'Finding your location…'
+        : 'No location set - add an address')
 
   const showSpinner = isLocating && !address && !locationError && !editing
 
   return (
-    <div className="absolute inset-x-2 bottom-2 z-[6] min-h-20 rounded-2xl bg-slate-900/95 px-4 py-3 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+    <div className="absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
       {editing ? (
         <div className="relative flex flex-col gap-1.5">
           {visibleSuggestions.length > 0 && (
@@ -187,38 +179,42 @@ export function LocationStatus({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-3">
+        <div className="flex min-h-8 items-center gap-2.5">
           {showSpinner ? (
             <span
               aria-hidden="true"
-              className="h-5 w-5 flex-none animate-spin rounded-full border-2 border-white/25 border-t-white/80"
+              className="h-4 w-4 flex-none animate-spin rounded-full border-2 border-white/25 border-t-white/80"
             />
           ) : (
-            <img src={locationIcon} alt="" className="h-5 w-5 flex-none" />
+            <img src={locationIcon} alt="" className="h-4 w-4 flex-none" />
           )}
 
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold tracking-wide text-white/50 uppercase">{label}</p>
-            <p className="truncate text-sm leading-snug">{mainText}</p>
-          </div>
+          <p className="min-w-0 flex-1 truncate text-sm">
+            {isManualAddress && address && (
+              <span className="mr-1.5 text-[10px] font-semibold tracking-wide text-white/40 uppercase">
+                Manual
+              </span>
+            )}
+            <span className={address ? undefined : 'text-white/70'}>{mainText}</span>
+          </p>
 
-          <div className="flex flex-none flex-col items-end gap-1">
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="text-xs font-semibold text-sky-400 hover:underline"
-            >
-              {address ? 'Change' : 'Set address'}
-            </button>
+          <div className="flex flex-none items-center gap-3 text-xs font-semibold">
             {isManualAddress && (
               <button
                 type="button"
                 onClick={onClearManual}
-                className="text-xs font-semibold text-white/55 transition-colors hover:text-white hover:underline"
+                className="text-white/55 transition-colors hover:text-white hover:underline"
               >
                 Use my location
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="text-sky-400 hover:underline"
+            >
+              {address ? 'Change' : 'Set address'}
+            </button>
           </div>
         </div>
       )}

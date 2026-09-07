@@ -213,12 +213,14 @@ reasoning (`<h2>` then `<h3>` for the nested "intensity" list).
 
 ### `LocationStatus` is a persistent bottom bar
 
-A floating card inset `bottom-2 inset-x-2`, always present. It shows one of:
-"Finding your location…" (with a spinner) while geolocation resolves, the
-address, or "Location unavailable" on denial/error. **"Change" is always
-offered** - a typed address overrides even a successful GPS fix, which is the
-point for anyone on a VPN whose device location is wrong; "Use my location"
-appears only while a manual override is active.
+A single-row floating card inset `bottom-2 inset-x-2` (`min-h-12`), always
+present. It shows one of: "Finding your location…" (with a spinner) while
+geolocation resolves, the address (prefixed with a small "Manual" tag when
+overridden), or "Location unavailable - add an address" on denial/error.
+**"Change" is always offered** - a typed address overrides even a successful
+GPS fix, which is the point for anyone on a VPN whose device location is
+wrong; "Use my location" appears only while a manual override is active. The
+editor state (input + autocomplete) grows the card above this floor.
 
 - **The address is shown coarse and single-line**: `formatShortAddress` in
   `api/nominatim.ts` reduces Nominatim's response to "Suburb, City" (e.g.
@@ -228,7 +230,7 @@ appears only while a manual override is active.
   lookups all pass `addressdetails=1` and run through the same formatter; the
   autocomplete picker is the one place the full string still shows, so
   near-identical candidates stay distinguishable.
-- The map's zoom control and attribution are lifted `bottom-24` (in
+- The map's zoom control and attribution are lifted `bottom-16` (in
   DisasterMap's control CSS) so the bar doesn't cover them. The attribution
   is forced `compact` so it's just an "i" button, not a strip of text.
 - The manual-entry autocomplete opens **upward** (`bottom-full`) since the
