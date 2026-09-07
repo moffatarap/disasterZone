@@ -182,6 +182,21 @@ only control.
   `constants/maoriPlaceNames.ts` - deliberately kept in-file so provenance
   travels with the data.
 
+### Selecting an event pans the marker low, at every viewport
+
+The popup is anchored `bottom` and grows *upward* from its marker, so centring
+the marker (which `flyTo` does by default) puts the popup's top - photo and
+close button - above `<main>`, where `overflow-hidden` clips it. Selecting an
+event therefore flies with `padding.top` (`POPUP_HEADROOM_PX`, 460) so the
+marker lands low and the whole popup fits; closing the popup eases the padding
+back to 0 so panning and pinch-zoom re-centre normally.
+
+This was mobile-only at first, on the assumption desktop had height to spare.
+It doesn't: at 1280x900 the popup was clipped by 38px and its close button was
+unreachable. The padding is clamped to the container height so a short window
+still shows the marker itself, and `scripts/visual-audit.mjs` asserts the popup
+stays inside `<main>` at every viewport.
+
 ### Detail icons are drawn near-white
 
 They sit on a dark card. An earlier light-card design flipped them near-black

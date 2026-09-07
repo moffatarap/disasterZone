@@ -33,14 +33,16 @@ const FAULT_LINES_URL = `${import.meta.env.BASE_URL}data/nz-active-faults.geojso
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
 
-// Below this width the event popup (which grows upward from the marker) would
-// be clipped by <main>'s overflow-hidden (see App.tsx). Matches App.tsx's
-// MOBILE_BREAKPOINT_QUERY.
-const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
-// Space reserved above the marker on mobile so the whole popup - photo
-// included - lands on screen. Roughly the height of an image popup; the pan
-// clamps it to the container so a short screen still shows the marker.
-const MOBILE_POPUP_HEADROOM_PX = 460
+// The event popup grows upward from its marker, so a marker left dead-centre
+// puts the popup's top - photo and close button - above <main>, where
+// overflow-hidden clips it (see App.tsx). Selecting an event reserves this much
+// room above the marker instead. Roughly the height of an image popup; the pan
+// clamps it to the container so a short window still shows the marker.
+//
+// This applies at every width. Desktop looks like it has height to spare and
+// doesn't: at 1280x900 the popup was clipped by 38px and its close button was
+// unclickable, which is exactly what scripts/visual-audit.mjs now guards.
+const POPUP_HEADROOM_PX = 460
 
 // The map re-centres whenever the user's location moves at least this far -
 // covers a typed address or a fresh GPS fix somewhere new, while ignoring the
@@ -143,13 +145,12 @@ export function DisasterMap({
       return
     }
 
-    // On mobile, pan the marker into the lower part of the view so the popup
-    // above it isn't clipped. Desktop has the height to spare and keeps
-    // centring the marker exactly.
-    const isMobile = window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
-    const topPadding = isMobile
-      ? Math.max(0, Math.min(MOBILE_POPUP_HEADROOM_PX, map.getContainer().clientHeight - 180))
-      : 0
+    // Pan the marker into the lower part of the view so the popup above it
+    // isn't clipped, clamped so the marker itself stays visible on a short one.
+    const topPadding = Math.max(
+      0,
+      Math.min(POPUP_HEADROOM_PX, map.getContainer().clientHeight - 180),
+    )
 
     map.flyTo({
       center: [selectedLng, selectedLat],
