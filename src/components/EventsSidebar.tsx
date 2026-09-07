@@ -88,15 +88,18 @@ export function EventsSidebar({
   const [sheetPct, setSheetPct] = useState(SHEET_DEFAULT_PCT)
 
   // Reopening inside the exit window would otherwise show the dragged-down
-  // height and then snap; apply the reset now and drop the timer. Also clears
-  // it on unmount.
+  // height and then snap, so apply the pending reset immediately instead.
   useEffect(() => {
     if (isOpen) applyPendingHeightReset()
-    return clearHeightResetTimer
-    // Both helpers only touch refs and a setter, so listing them would re-run
-    // this on every render without changing what it does.
+    // applyPendingHeightReset only touches a ref and a setter, so listing it
+    // would re-run this every render without changing what it does.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
+
+  // Unmount only. This deliberately has no `isOpen` dependency: a cleanup that
+  // ran on the true->false transition would cancel the very timer the
+  // pull-to-close just scheduled, and the height would never be restored.
+  useEffect(() => clearHeightResetTimer, [])
 
   // Declared below the effect above on purpose: keeps it from tripping the
   // "no setState in an effect body" lint rule.
