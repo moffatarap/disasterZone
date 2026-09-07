@@ -59,19 +59,21 @@ function App() {
   const [visibleSeverities, setVisibleSeverities] = useState<Set<SeverityLevel>>(
     new Set(FILTERABLE_SEVERITY_LEVELS),
   )
-  // Off by default - an optional reference layer, not a live hazard, so it
-  // shouldn't compete with the map's actual purpose until asked for.
+  // Both off by default - optional reference context, not live hazards, so
+  // they shouldn't compete with the map's purpose until asked for.
   const [showFaultLines, setShowFaultLines] = useState(false)
+  const [showInactiveVolcanoes, setShowInactiveVolcanoes] = useState(false)
 
   const events = useMemo<DisasterEvent[]>(() => {
     const earthquakeEvents = (earthquakes ?? [])
       .map(earthquakeToEvent)
       .sort((a, b) => (b.time?.getTime() ?? 0) - (a.time?.getTime() ?? 0))
 
-    // Only volcanoes with active unrest (level > 0).
-    const volcanoEvents = (volcanoes ?? [])
-      .filter((feature) => feature.properties.level > 0)
-      .map(volcanoToEvent)
+    // Every volcano, every level. Level-0 (no unrest) ones map to severity
+    // 'none' and are filtered back out below unless showInactiveVolcanoes is
+    // on - built here always so they're part of the new-event baseline and
+    // toggling never flags a dormant volcano as "new".
+    const volcanoEvents = (volcanoes ?? []).map(volcanoToEvent)
 
     // TEMPORARY DEMO ONLY - see useDemoEvent above.
     return demoEvent
@@ -82,9 +84,21 @@ function App() {
   // Filtering happens after the full list is built (and after new-event
   // tracking sees everything, below) so a hidden event's "seen" state stays
   // accurate and it doesn't reappear as "new" the moment it's un-filtered.
+  // Inactive volcanoes ('none' severity) sit outside the severity chips -
+  // their own map-key toggle controls them.
   const filteredEvents = useMemo(
-    () => events.filter((event) => visibleKinds.has(event.kind) && visibleSeverities.has(event.severity)),
-    [events, visibleKinds, visibleSeverities],
+    () =>
+      events.filter((event) => {
+        if (!visibleKinds.has(event.kind)) return false
+        if (event.kind === 'volcano' && event.severity === 'none') return showInactiveVolcanoes
+        return visibleSeverities.has(event.severity)
+      }),
+    [events, visibleKinds, visibleSeverities, showInactiveVolcanoes],
+  )
+  // Inactive volcanoes show on the map only, never in the Recent Events list.
+  const sidebarEvents = useMemo(
+    () => filteredEvents.filter((event) => !(event.kind === 'volcano' && event.severity === 'none')),
+    [filteredEvents],
   )
   const isFiltered =
     visibleKinds.size < ALL_KINDS.length || visibleSeverities.size < FILTERABLE_SEVERITY_LEVELS.length
@@ -160,6 +174,8 @@ function App() {
         <SeverityKey
           showFaultLines={showFaultLines}
           onToggleFaultLines={() => setShowFaultLines((current) => !current)}
+          showInactiveVolcanoes={showInactiveVolcanoes}
+          onToggleInactiveVolcanoes={() => setShowInactiveVolcanoes((current) => !current)}
         />
 
         <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
@@ -185,7 +201,7 @@ function App() {
         />
 
         <EventsSidebar
-          events={filteredEvents}
+          events={sidebarEvents}
           isOpen={sidebarOpen}
           selectedEventId={selectedEventId}
           onSelectEvent={selectEvent}

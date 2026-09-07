@@ -137,6 +137,18 @@ visible; the rest come back on zoom-in or selection (handled by the caller).
 carried over from the original, which multiplied the base radius per hazard
 type for visual effect - not a scientific figure.
 
+### Inactive volcanoes are hidden by default
+
+GeoNet reports every monitored volcano, most at Alert Level 0 (no unrest).
+By default only level > 0 shows. A "Show inactive volcanoes" map-key toggle
+adds the rest as plain grey markers - **map only**, no alert circle, and not
+in the Recent Events list, which is a feed of activity rather than an
+inventory of cones. All levels are still built into the event list upstream
+so the toggle never trips the "new event" detector; `filteredEvents` and a
+derived `sidebarEvents` do the hiding. Level-0 volcanoes carry severity
+`none`, which sits outside the severity filter chips - the toggle is their
+only control.
+
 ---
 
 ## Event popups

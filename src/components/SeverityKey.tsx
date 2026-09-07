@@ -18,9 +18,16 @@ const KIND_ENTRIES = [
 interface SeverityKeyProps {
   showFaultLines: boolean
   onToggleFaultLines: () => void
+  showInactiveVolcanoes: boolean
+  onToggleInactiveVolcanoes: () => void
 }
 
-export function SeverityKey({ showFaultLines, onToggleFaultLines }: SeverityKeyProps) {
+export function SeverityKey({
+  showFaultLines,
+  onToggleFaultLines,
+  showInactiveVolcanoes,
+  onToggleInactiveVolcanoes,
+}: SeverityKeyProps) {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -73,17 +80,28 @@ export function SeverityKey({ showFaultLines, onToggleFaultLines }: SeverityKeyP
           Quakes: how strongly it was felt. Volcanoes: official alert level.
         </p>
 
-        {/* Fault lines are optional reference context, not part of the hazard
-            legend, so the toggle sits below its own divider. */}
-        <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-white/10 pt-2.5 text-xs text-white/80">
-          <input
-            type="checkbox"
-            checked={showFaultLines}
-            onChange={onToggleFaultLines}
-            className="h-3.5 w-3.5 rounded border-white/25 bg-white/10 text-sky-500 focus:ring-2 focus:ring-sky-400"
-          />
-          Show fault lines
-        </label>
+        {/* Optional reference context, not part of the hazard legend, so these
+            sit below their own divider. */}
+        <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-2.5 text-xs text-white/80">
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              checked={showFaultLines}
+              onChange={onToggleFaultLines}
+              className="h-3.5 w-3.5 rounded border-white/25 bg-white/10 text-sky-500 focus:ring-2 focus:ring-sky-400"
+            />
+            Show fault lines
+          </label>
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              checked={showInactiveVolcanoes}
+              onChange={onToggleInactiveVolcanoes}
+              className="h-3.5 w-3.5 rounded border-white/25 bg-white/10 text-sky-500 focus:ring-2 focus:ring-sky-400"
+            />
+            Show inactive volcanoes
+          </label>
+        </div>
       </div>
     </>
   )

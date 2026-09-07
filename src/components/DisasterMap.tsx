@@ -106,9 +106,12 @@ export function DisasterMap({
 
   // Suppression uses a real epicenter-to-epicenter distance (see
   // circleDensity.ts), so it applies at every zoom level. Selecting an event
-  // always reveals its circle.
+  // always reveals its circle. Inactive volcanoes ('none') never get one - a
+  // 6.5km ring on a dormant cone is just noise.
   const visibleCircleEvents = events.filter(
-    (event) => event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id),
+    (event) =>
+      !(event.kind === 'volcano' && event.severity === 'none') &&
+      (event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id)),
   )
 
   return (
