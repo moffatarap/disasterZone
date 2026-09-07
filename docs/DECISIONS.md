@@ -82,6 +82,16 @@ no upside here and "which way is north" matters when you're reading distances
 and directions off it. The `NavigationControl` compass button is hidden
 (`showCompass={false}`) since it would never do anything.
 
+### Re-centres on the user's location, but only on a real move
+
+The map flies to the user's location whenever it's (re)found - the first fix,
+a typed address, a fresh "Use my location" fix somewhere new. It keys on
+`userLocation`, which is App's `effectiveLocation`, so manual and GPS are
+handled the same way. A `RECENTER_THRESHOLD_KM` (250m) gate skips the
+metre-scale drift `watchPosition` streams while you hold still, so the map
+doesn't creep. Only the first centre also sets the zoom (in from the NZ-wide
+default); later re-centres keep whatever zoom the user has set.
+
 ---
 
 ## Severity scale, colours, alert circles

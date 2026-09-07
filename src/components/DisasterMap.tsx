@@ -5,6 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { SEVERITY_COLORS } from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { computeStackedCircleSuppressions, eventAlertRadiusMeters } from '../lib/circleDensity'
+import { haversineDistanceKm } from '../lib/geo'
 import type { DisasterEvent } from '../types/event'
 import { AlertCircle } from './AlertCircle'
 import { EventDetailPopup } from './EventDetailPopup'
@@ -40,6 +41,11 @@ const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
 // included - lands on screen. Roughly the height of an image popup; the pan
 // clamps it to the container so a short screen still shows the marker.
 const MOBILE_POPUP_HEADROOM_PX = 460
+
+// The map re-centres whenever the user's location moves at least this far -
+// covers a typed address or a fresh GPS fix somewhere new, while ignoring the
+// metre-scale drift watchPosition reports when you're holding still.
+const RECENTER_THRESHOLD_KM = 0.25
 
 // Esri "World Dark Gray Canvas" - free, no API key (see docs/DECISIONS.md).
 // Base terrain and place-name labels are two separate raster layers, stacked
@@ -82,7 +88,7 @@ export function DisasterMap({
   showFaultLines,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
-  const hasCenteredOnUser = useRef(false)
+  const lastCenteredOn = useRef<UserLocation | null>(null)
   const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
 
   // Fetched once, on first toggle-on - most sessions never enable this.
@@ -96,11 +102,24 @@ export function DisasterMap({
       })
   }, [showFaultLines, faultLinesData])
 
+  // Centre on the user whenever their location is (re)found - the first fix, a
+  // typed address, a fresh "Use my location" fix in a new spot. `userLocation`
+  // is App's effectiveLocation, so this covers manual and GPS alike. Sub-250m
+  // watchPosition jitter is ignored so the map doesn't drift while you're
+  // still; the first centre also zooms in from the NZ-wide default.
   useEffect(() => {
-    if (userLocation && !hasCenteredOnUser.current) {
-      hasCenteredOnUser.current = true
-      mapRef.current?.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 9 })
-    }
+    const map = mapRef.current
+    if (!userLocation || !map) return
+
+    const previous = lastCenteredOn.current
+    if (previous && haversineDistanceKm(previous, userLocation) < RECENTER_THRESHOLD_KM) return
+
+    lastCenteredOn.current = { lat: userLocation.lat, lng: userLocation.lng }
+    map.flyTo(
+      previous
+        ? { center: [userLocation.lng, userLocation.lat] }
+        : { center: [userLocation.lng, userLocation.lat], zoom: 9 },
+    )
   }, [userLocation])
 
   // Depend on the identity of the *selection*, not the event object: App
