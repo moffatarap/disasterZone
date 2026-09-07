@@ -3,11 +3,59 @@
 // https://operations.osmfoundation.org/policies/nominatim/ - callers must not
 // poll this on every location update (see useReverseGeocode).
 
+/** Partial - Nominatim returns a variable subset depending on the point. */
+interface NominatimAddress {
+  neighbourhood?: string
+  quarter?: string
+  suburb?: string
+  city_district?: string
+  hamlet?: string
+  locality?: string
+  village?: string
+  town?: string
+  city?: string
+  municipality?: string
+  county?: string
+  state?: string
+  country?: string
+}
+
+// A deliberately coarse label - a local area plus its settlement, e.g.
+// "City Centre, Auckland". We geocode the exact address the user types (so
+// distances are accurate) but only ever show this much of it. Degrades to
+// whatever Nominatim returned - down to just region or country for a point
+// out at sea.
+function formatShortAddress(address: NominatimAddress, fallback: string): string {
+  const area =
+    address.suburb ??
+    address.neighbourhood ??
+    address.quarter ??
+    address.city_district ??
+    address.hamlet ??
+    address.locality
+  const place =
+    address.city ??
+    address.town ??
+    address.village ??
+    address.municipality ??
+    address.county ??
+    address.state
+  const parts = [...new Set([area, place].filter(Boolean))] as string[]
+  return parts.join(', ') || address.state || address.country || fallback
+}
+
+function shortFromResponse(data: { address?: NominatimAddress; display_name?: string }): string {
+  const fallback = data.display_name?.split(',')[0]?.trim() || 'your area'
+  return data.address ? formatShortAddress(data.address, fallback) : (data.display_name ?? fallback)
+}
+
+/** Coordinates -> a coarse "Suburb, City" label (see formatShortAddress). */
 export async function reverseGeocode(lat: number, lng: number): Promise<string> {
   const url = new URL('https://nominatim.openstreetmap.org/reverse')
   url.searchParams.set('lat', String(lat))
   url.searchParams.set('lon', String(lng))
   url.searchParams.set('format', 'jsonv2')
+  url.searchParams.set('addressdetails', '1')
 
   const response = await fetch(url, {
     headers: {
@@ -22,14 +70,30 @@ export async function reverseGeocode(lat: number, lng: number): Promise<string> 
     throw new Error(`Nominatim reverse geocode failed: ${response.status}`)
   }
 
-  const data = await response.json()
-  return data.display_name ?? 'No address found'
+  return shortFromResponse(await response.json())
 }
 
 export interface ForwardGeocodeResult {
   lat: number
   lng: number
-  displayName: string
+  /** Coarse "Suburb, City" label - what the app displays. */
+  label: string
+  /** Full Nominatim string - only used to tell candidates apart in the picker. */
+  full: string
+}
+
+function toResult(raw: {
+  lat: string
+  lon: string
+  display_name: string
+  address?: NominatimAddress
+}): ForwardGeocodeResult {
+  return {
+    lat: Number(raw.lat),
+    lng: Number(raw.lon),
+    full: raw.display_name,
+    label: shortFromResponse(raw),
+  }
 }
 
 /**
@@ -42,6 +106,7 @@ export async function forwardGeocode(query: string): Promise<ForwardGeocodeResul
   url.searchParams.set('q', query)
   url.searchParams.set('format', 'jsonv2')
   url.searchParams.set('countrycodes', 'nz')
+  url.searchParams.set('addressdetails', '1')
   url.searchParams.set('limit', '1')
 
   const response = await fetch(url, { headers: { Accept: 'application/json' } })
@@ -50,10 +115,7 @@ export async function forwardGeocode(query: string): Promise<ForwardGeocodeResul
   }
 
   const results = await response.json()
-  const first = results[0]
-  if (!first) return null
-
-  return { lat: Number(first.lat), lng: Number(first.lon), displayName: first.display_name }
+  return results[0] ? toResult(results[0]) : null
 }
 
 /**
@@ -67,6 +129,7 @@ export async function searchAddresses(query: string): Promise<ForwardGeocodeResu
   url.searchParams.set('q', query)
   url.searchParams.set('format', 'jsonv2')
   url.searchParams.set('countrycodes', 'nz')
+  url.searchParams.set('addressdetails', '1')
   url.searchParams.set('limit', '5')
 
   const response = await fetch(url, { headers: { Accept: 'application/json' } })
@@ -75,9 +138,5 @@ export async function searchAddresses(query: string): Promise<ForwardGeocodeResu
   }
 
   const results = await response.json()
-  return results.map((result: { lat: string; lon: string; display_name: string }) => ({
-    lat: Number(result.lat),
-    lng: Number(result.lon),
-    displayName: result.display_name,
-  }))
+  return (results as Parameters<typeof toResult>[0][]).map(toResult)
 }

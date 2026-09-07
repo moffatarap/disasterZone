@@ -118,7 +118,7 @@ export function LocationStatus({
   const showSpinner = isLocating && !address && !locationError && !editing
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-[6] min-h-20 rounded-t-2xl bg-slate-900/95 px-4 py-3 text-white shadow-[0_-4px_20px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+    <div className="absolute inset-x-2 bottom-2 z-[6] min-h-20 rounded-2xl bg-slate-900/95 px-4 py-3 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
       {editing ? (
         <div className="relative flex flex-col gap-1.5">
           {visibleSuggestions.length > 0 && (
@@ -128,9 +128,12 @@ export function LocationStatus({
                   <button
                     type="button"
                     onClick={() => handleSelectSuggestion(result)}
-                    className="w-full truncate rounded-md px-2 py-2 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                    className="line-clamp-2 w-full rounded-md px-2 py-2 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
                   >
-                    {result.displayName}
+                    {/* full string here so near-identical candidates are
+                        distinguishable, even though we show only the short
+                        label once one is picked */}
+                    {result.full}
                   </button>
                 </li>
               ))}
@@ -196,7 +199,7 @@ export function LocationStatus({
 
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold tracking-wide text-white/50 uppercase">{label}</p>
-            <p className="text-sm leading-snug line-clamp-2">{mainText}</p>
+            <p className="truncate text-sm leading-snug">{mainText}</p>
           </div>
 
           <div className="flex flex-none flex-col items-end gap-1">

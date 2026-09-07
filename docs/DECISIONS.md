@@ -213,21 +213,28 @@ reasoning (`<h2>` then `<h3>` for the nested "intensity" list).
 
 ### `LocationStatus` is a persistent bottom bar
 
-Full-width, pinned to `bottom-0`, always present. It shows one of: "Finding
-your location…" (with a spinner) while geolocation resolves, the resolved
+A floating card inset `bottom-2 inset-x-2`, always present. It shows one of:
+"Finding your location…" (with a spinner) while geolocation resolves, the
 address, or "Location unavailable" on denial/error. **"Change" is always
 offered** - a typed address overrides even a successful GPS fix, which is the
 point for anyone on a VPN whose device location is wrong; "Use my location"
 appears only while a manual override is active.
 
-- The map's zoom control and attribution are lifted ~5.25rem off the bottom
-  (in DisasterMap's control CSS) so the bar doesn't cover them. The
-  attribution is forced `compact` so it's just an "i" button, not a strip of
-  text over the map.
+- **The address is shown coarse and single-line**: `formatShortAddress` in
+  `api/nominatim.ts` reduces Nominatim's response to "Suburb, City" (e.g.
+  "City Centre, Auckland"), degrading to region/country for a point at sea.
+  The exact address the user types is still geocoded in full - accurate
+  distances - it just isn't displayed. `reverseGeocode` and the forward
+  lookups all pass `addressdetails=1` and run through the same formatter; the
+  autocomplete picker is the one place the full string still shows, so
+  near-identical candidates stay distinguishable.
+- The map's zoom control and attribution are lifted `bottom-24` (in
+  DisasterMap's control CSS) so the bar doesn't cover them. The attribution
+  is forced `compact` so it's just an "i" button, not a strip of text.
 - The manual-entry autocomplete opens **upward** (`bottom-full`) since the
-  input sits at the screen edge.
-- The mobile Recent Events sheet is also `bottom-0` (z-20) and covers the bar
-  when open - acceptable, the sheet is the active surface then.
+  input sits near the screen edge.
+- The mobile Recent Events sheet is `bottom-0` (z-20) and covers the bar when
+  open - acceptable, the sheet is the active surface then.
 - An earlier version was a small centred pill at `bottom-16 left-20`, offset
   by hand to dodge the attribution and zoom controls; lifting those controls
   instead frees the whole width.

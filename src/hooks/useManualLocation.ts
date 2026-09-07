@@ -41,7 +41,7 @@ export function useManualLocation(): ManualLocationResult {
   )
 
   function applyResult(result: ForwardGeocodeResult) {
-    const next = { coords: { lat: result.lat, lng: result.lng }, displayName: result.displayName }
+    const next = { coords: { lat: result.lat, lng: result.lng }, displayName: result.label }
     writeJSON(LAST_MANUAL_LOCATION_KEY, next)
     setManualLocation(next)
   }
