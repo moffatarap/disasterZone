@@ -209,7 +209,15 @@ function App() {
           onToggleInactiveVolcanoes={() => setShowInactiveVolcanoes((current) => !current)}
         />
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3">
+        {/* Toasts are full width but must stop short of the events rail at
+            >= sm, or their dismiss button ends up under it. The map key sits
+            above this layer (z-8) so its toggle stays clickable underneath a
+            toast. */}
+        <div
+          className={`pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3 ${
+            sidebarOpen ? 'sm:right-80' : ''
+          }`}
+        >
           {visibleToastQueue.map((event) => (
             <NewEventToast
               key={event.id}
