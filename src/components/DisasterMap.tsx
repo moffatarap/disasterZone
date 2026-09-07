@@ -5,6 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { SEVERITY_COLORS } from '../constants/severity'
 import type { UserLocation } from '../hooks/useGeolocation'
 import { computeStackedCircleSuppressions, eventAlertRadiusMeters } from '../lib/circleDensity'
+import { haversineDistanceKm } from '../lib/geo'
 import type { DisasterEvent } from '../types/event'
 import { AlertCircle } from './AlertCircle'
 import { EventDetailPopup } from './EventDetailPopup'
@@ -32,14 +33,21 @@ const FAULT_LINES_URL = `${import.meta.env.BASE_URL}data/nz-active-faults.geojso
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
 
-// Below this width the event popup (which grows upward from the marker) would
-// be clipped by <main>'s overflow-hidden (see App.tsx). Matches App.tsx's
-// MOBILE_BREAKPOINT_QUERY.
-const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
-// Space reserved above the marker on mobile so the whole popup - photo
-// included - lands on screen. Roughly the height of an image popup; the pan
-// clamps it to the container so a short screen still shows the marker.
-const MOBILE_POPUP_HEADROOM_PX = 460
+// The event popup grows upward from its marker, so a marker left dead-centre
+// puts the popup's top - photo and close button - above <main>, where
+// overflow-hidden clips it (see App.tsx). Selecting an event reserves this much
+// room above the marker instead. Roughly the height of an image popup; the pan
+// clamps it to the container so a short window still shows the marker.
+//
+// This applies at every width. Desktop looks like it has height to spare and
+// doesn't: at 1280x900 the popup was clipped by 38px and its close button was
+// unclickable, which is exactly what scripts/visual-audit.mjs now guards.
+const POPUP_HEADROOM_PX = 460
+
+// The map re-centres whenever the user's location moves at least this far -
+// covers a typed address or a fresh GPS fix somewhere new, while ignoring the
+// metre-scale drift watchPosition reports when you're holding still.
+const RECENTER_THRESHOLD_KM = 0.25
 
 // Esri "World Dark Gray Canvas" - free, no API key (see docs/DECISIONS.md).
 // Base terrain and place-name labels are two separate raster layers, stacked
@@ -82,7 +90,13 @@ export function DisasterMap({
   showFaultLines,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
-  const hasCenteredOnUser = useRef(false)
+  const lastCenteredOn = useRef<UserLocation | null>(null)
+  // The Map is created asynchronously, so mapRef.current is still null while
+  // the first effects run. Both camera effects depend on this so they re-run
+  // once there's actually a map to drive - otherwise a location restored from
+  // localStorage (a saved manual address, or a cached fix when the watch only
+  // errors) never changes identity again and the map stays NZ-wide forever.
+  const [mapLoaded, setMapLoaded] = useState(false)
   const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
 
   // Fetched once, on first toggle-on - most sessions never enable this.
@@ -96,18 +110,50 @@ export function DisasterMap({
       })
   }, [showFaultLines, faultLinesData])
 
+  // Centre on the user whenever their location is (re)found - the first fix, a
+  // typed address, a fresh "Use my location" fix in a new spot. `userLocation`
+  // is App's effectiveLocation, so this covers manual and GPS alike. Sub-250m
+  // watchPosition jitter is ignored so the map doesn't drift while you're
+  // still; the first centre also zooms in from the NZ-wide default.
   useEffect(() => {
-    if (userLocation && !hasCenteredOnUser.current) {
-      hasCenteredOnUser.current = true
-      mapRef.current?.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 9 })
+    const map = mapRef.current
+    if (!userLocation || !map) return
+    // Never yank the camera off an event the user is reading. Their location
+    // is still recorded, so closing the popup doesn't drag them back either.
+    if (selectedEvent) {
+      lastCenteredOn.current = { lat: userLocation.lat, lng: userLocation.lng }
+      return
     }
-  }, [userLocation])
+
+    const previous = lastCenteredOn.current
+    if (previous && haversineDistanceKm(previous, userLocation) < RECENTER_THRESHOLD_KM) return
+
+    lastCenteredOn.current = { lat: userLocation.lat, lng: userLocation.lng }
+    // Explicit zero padding: a popup that was open may have left the 460px
+    // headroom applied, which would push this centring far off-target.
+    map.flyTo({
+      center: [userLocation.lng, userLocation.lat],
+      padding: { top: 0, bottom: 0, left: 0, right: 0 },
+      ...(previous ? {} : { zoom: 9 }),
+    })
+    // selectedEvent is read only as a guard; re-running when it changes would
+    // re-centre on the user the moment a popup closes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation, mapLoaded])
+
+  // Depend on the identity of the *selection*, not the event object: App
+  // derives selectedEvent with filteredEvents.find(), which returns a fresh
+  // object on every GeoNet poll. Keying the effect on that re-ran this - and
+  // re-centred the map under an open popup - once a minute.
+  const selectedEventId = selectedEvent?.id ?? null
+  const selectedLng = selectedEvent?.location.lng ?? null
+  const selectedLat = selectedEvent?.location.lat ?? null
 
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    if (!selectedEvent) {
+    if (selectedEventId === null || selectedLng === null || selectedLat === null) {
       // Popup closed - drop any headroom a mobile select applied so panning
       // and pinch-zoom re-centre normally.
       if (map.getPadding().top !== 0) {
@@ -116,20 +162,19 @@ export function DisasterMap({
       return
     }
 
-    // On mobile, pan the marker into the lower part of the view so the popup
-    // above it isn't clipped. Desktop has the height to spare and keeps
-    // centring the marker exactly.
-    const isMobile = window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
-    const topPadding = isMobile
-      ? Math.max(0, Math.min(MOBILE_POPUP_HEADROOM_PX, map.getContainer().clientHeight - 180))
-      : 0
+    // Pan the marker into the lower part of the view so the popup above it
+    // isn't clipped, clamped so the marker itself stays visible on a short one.
+    const topPadding = Math.max(
+      0,
+      Math.min(POPUP_HEADROOM_PX, map.getContainer().clientHeight - 180),
+    )
 
     map.flyTo({
-      center: [selectedEvent.location.lng, selectedEvent.location.lat],
+      center: [selectedLng, selectedLat],
       zoom: 9,
       padding: { top: topPadding, bottom: 0, left: 0, right: 0 },
     })
-  }, [selectedEvent])
+  }, [selectedEventId, selectedLng, selectedLat, mapLoaded])
 
   // Earthquakes only (see computeStackedCircleSuppressions); recomputed only
   // when the event list changes.
@@ -171,7 +216,10 @@ export function DisasterMap({
         dragRotate={false}
         pitchWithRotate={false}
         touchPitch={false}
-        onLoad={(event) => event.target.touchZoomRotate.disableRotation()}
+        onLoad={(event) => {
+          event.target.touchZoomRotate.disableRotation()
+          setMapLoaded(true)
+        }}
       >
         <NavigationControl position="bottom-left" showCompass={false} />
 

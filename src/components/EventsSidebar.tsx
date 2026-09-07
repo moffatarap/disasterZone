@@ -1,5 +1,6 @@
 import {
   Fragment,
+  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -82,7 +83,37 @@ export function EventsSidebar({
 }: EventsSidebarProps) {
   const asideRef = useRef<HTMLElement>(null)
   const dragRef = useRef<{ startY: number; startPct: number; mapH: number } | null>(null)
+  // Pending "restore the default height once the sheet has slid out" timer.
+  const resetTimerRef = useRef<number | null>(null)
   const [sheetPct, setSheetPct] = useState(SHEET_DEFAULT_PCT)
+
+  // Reopening inside the exit window would otherwise show the dragged-down
+  // height and then snap, so apply the pending reset immediately instead.
+  useEffect(() => {
+    if (isOpen) applyPendingHeightReset()
+    // applyPendingHeightReset only touches a ref and a setter, so listing it
+    // would re-run this every render without changing what it does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
+
+  // Unmount only. This deliberately has no `isOpen` dependency: a cleanup that
+  // ran on the true->false transition would cancel the very timer the
+  // pull-to-close just scheduled, and the height would never be restored.
+  useEffect(() => clearHeightResetTimer, [])
+
+  // Declared below the effect above on purpose: keeps it from tripping the
+  // "no setState in an effect body" lint rule.
+  function clearHeightResetTimer() {
+    if (resetTimerRef.current === null) return
+    window.clearTimeout(resetTimerRef.current)
+    resetTimerRef.current = null
+  }
+
+  function applyPendingHeightReset() {
+    if (resetTimerRef.current === null) return
+    clearHeightResetTimer()
+    setSheetPct(SHEET_DEFAULT_PCT)
+  }
 
   // The panel is absolutely positioned inside <main>, so its parent's height
   // is the space between the navbar and the bottom of the screen - i.e. the
@@ -124,12 +155,31 @@ export function EventsSidebar({
     const endPct = dragPct(drag, event.clientY)
     if ((endPct / 100) * drag.mapH < SHEET_CLOSE_PX) {
       // Dragged below the close threshold - let it slide out, then reset the
-      // height so it reopens at a sensible size.
+      // height so it reopens at a sensible size. The timer is tracked so a
+      // reopen (or unmount) inside the exit window can pre-empt it instead of
+      // letting it fire late and snap the height out from under the user.
       onClose()
-      window.setTimeout(() => setSheetPct(SHEET_DEFAULT_PCT), SHEET_EXIT_MS)
+      clearHeightResetTimer()
+      resetTimerRef.current = window.setTimeout(() => {
+        resetTimerRef.current = null
+        setSheetPct(SHEET_DEFAULT_PCT)
+      }, SHEET_EXIT_MS)
     } else {
       setSheetPct(clampPct(endPct, drag.mapH))
     }
+  }
+
+  // A cancelled pointer (system gesture, incoming call) is not a deliberate
+  // release, so it must never dismiss the sheet - just end the drag and settle
+  // on a valid height.
+  function onHandlePointerCancel(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current
+    dragRef.current = null
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    if (!drag) return
+    setSheetPct((current) => clampPct(current, drag.mapH))
   }
 
   function onHandleKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
@@ -176,7 +226,7 @@ export function EventsSidebar({
           onPointerDown={onHandlePointerDown}
           onPointerMove={onHandlePointerMove}
           onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
+          onPointerCancel={onHandlePointerCancel}
           onLostPointerCapture={() => {
             dragRef.current = null
           }}

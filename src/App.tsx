@@ -209,7 +209,16 @@ function App() {
           onToggleInactiveVolcanoes={() => setShowInactiveVolcanoes((current) => !current)}
         />
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3">
+        {/* Full width, painting over the map key (z-5). That does cover the
+            key's toggle and swallow its taps while a toast is up - accepted
+            deliberately: the toast auto-dismisses in 8s and full width is the
+            look we want. They still stop short of the events rail at >= sm,
+            or the dismiss button ends up underneath it. */}
+        <div
+          className={`pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3 ${
+            sidebarOpen ? 'sm:right-80' : ''
+          }`}
+        >
           {visibleToastQueue.map((event) => (
             <NewEventToast
               key={event.id}
@@ -231,6 +240,7 @@ function App() {
           onRequestLocation={requestLocation}
           isSubmitting={isSubmitting}
           notFound={notFound}
+          isSidebarOpen={sidebarOpen}
         />
 
         <EventsSidebar

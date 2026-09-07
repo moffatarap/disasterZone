@@ -14,14 +14,33 @@ interface LocationStatusProps {
    * Ask the browser for a fresh one-shot GPS fix (the "Use my location" item).
    * `onSuccess` runs only if a position comes back.
    */
-  onRequestLocation: (onSuccess?: () => void) => void
+  onRequestLocation: (options?: { onSuccess?: () => void; onError?: () => void }) => void
   isSubmitting: boolean
   notFound: boolean
+  /**
+   * The events panel is a full-height rail at >= sm (z-20, 20rem wide) and
+   * this bar sits under it, so the bar has to end short of the rail or its
+   * only control - "Change" - is unreachable.
+   */
+  isSidebarOpen: boolean
 }
 
-// Debounced to stay under Nominatim's ~1 request/second policy.
-const SEARCH_DEBOUNCE_MS = 450
+// Debounced so the box doesn't fire per keystroke. Note this is a ceiling of
+// one request per window, i.e. ~3/s from someone typing at a steady 300ms -
+// above Nominatim's ~1 req/s guideline, which is written for bulk clients. In
+// practice a human types in bursts, MIN_QUERY_LENGTH drops the first two
+// characters, and picking a suggestion ends the run early. A throttled 429 is
+// handled: it counts as not-found, so the editor stays open (see
+// useManualLocation). Revisit if we ever actually see them.
+const SEARCH_DEBOUNCE_MS = 300
 const MIN_QUERY_LENGTH = 3
+
+const NO_SUGGESTIONS = { query: '', results: [] as ForwardGeocodeResult[] }
+
+// How long a failed "Use my location" is reported before the bar goes back to
+// showing the address it kept. Long enough to read, short enough that the bar
+// returns to its job.
+const LOCATION_ERROR_VISIBLE_MS = 5000
 
 const ICON_CLASS = 'h-4 w-4 flex-none'
 
@@ -107,11 +126,19 @@ export function LocationStatus({
   onRequestLocation,
   isSubmitting,
   notFound,
+  isSidebarOpen,
 }: LocationStatusProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
+  // Status of an explicit "Use my location" request. Tracked separately from
+  // the ambient geolocation state because that state can't express it: a
+  // failed request deliberately keeps the existing address, so `address` stays
+  // truthy and both the spinner and the error would be hidden behind it.
+  const [locationRequest, setLocationRequest] = useState<'idle' | 'pending' | 'failed'>('idle')
   const [inputValue, setInputValue] = useState('')
-  const [suggestions, setSuggestions] = useState<ForwardGeocodeResult[]>([])
+  // Results carry the query that produced them, so a list fetched for an
+  // earlier query is never rendered against what's in the box now.
+  const [suggestions, setSuggestions] = useState(NO_SUGGESTIONS)
   // Only the response matching the most recent query is applied (guards
   // against out-of-order responses).
   const latestRequestId = useRef(0)
@@ -121,24 +148,33 @@ export function LocationStatus({
   const changeButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+  // Set when the editor is dismissed by keyboard, so focus can be put back on
+  // the "Change" button once it re-renders.
+  const refocusChangeButton = useRef(false)
 
   const trimmedQuery = inputValue.trim()
-  // Derived, not stored - so the effect below never has to clear stale
-  // suggestions when the query gets too short.
-  const visibleSuggestions = trimmedQuery.length >= MIN_QUERY_LENGTH ? suggestions : []
+  // Derived, not stored - the dropdown shows results only while their tag
+  // matches what's in the box, so nothing appears until this query's own
+  // results land, and an earlier query's list is never passed off as an answer.
+  const visibleSuggestions =
+    trimmedQuery.length >= MIN_QUERY_LENGTH && suggestions.query === trimmedQuery
+      ? suggestions.results
+      : []
 
   useEffect(() => {
     const trimmed = inputValue.trim()
+    // Bumped before the length guard too, so a query abandoned by deleting
+    // back below the minimum can't still land and repopulate the list.
+    const requestId = ++latestRequestId.current
     if (trimmed.length < MIN_QUERY_LENGTH) return
 
-    const requestId = ++latestRequestId.current
     const timer = setTimeout(() => {
       searchAddresses(trimmed)
         .then((results) => {
-          if (latestRequestId.current === requestId) setSuggestions(results)
+          if (latestRequestId.current === requestId) setSuggestions({ query: trimmed, results })
         })
         .catch(() => {
-          if (latestRequestId.current === requestId) setSuggestions([])
+          if (latestRequestId.current === requestId) setSuggestions({ query: trimmed, results: [] })
         })
     }, SEARCH_DEBOUNCE_MS)
 
@@ -171,9 +207,16 @@ export function LocationStatus({
     }
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== 'Escape') return
-      if (editing) closeEditor()
-      else setMenuOpen(false)
-      changeButtonRef.current?.focus()
+      if (editing) {
+        // The "Change" button isn't rendered in the editing branch, so its ref
+        // is null right now - focus it from the effect below, once closing the
+        // editor has brought it back.
+        refocusChangeButton.current = true
+        closeEditor()
+      } else {
+        setMenuOpen(false)
+        changeButtonRef.current?.focus()
+      }
     }
 
     document.addEventListener('pointerdown', handlePointerDown)
@@ -184,26 +227,46 @@ export function LocationStatus({
     }
   }, [menuOpen, editing])
 
+  // A reported failure is transient: the address the request kept is what the
+  // bar is for, so hand it back after a few seconds. If there's no address the
+  // ambient locationError keeps the message up anyway.
+  useEffect(() => {
+    if (locationRequest !== 'failed') return
+    const timer = setTimeout(() => setLocationRequest('idle'), LOCATION_ERROR_VISIBLE_MS)
+    return () => clearTimeout(timer)
+  }, [locationRequest])
+
   // Move focus into the menu when it opens so it's keyboard-operable.
   useEffect(() => {
     if (!menuOpen) return
     menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus()
   }, [menuOpen])
 
+  // Escape out of the editor puts focus back on "Change", which only exists
+  // again once `editing` is false.
+  useEffect(() => {
+    if (editing || !refocusChangeButton.current) return
+    refocusChangeButton.current = false
+    changeButtonRef.current?.focus()
+  }, [editing])
+
   // Declared below the effects on purpose: keeps the async-submit effect above
   // from tripping the "no setState in an effect body" lint rule.
   function closeEditor() {
     setEditing(false)
     setInputValue('')
-    setSuggestions([])
+    setSuggestions(NO_SUGGESTIONS)
   }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
     if (!inputValue.trim()) return
     pendingSubmit.current = true
+    // Invalidate any in-flight search, or its response lands mid-submit and
+    // reopens the dropdown over the bar.
+    latestRequestId.current += 1
     onSubmitAddress(inputValue.trim())
-    setSuggestions([])
+    setSuggestions(NO_SUGGESTIONS)
   }
 
   function handleSelectSuggestion(result: ForwardGeocodeResult) {
@@ -213,9 +276,16 @@ export function LocationStatus({
 
   function handleUseMyLocation() {
     setMenuOpen(false)
-    // Drop the manual override only once a real fix lands - if geolocation
-    // fails, the typed address stays put rather than falling back to nothing.
-    onRequestLocation(onClearManual)
+    setLocationRequest('pending')
+    onRequestLocation({
+      // Drop the manual override only once a real fix lands - if geolocation
+      // fails, the typed address stays put rather than falling back to nothing.
+      onSuccess: () => {
+        setLocationRequest('idle')
+        onClearManual()
+      },
+      onError: () => setLocationRequest('failed'),
+    })
   }
 
   function handleEnterAddress() {
@@ -223,21 +293,36 @@ export function LocationStatus({
     setEditing(true)
   }
 
-  const mainText =
-    address ??
-    (locationError
-      ? `${locationError} - add an address`
-      : isLocating
-        ? 'Finding your location…'
-        : 'No location set - add an address')
+  const isRequestingLocation = locationRequest === 'pending'
+  const requestFailed = locationRequest === 'failed'
 
-  const showSpinner = isLocating && !address && !locationError && !editing
+  // An explicit request reports itself over the top of whatever address is
+  // showing; otherwise fall back to the ambient state.
+  const mainText = isRequestingLocation
+    ? 'Finding your location…'
+    : requestFailed
+      ? (locationError ?? 'Could not get your location')
+      : (address ??
+        (locationError
+          ? `${locationError} - add an address`
+          : isLocating
+            ? 'Finding your location…'
+            : 'No location set - add an address'))
+
+  const showAddressText = address !== null && !isRequestingLocation && !requestFailed
+  const showSpinner =
+    !editing && (isRequestingLocation || (isLocating && !address && !locationError))
 
   const menuItemClass =
     'flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-normal text-white/90 transition-colors hover:bg-white/10 hover:text-white'
 
   return (
-    <div className="absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+    <div
+      className={`absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm ${
+        // 20rem rail + the bar's own 0.5rem gutter.
+        isSidebarOpen ? 'sm:right-[20.5rem]' : ''
+      }`}
+    >
       {editing ? (
         <div ref={editorRef} className="relative">
           {visibleSuggestions.length > 0 && (
@@ -251,12 +336,14 @@ export function LocationStatus({
                   <button
                     type="button"
                     onClick={() => handleSelectSuggestion(result)}
-                    className="line-clamp-2 w-full rounded-md py-3 pr-3 pl-6 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                    className="block w-full rounded-md py-3 pr-3 pl-6 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
                   >
                     {/* full string here so near-identical candidates are
                         distinguishable, even though we show only the short
-                        label once one is picked */}
-                    {result.full}
+                        label once one is picked. line-clamp goes on this span,
+                        not the button - -webkit-box on the button itself
+                        fights its own box and the clamp silently no-ops. */}
+                    <span className="line-clamp-2">{result.full}</span>
                   </button>
                 </li>
               ))}
@@ -305,7 +392,7 @@ export function LocationStatus({
           )}
 
           <p className="min-w-0 flex-1 truncate text-sm">
-            <span className={address ? undefined : 'text-white/70'}>{mainText}</span>
+            <span className={showAddressText ? undefined : 'text-white/70'}>{mainText}</span>
           </p>
 
           <button

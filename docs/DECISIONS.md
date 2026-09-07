@@ -82,6 +82,16 @@ no upside here and "which way is north" matters when you're reading distances
 and directions off it. The `NavigationControl` compass button is hidden
 (`showCompass={false}`) since it would never do anything.
 
+### Re-centres on the user's location, but only on a real move
+
+The map flies to the user's location whenever it's (re)found - the first fix,
+a typed address, a fresh "Use my location" fix somewhere new. It keys on
+`userLocation`, which is App's `effectiveLocation`, so manual and GPS are
+handled the same way. A `RECENTER_THRESHOLD_KM` (250m) gate skips the
+metre-scale drift `watchPosition` streams while you hold still, so the map
+doesn't creep. Only the first centre also sets the zoom (in from the NZ-wide
+default); later re-centres keep whatever zoom the user has set.
+
 ---
 
 ## Severity scale, colours, alert circles
@@ -171,6 +181,21 @@ only control.
   `constants/cityImages.ts`, `constants/volcanoImages.ts` and
   `constants/maoriPlaceNames.ts` - deliberately kept in-file so provenance
   travels with the data.
+
+### Selecting an event pans the marker low, at every viewport
+
+The popup is anchored `bottom` and grows *upward* from its marker, so centring
+the marker (which `flyTo` does by default) puts the popup's top - photo and
+close button - above `<main>`, where `overflow-hidden` clips it. Selecting an
+event therefore flies with `padding.top` (`POPUP_HEADROOM_PX`, 460) so the
+marker lands low and the whole popup fits; closing the popup eases the padding
+back to 0 so panning and pinch-zoom re-centre normally.
+
+This was mobile-only at first, on the assumption desktop had height to spare.
+It doesn't: at 1280x900 the popup was clipped by 38px and its close button was
+unreachable. The padding is clamped to the container height so a short window
+still shows the marker itself, and `scripts/visual-audit.mjs` asserts the popup
+stays inside `<main>` at every viewport.
 
 ### Detail icons are drawn near-white
 
@@ -340,8 +365,14 @@ coords) via `nominatim.openstreetmap.org`. Their usage policy caps this at
 - Reverse geocode coordinates are rounded to ~100m before use, so small GPS
   jitter reuses the cached query instead of re-hitting the endpoint every
   tick.
-- The address search box debounces (450ms) and requires 3+ characters rather
-  than firing per keystroke.
+- The address search box debounces (300ms) and requires 3+ characters rather
+  than firing per keystroke. A debounce only fires once typing pauses, so this
+  stays well inside the policy.
+- Suggestions are stored tagged with the query that produced them and are only
+  rendered when that tag matches the current input, so a slower response for an
+  earlier query can never be shown as an answer to the current one. Until this
+  query's own results land the dropdown simply isn't rendered - no spinner, no
+  "searching" row, and never the previous query's addresses.
 - Forward geocoding is biased to NZ (`countrycodes=nz`) since a bare street
   name is otherwise ambiguous worldwide.
 

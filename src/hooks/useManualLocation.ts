@@ -25,7 +25,12 @@ interface ManualLocationResult {
   /** Reverts to relying on geolocation again. */
   clear: () => void
   isSubmitting: boolean
-  /** Set when the address couldn't be resolved to a location at all. */
+  /**
+   * Set when the lookup didn't produce a location - either no match, or the
+   * request itself failed (Nominatim rate-limit, offline). Both leave the
+   * user without a location, so both must keep the editor open rather than
+   * closing it as though the address had been accepted.
+   */
   notFound: boolean
 }
 
@@ -63,6 +68,6 @@ export function useManualLocation(): ManualLocationResult {
       mutation.reset()
     },
     isSubmitting: mutation.isPending,
-    notFound: mutation.isSuccess && mutation.data === null,
+    notFound: mutation.isError || (mutation.isSuccess && mutation.data === null),
   }
 }
