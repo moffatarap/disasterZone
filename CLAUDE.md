@@ -7,6 +7,23 @@ target branch, never committed straight to `main`. Branch, commit there, then
 merge (and push only when the user asks). One branch per logical piece of
 work; name it for what it does (`fix/…`, `feat/…`, `docs/…`, `chore/…`).
 
+## Nothing is pushed without a code review
+
+Before **any** `git push`, run `/code-review` and work through what it reports.
+Run it on **Opus 5** — pass `model: "opus"` explicitly to any review agent
+rather than relying on the session or default inheriting it.
+
+Order of operations for landing work:
+
+1. `npm run lint` and `tsc` clean.
+2. `npm run audit` green, screenshots looked at (see below).
+3. `/code-review` on Opus 5; fix or consciously accept every finding.
+4. Merge, then push — and only when the user has asked for it.
+
+A review finding that's deliberately not being fixed gets recorded (a comment
+at the site, or a note in `docs/DECISIONS.md`) so the next review doesn't
+re-raise it and "fix" an intentional trade-off.
+
 ## UI changes require a mockup review first
 
 Any change to the UI — layout, components, styling, interaction, copy on a
