@@ -124,8 +124,14 @@ export function DisasterMap({
         mapStyle={BASEMAP_STYLE}
         style={{ width: '100%', height: '100%' }}
         onClick={onDeselectEvent}
+        // North-locked: no drag-rotate, no pitch. touchZoomRotate stays on for
+        // pinch-zoom but its rotation is disabled on load (below).
+        dragRotate={false}
+        pitchWithRotate={false}
+        touchPitch={false}
+        onLoad={(event) => event.target.touchZoomRotate.disableRotation()}
       >
-        <NavigationControl position="bottom-left" />
+        <NavigationControl position="bottom-left" showCompass={false} />
 
         {/* Declared before every hazard marker/circle below, so MapLibre
             stacks it underneath them - reads as background context, never

@@ -74,6 +74,14 @@ sidebar). Markers painted later in the DOM sit on top, so the marker list is
 reversed at render time - newest marker painted last, hence on top. This is
 for stacking only; it doesn't affect the sidebar or anything else.
 
+### Map is locked to north
+
+No drag-rotate, no pitch, and `touchZoomRotate.disableRotation()` on load so
+a two-finger twist zooms without rotating. A rotated or tilted hazard map has
+no upside here and "which way is north" matters when you're reading distances
+and directions off it. The `NavigationControl` compass button is hidden
+(`showCompass={false}`) since it would never do anything.
+
 ---
 
 ## Severity scale, colours, alert circles
