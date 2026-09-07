@@ -162,9 +162,9 @@ export function EventsSidebar({
             dragRef.current = null
           }}
           onKeyDown={onHandleKeyDown}
-          className="flex flex-none touch-none cursor-grab items-center justify-center py-3 select-none active:cursor-grabbing sm:hidden"
+          className="flex min-h-14 flex-none touch-none cursor-grab items-center justify-center select-none transition-colors active:cursor-grabbing active:bg-white/5 sm:hidden"
         >
-          <div className="h-1.5 w-10 rounded-full bg-white/30" />
+          <div className="h-1.5 w-12 rounded-full bg-white/40" />
         </div>
 
         <div className="flex flex-none items-center justify-between px-4 pt-2 pb-3 sm:pt-4">
