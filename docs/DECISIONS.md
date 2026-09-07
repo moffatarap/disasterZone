@@ -211,23 +211,26 @@ axe-core heading-order audit flagged the page jumping straight from its one
 `<h1>` to `<h3>`. The severity key's internal headings follow the same
 reasoning (`<h2>` then `<h3>` for the nested "intensity" list).
 
-### `LocationStatus` card position (`bottom-16 left-20 right-4`)
+### `LocationStatus` is a persistent bottom bar
 
-- **`bottom-16`, not `bottom-4`**: at `bottom-4` the card sat on top of
-  MapLibre's attribution control, making the required attribution link
-  unreadable (found via an audit's bounding-box check, confirmed with a
-  screenshot). `bottom-16` clears the control's ~44px height with margin.
-- **`left-20` (not centred)**: a centred card at that height extended into
-  the bottom-left zoom control's ~54px-wide column and partly obscured it (a
-  target-size violation). Insetting the left edge past that column, then
-  letting `mx-auto` centre the card in the remaining space, clears it without
-  pushing the card higher.
-- Both the address-pill and the error-form branches share these values.
+Full-width, pinned to `bottom-0`, always present. It shows one of: "Finding
+your location…" (with a spinner) while geolocation resolves, the resolved
+address, or "Location unavailable" on denial/error. **"Change" is always
+offered** - a typed address overrides even a successful GPS fix, which is the
+point for anyone on a VPN whose device location is wrong; "Use my location"
+appears only while a manual override is active.
 
-### `LocationStatus` shows one thing at a time
-
-The address pill and the "can't get your location" form never make sense
-together, so they share one screen slot with no layout conflict to resolve.
+- The map's zoom control and attribution are lifted ~5.25rem off the bottom
+  (in DisasterMap's control CSS) so the bar doesn't cover them. The
+  attribution is forced `compact` so it's just an "i" button, not a strip of
+  text over the map.
+- The manual-entry autocomplete opens **upward** (`bottom-full`) since the
+  input sits at the screen edge.
+- The mobile Recent Events sheet is also `bottom-0` (z-20) and covers the bar
+  when open - acceptable, the sheet is the active surface then.
+- An earlier version was a small centred pill at `bottom-16 left-20`, offset
+  by hand to dodge the attribution and zoom controls; lifting those controls
+  instead frees the whole width.
 
 ### Map controls and attribution sit inside a landmark
 

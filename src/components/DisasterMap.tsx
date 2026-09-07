@@ -123,15 +123,21 @@ export function DisasterMap({
     // (brightness-0 then invert). Buttons are a 40px touch target on mobile,
     // 44px (WCAG 2.5.5) from sm: up. The attribution link gets an underline so
     // it's distinguishable without colour (WCAG 1.4.1 - it measured 2.02:1
-    // over the map). `!` is needed because maplibre-gl.css ships unlayered
-    // rules that outrank Tailwind's @layer utilities.
-    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-group]:!overflow-hidden [&_.maplibregl-ctrl-group]:!rounded-lg [&_.maplibregl-ctrl-group]:!bg-slate-900/95 [&_.maplibregl-ctrl-group]:!shadow-xl [&_.maplibregl-ctrl-group]:!ring-1 [&_.maplibregl-ctrl-group]:!ring-white/10 [&_.maplibregl-ctrl-group_button]:!h-10 [&_.maplibregl-ctrl-group_button]:!w-10 sm:[&_.maplibregl-ctrl-group_button]:!h-11 sm:[&_.maplibregl-ctrl-group_button]:!w-11 [&_.maplibregl-ctrl-group_button+button]:!border-t [&_.maplibregl-ctrl-group_button+button]:!border-white/10 [&_.maplibregl-ctrl-group_button:hover]:!bg-white/10 [&_.maplibregl-ctrl-icon]:!brightness-0 [&_.maplibregl-ctrl-icon]:!invert">
+    // over the map). Both bottom control stacks are lifted clear of the
+    // full-width location bar (see LocationStatus). `!` is needed because
+    // maplibre-gl.css ships unlayered rules that outrank Tailwind's @layer
+    // utilities.
+    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-bottom-left]:!bottom-[5.25rem] [&_.maplibregl-ctrl-bottom-right]:!bottom-[5.25rem] [&_.maplibregl-ctrl-group]:!overflow-hidden [&_.maplibregl-ctrl-group]:!rounded-lg [&_.maplibregl-ctrl-group]:!bg-slate-900/95 [&_.maplibregl-ctrl-group]:!shadow-xl [&_.maplibregl-ctrl-group]:!ring-1 [&_.maplibregl-ctrl-group]:!ring-white/10 [&_.maplibregl-ctrl-group_button]:!h-10 [&_.maplibregl-ctrl-group_button]:!w-10 sm:[&_.maplibregl-ctrl-group_button]:!h-11 sm:[&_.maplibregl-ctrl-group_button]:!w-11 [&_.maplibregl-ctrl-group_button+button]:!border-t [&_.maplibregl-ctrl-group_button+button]:!border-white/10 [&_.maplibregl-ctrl-group_button:hover]:!bg-white/10 [&_.maplibregl-ctrl-icon]:!brightness-0 [&_.maplibregl-ctrl-icon]:!invert">
       <Map
         ref={mapRef}
         initialViewState={DEFAULT_VIEW}
         mapStyle={BASEMAP_STYLE}
         style={{ width: '100%', height: '100%' }}
         onClick={onDeselectEvent}
+        // Attribution stays collapsed to its "i" button by default; it opens
+        // on tap. Keeps the tile credit present without a wide strip of text
+        // over the map or the location bar.
+        attributionControl={{ compact: true }}
         // North-locked: no drag-rotate, no pitch. touchZoomRotate stays on for
         // pinch-zoom but its rotation is disabled on load (below).
         dragRotate={false}
