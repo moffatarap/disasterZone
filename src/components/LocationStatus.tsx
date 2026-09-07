@@ -25,9 +25,13 @@ interface LocationStatusProps {
   isSidebarOpen: boolean
 }
 
-// Debounced to stay under Nominatim's ~1 request/second policy. A debounce
-// only fires once the user pauses, so this stays well inside the policy while
-// keeping the dropdown responsive.
+// Debounced so the box doesn't fire per keystroke. Note this is a ceiling of
+// one request per window, i.e. ~3/s from someone typing at a steady 300ms -
+// above Nominatim's ~1 req/s guideline, which is written for bulk clients. In
+// practice a human types in bursts, MIN_QUERY_LENGTH drops the first two
+// characters, and picking a suggestion ends the run early. A throttled 429 is
+// handled: it counts as not-found, so the editor stays open (see
+// useManualLocation). Revisit if we ever actually see them.
 const SEARCH_DEBOUNCE_MS = 300
 const MIN_QUERY_LENGTH = 3
 
@@ -258,6 +262,9 @@ export function LocationStatus({
     event.preventDefault()
     if (!inputValue.trim()) return
     pendingSubmit.current = true
+    // Invalidate any in-flight search, or its response lands mid-submit and
+    // reopens the dropdown over the bar.
+    latestRequestId.current += 1
     onSubmitAddress(inputValue.trim())
     setSuggestions(NO_SUGGESTIONS)
   }
