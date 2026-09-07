@@ -350,9 +350,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Paraparaumu: {
     src: paraparaumu,
-    credit: 'Pseudopanax',
-    licenseName: 'Public domain',
-    licenseUrl: null,
+    credit: 'uphillblok',
+    licenseName: 'CC BY-SA 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0',
   },
   Porirua: {
     src: porirua,
