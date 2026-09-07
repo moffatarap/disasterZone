@@ -136,12 +136,17 @@ function App() {
   // slower one's first batch gets flagged as new (see useNewEvents).
   const initialDataLoaded = earthquakes !== undefined && volcanoes !== undefined
   const { newEventIds, toastQueue, acknowledge } = useNewEvents(events, initialDataLoaded)
-  // Toasts are rendered independently of the (already-filtered) map/sidebar
-  // lists, so they need their own filter check - otherwise a "new" event
-  // you've explicitly hidden would still pop up a notification for it.
-  const visibleToastQueue = toastQueue.filter(
-    (event) => visibleKinds.has(event.kind) && visibleSeverities.has(event.severity),
-  )
+  // toastQueue holds a snapshot of each event from when it first arrived.
+  // GeoNet revises intensity/magnitude in the minutes after a quake, so
+  // re-resolve each against the live list (keeping the snapshot only if it
+  // has since dropped off the feed) - otherwise the toast icon/rating can
+  // disagree with the same event's marker on the map.
+  // Toasts also need their own visibility filter, since they render
+  // independently of the already-filtered map/sidebar lists.
+  const eventsById = useMemo(() => new Map(events.map((event) => [event.id, event])), [events])
+  const visibleToastQueue = toastQueue
+    .map((queued) => eventsById.get(queued.id) ?? queued)
+    .filter((event) => visibleKinds.has(event.kind) && visibleSeverities.has(event.severity))
 
   function toggleKind(kind: HazardKind) {
     setVisibleKinds((current) => {

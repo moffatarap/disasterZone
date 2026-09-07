@@ -376,6 +376,12 @@ being non-empty. Filtering is applied *after* new-event tracking sees the
 full list, so hiding an event and un-hiding it doesn't make it reappear as
 "new".
 
+The toast queue stores a snapshot of each event as it arrived, but renders
+each one re-resolved against the live list. GeoNet refines a quake's felt
+intensity and magnitude for a few minutes afterwards; without the re-resolve
+the toast could show a green "light" icon while the same quake's map marker
+had already updated to "weak".
+
 ### `?demoNewEvent=1`
 
 Injects one fake client-side earthquake a few seconds after load (never
