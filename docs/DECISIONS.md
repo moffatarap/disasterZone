@@ -240,13 +240,17 @@ map key).
 
 ### Severity key: button and panel positioned independently
 
-They each anchor to their own `right-3` rather than sharing one `absolute`
-wrapper. With a shared wrapper sized to whichever child was widest, the
-button visibly shifted sideways whenever the panel toggled. The key is also
-minimised by default at every breakpoint (it previously stayed permanently
-expanded on tablet/desktop with no way to collapse it). When the events
-sidebar (a 320px `sm:w-80` panel on the same edge) is open on
-tablet/desktop, the key's button steps aside so it isn't covered.
+They each anchor to their own fixed corner (`top-3 right-3` /
+`top-16 right-3`) rather than sharing one `absolute` wrapper. With a shared
+wrapper sized to whichever child was widest, the button visibly shifted
+sideways whenever the panel toggled. The key is also minimised by default at
+every breakpoint (it previously stayed permanently expanded on tablet/desktop
+with no way to collapse it).
+
+The key does **not** move when the events sidebar opens - it stays in its
+corner and the sidebar (`z-20`) covers it (`z-5`). An earlier version slid
+the key left to stay clear of the open sidebar; that read as the key
+"following" the panel around, so it now just sits underneath.
 
 ### User location marker is visually distinct
 

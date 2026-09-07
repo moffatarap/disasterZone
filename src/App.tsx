@@ -158,7 +158,6 @@ function App() {
         />
 
         <SeverityKey
-          sidebarOpen={sidebarOpen}
           showFaultLines={showFaultLines}
           onToggleFaultLines={() => setShowFaultLines((current) => !current)}
         />

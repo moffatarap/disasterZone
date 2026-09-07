@@ -10,21 +10,18 @@ const KIND_ENTRIES = [
   { icon: volcanoIcon, label: 'Volcano' },
 ]
 
-// Button and panel each anchor to their own `right-3` rather than a shared
-// wrapper, so the button doesn't shift when the panel toggles. Minimised by
-// default at every breakpoint. (See docs/DECISIONS.md.)
+// Button and panel each anchor to their own `top-3 right-3` / `top-16 right-3`
+// rather than a shared wrapper, so the button doesn't shift when the panel
+// toggles. It stays put when the events sidebar opens too - the sidebar
+// (z-20) simply covers it (z-5). Minimised by default at every breakpoint.
+// (See docs/DECISIONS.md.)
 interface SeverityKeyProps {
-  sidebarOpen: boolean
   showFaultLines: boolean
   onToggleFaultLines: () => void
 }
 
-export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }: SeverityKeyProps) {
+export function SeverityKey({ showFaultLines, onToggleFaultLines }: SeverityKeyProps) {
   const [expanded, setExpanded] = useState(false)
-
-  // Step aside on tablet/desktop when the 320px events sidebar is open, or
-  // this gets covered and unclickable.
-  const rightOffsetClass = sidebarOpen ? 'sm:right-[332px]' : 'sm:right-3'
 
   return (
     <>
@@ -33,13 +30,13 @@ export function SeverityKey({ sidebarOpen, showFaultLines, onToggleFaultLines }:
         onClick={() => setExpanded((current) => !current)}
         aria-expanded={expanded}
         aria-label="Toggle map key"
-        className={`absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md transition-[right] duration-300 ease-out ${rightOffsetClass}`}
+        className="absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md"
       >
         i
       </button>
 
       <div
-        className={`absolute top-16 right-3 z-[5] rounded-lg bg-white/95 px-3.5 py-2.5 shadow-md transition-[right] duration-300 ease-out ${rightOffsetClass} ${
+        className={`absolute top-16 right-3 z-[5] rounded-lg bg-white/95 px-3.5 py-2.5 shadow-md ${
           expanded ? 'block' : 'hidden'
         }`}
       >
