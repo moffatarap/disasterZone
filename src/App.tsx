@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { DisasterMap } from './components/DisasterMap'
 import { EventsSidebar } from './components/EventsSidebar'
 import { LocationStatus } from './components/LocationStatus'
@@ -26,6 +26,12 @@ const ALL_KINDS: HazardKind[] = ['earthquake', 'volcano']
 // only affects whether that side panel starts open by default, below.
 const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
 const LARGE_BREAKPOINT_QUERY = '(min-width: 1024px)'
+
+// "Latest" quakes get a numbered marker/row: the newest felt quakes from the
+// last 48h, capped at 5. Fewer (or none) in a quiet spell - never a
+// three-week-old quake just because nothing newer exists. See docs/DECISIONS.md.
+const RECENT_QUAKE_WINDOW_MS = 48 * 60 * 60 * 1000
+const MAX_HIGHLIGHTED_QUAKES = 5
 
 function App() {
   const { location, error: locationError } = useGeolocation()
@@ -100,6 +106,25 @@ function App() {
     () => filteredEvents.filter((event) => !(event.kind === 'volcano' && event.severity === 'none')),
     [filteredEvents],
   )
+
+  // Wall clock, ticked once a minute so a quake ages out of the "last 48h"
+  // window on its own even if no fresh data arrives.
+  const [nowMs, setNowMs] = useState(() => Date.now())
+  useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 60_000)
+    return () => clearInterval(id)
+  }, [])
+
+  // id -> 1-based recency rank for the newest few felt quakes. Earthquakes in
+  // filteredEvents are already sorted newest-first, so slice the leading ones
+  // that fall inside the window.
+  const latestQuakeRanks = useMemo(() => {
+    const cutoff = nowMs - RECENT_QUAKE_WINDOW_MS
+    const recent = filteredEvents
+      .filter((event) => event.kind === 'earthquake' && event.time !== null && event.time.getTime() >= cutoff)
+      .slice(0, MAX_HIGHLIGHTED_QUAKES)
+    return new Map(recent.map((event, index) => [event.id, index + 1]))
+  }, [filteredEvents, nowMs])
   const isFiltered =
     visibleKinds.size < ALL_KINDS.length || visibleSeverities.size < FILTERABLE_SEVERITY_LEVELS.length
 
@@ -168,6 +193,7 @@ function App() {
           onSelectEvent={selectEvent}
           onDeselectEvent={() => setSelectedEventId(null)}
           newEventIds={newEventIds}
+          latestQuakeRanks={latestQuakeRanks}
           showFaultLines={showFaultLines}
         />
 
@@ -208,6 +234,7 @@ function App() {
           onClose={() => setSidebarOpen(false)}
           userLocation={effectiveLocation}
           newEventIds={newEventIds}
+          latestQuakeRanks={latestQuakeRanks}
           isFiltered={isFiltered}
           visibleKinds={visibleKinds}
           visibleSeverities={visibleSeverities}

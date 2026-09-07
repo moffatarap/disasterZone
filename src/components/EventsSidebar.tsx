@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
 import {
@@ -20,6 +21,8 @@ interface EventsSidebarProps {
   onClose: () => void
   userLocation: UserLocation | null
   newEventIds: Set<string>
+  /** id -> 1-based recency rank for the newest few felt quakes. */
+  latestQuakeRanks: Map<string, number>
   isFiltered: boolean
   visibleKinds: Set<HazardKind>
   visibleSeverities: Set<SeverityLevel>
@@ -51,6 +54,7 @@ export function EventsSidebar({
   onClose,
   userLocation,
   newEventIds,
+  latestQuakeRanks,
   isFiltered,
   visibleKinds,
   visibleSeverities,
@@ -154,7 +158,7 @@ export function EventsSidebar({
                 : 'No events to show right now.'}
             </li>
           )}
-          {events.map((event) => {
+          {events.map((event, index) => {
             const distanceFromUserKm =
               event.kind === 'earthquake' && userLocation
                 ? haversineDistanceKm(event.location, userLocation)
@@ -164,35 +168,61 @@ export function EventsSidebar({
                 ? `${formatRelativeTime(event.time)} · ${formatDistanceKm(distanceFromUserKm)} from you`
                 : formatRelativeTime(event.time)
 
+            const rank = latestQuakeRanks.get(event.id)
+            // Ranked rows are contiguous at the top (quakes sorted newest-
+            // first), so the divider drops in once, before the first row that
+            // isn't ranked while the previous one was.
+            const showOlderDivider =
+              rank == null && index > 0 && latestQuakeRanks.has(events[index - 1].id)
+
             return (
-              <li key={event.id}>
-                <button
-                  type="button"
-                  onClick={() => onSelectEvent(event)}
-                  style={{ borderLeftColor: SEVERITY_COLORS[event.severity] }}
-                  className={`flex w-full items-center gap-2.5 rounded-lg border-l-4 bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/15 ${
-                    event.id === selectedEventId ? 'bg-white/15' : ''
-                  }`}
-                >
-                  <img
-                    src={ICONS_BY_KIND[event.kind][event.severity]}
-                    alt=""
-                    className="h-11 w-11 flex-none"
-                  />
-                  <span className="flex min-w-0 flex-col">
-                    <span className="flex items-center gap-1.5">
-                      <span className="truncate text-sm font-semibold">{event.title}</span>
-                      {newEventIds.has(event.id) && (
-                        <span className="flex-none rounded-full bg-sky-500 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase">
-                          New
+              <Fragment key={event.id}>
+                {showOlderDivider && (
+                  <li
+                    aria-hidden="true"
+                    className="flex items-center gap-2 px-1 pt-1 text-[10px] font-semibold tracking-widest text-white/30 uppercase"
+                  >
+                    <span className="h-px flex-1 bg-white/10" />
+                    older
+                    <span className="h-px flex-1 bg-white/10" />
+                  </li>
+                )}
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => onSelectEvent(event)}
+                    style={{ borderLeftColor: SEVERITY_COLORS[event.severity] }}
+                    className={`flex w-full items-center gap-2.5 rounded-lg border-l-4 bg-white/5 px-3 py-2 text-left transition-colors hover:bg-white/15 ${
+                      event.id === selectedEventId ? 'bg-white/15' : ''
+                    }`}
+                  >
+                    <span className="relative flex-none">
+                      <img
+                        src={ICONS_BY_KIND[event.kind][event.severity]}
+                        alt=""
+                        className="h-11 w-11"
+                      />
+                      {rank != null && (
+                        <span className="absolute -top-1 -left-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-white px-1 text-[11px] font-bold text-slate-900 ring-2 ring-slate-900">
+                          {rank}
                         </span>
                       )}
                     </span>
-                    <span className="text-xs text-white/70">{event.ratingText}</span>
-                    <span className="truncate text-xs text-white/70">{timeLine}</span>
-                  </span>
-                </button>
-              </li>
+                    <span className="flex min-w-0 flex-col">
+                      <span className="flex items-center gap-1.5">
+                        <span className="truncate text-sm font-semibold">{event.title}</span>
+                        {newEventIds.has(event.id) && (
+                          <span className="flex-none rounded-full bg-sky-500 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase">
+                            New
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-xs text-white/70">{event.ratingText}</span>
+                      <span className="truncate text-xs text-white/70">{timeLine}</span>
+                    </span>
+                  </button>
+                </li>
+              </Fragment>
             )
           })}
         </ul>

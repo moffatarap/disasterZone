@@ -18,6 +18,8 @@ interface DisasterMapProps {
   onSelectEvent: (event: DisasterEvent) => void
   onDeselectEvent: () => void
   newEventIds: Set<string>
+  /** id -> 1-based recency rank for the newest few felt quakes. */
+  latestQuakeRanks: Map<string, number>
   showFaultLines: boolean
 }
 
@@ -67,6 +69,7 @@ export function DisasterMap({
   onSelectEvent,
   onDeselectEvent,
   newEventIds,
+  latestQuakeRanks,
   showFaultLines,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
@@ -175,6 +178,7 @@ export function DisasterMap({
             event={event}
             isSelected={event.id === selectedEvent?.id}
             isNew={newEventIds.has(event.id)}
+            rank={latestQuakeRanks.get(event.id)}
             onSelect={onSelectEvent}
           />
         ))}

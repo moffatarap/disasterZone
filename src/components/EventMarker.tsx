@@ -6,6 +6,8 @@ interface EventMarkerProps {
   event: DisasterEvent
   isSelected: boolean
   isNew: boolean
+  /** 1-based recency rank if this is one of the newest few felt quakes. */
+  rank?: number
   onSelect: (event: DisasterEvent) => void
 }
 
@@ -14,7 +16,7 @@ const ICONS_BY_KIND = {
   volcano: VOLCANO_ICONS,
 } as const
 
-export function EventMarker({ event, isSelected, isNew, onSelect }: EventMarkerProps) {
+export function EventMarker({ event, isSelected, isNew, rank, onSelect }: EventMarkerProps) {
   const icon = ICONS_BY_KIND[event.kind][event.severity]
   const sizeClass = isSelected ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-11 w-11 sm:h-12 sm:w-12'
 
@@ -45,9 +47,19 @@ export function EventMarker({ event, isSelected, isNew, onSelect }: EventMarkerP
         )}
         <img
           src={icon}
-          alt={`${event.kind} - ${event.severity}${isNew ? ' - new' : ''}`}
+          alt={`${event.kind} - ${event.severity}${rank ? ` - #${rank} most recent` : ''}${isNew ? ' - new' : ''}`}
           className={`relative drop-shadow-md ${sizeClass}`}
         />
+        {/* Recency rank for the newest few quakes - white chip reads on both
+            the dark basemap and a same-hue alert circle. */}
+        {rank != null && (
+          <span
+            aria-hidden="true"
+            className="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-white px-1 text-[11px] font-bold text-slate-900 ring-2 ring-slate-900/50"
+          >
+            {rank}
+          </span>
+        )}
       </div>
     </Marker>
   )

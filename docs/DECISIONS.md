@@ -351,6 +351,21 @@ Once a user types an address, it isn't silently overridden if geolocation
 later succeeds - they made a deliberate choice. It persists across reloads
 and only clears when they explicitly clear it.
 
+### "New" vs "latest" are two separate ideas
+
+- **New** = arrived while *this* browser tab was open (a ping on the marker, a
+  "New" badge in the list, a toast). Nothing is "new" on a fresh load.
+- **Latest** = the newest felt quakes right now, regardless of when you
+  loaded - the 5 most recent with an origin time in the last 48h (fewer, or
+  none, in a quiet spell). Shown as a numbered badge `1..5` on the marker and
+  the list row, with an "older" divider beneath the last ranked row.
+
+They coexist: a row can be both `#1` and `New`. The 48h cap keeps a stale
+quake from being called "latest" just because nothing newer exists; a
+once-a-minute clock tick ages quakes out of the window without needing fresh
+data. Ranks are computed from `filteredEvents`, so they track the severity/
+kind filters - hide "weak" quakes and the numbering is of what's left.
+
 ### "New event" tracking waits for both queries
 
 Earthquakes and volcanoes are independent queries that resolve at different
