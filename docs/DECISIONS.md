@@ -259,6 +259,18 @@ No `role="dialog"` / `aria-modal` - an axe-core audit flagged those as
 misused here. On tablet/desktop it's a persistent side panel; on mobile it's
 a bottom sheet with a backdrop. It behaves as a panel, not a modal dialog.
 
+### Mobile bottom sheet is drag-resizable
+
+The sheet is positioned `absolute` inside `<main>` (not `fixed` to the
+viewport), so its height is a percentage of the map area - which makes "full
+height" mean "top edge meets the navbar" for free, and lets `overflow-hidden`
+on `<main>` clip the closed (translated-down) state. The grip is a
+`role="slider"`: drag it (pointer events + capture, `touch-action: none` so
+the page doesn't scroll under the finger) or use Arrow/Home/End keys to size
+it between a ~210px floor and full height. Height lives in component state as
+a percent and survives a close/reopen within the session. At `>= sm` the `sm:`
+classes take over and it's a fixed-width rail again; the grip is `sm:hidden`.
+
 ### Filter chips are deliberately large
 
 Sized up from a smaller, subtler chip design after feedback that the filters

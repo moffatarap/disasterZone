@@ -1,4 +1,11 @@
-import { Fragment } from 'react'
+import {
+  Fragment,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import earthquakeIcon from '../assets/media/img/mapKeys/key/earthquake.svg'
 import volcanoIcon from '../assets/media/img/mapKeys/key/volcano.svg'
 import {
@@ -46,6 +53,14 @@ const KIND_ENTRIES: { kind: HazardKind; icon: string; label: string }[] = [
 const CHIP_CLASS =
   'flex flex-none items-center gap-2 rounded-full px-3.5 py-2 text-sm font-semibold capitalize transition-colors'
 
+// Mobile bottom-sheet height, as a % of the map area. Draggable between a
+// compact size (handle + filters + a row or two) and full height, where the
+// top edge meets the navbar. Ignored at >= sm, where the panel is a fixed-
+// width side rail.
+const SHEET_MIN_PX = 210
+const SHEET_DEFAULT_PCT = 62
+const SHEET_KEYBOARD_STEP_PCT = 8
+
 export function EventsSidebar({
   events,
   isOpen,
@@ -62,6 +77,52 @@ export function EventsSidebar({
   onToggleSeverity,
   onResetFilters,
 }: EventsSidebarProps) {
+  const asideRef = useRef<HTMLElement>(null)
+  const dragRef = useRef<{ startY: number; startPct: number; mapH: number } | null>(null)
+  const [sheetPct, setSheetPct] = useState(SHEET_DEFAULT_PCT)
+
+  // The panel is absolutely positioned inside <main>, so its parent's height
+  // is the space between the navbar and the bottom of the screen - i.e. the
+  // ceiling for "full height".
+  function mapHeight() {
+    return asideRef.current?.parentElement?.getBoundingClientRect().height ?? window.innerHeight
+  }
+
+  function clampPct(pct: number, mapH: number) {
+    const minPct = Math.min(100, (SHEET_MIN_PX / mapH) * 100)
+    return Math.max(minPct, Math.min(100, pct))
+  }
+
+  function onHandlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    event.currentTarget.setPointerCapture(event.pointerId)
+    dragRef.current = { startY: event.clientY, startPct: sheetPct, mapH: mapHeight() }
+  }
+
+  function onHandlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current
+    if (!drag) return
+    // Dragging up (clientY decreasing) grows the sheet.
+    const deltaPct = ((drag.startY - event.clientY) / drag.mapH) * 100
+    setSheetPct(clampPct(drag.startPct + deltaPct, drag.mapH))
+  }
+
+  function onHandlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    dragRef.current = null
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  function onHandleKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    const mapH = mapHeight()
+    if (event.key === 'ArrowUp') setSheetPct((p) => clampPct(p + SHEET_KEYBOARD_STEP_PCT, mapH))
+    else if (event.key === 'ArrowDown') setSheetPct((p) => clampPct(p - SHEET_KEYBOARD_STEP_PCT, mapH))
+    else if (event.key === 'Home') setSheetPct(100)
+    else if (event.key === 'End') setSheetPct(clampPct(0, mapH))
+    else return
+    event.preventDefault()
+  }
+
   return (
     <>
       {/* Backdrop: only relevant to the mobile bottom-sheet layout */}
@@ -76,13 +137,34 @@ export function EventsSidebar({
       {/* <aside>, not a dialog: this is a persistent panel with no focus trap
           or Escape handling, not a modal (see docs/DECISIONS.md). */}
       <aside
+        ref={asideRef}
         aria-label="Recent events"
-        className={`fixed inset-x-0 bottom-0 z-20 flex max-h-[65vh] flex-col rounded-t-2xl bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:absolute sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:max-h-none sm:w-80 sm:rounded-none ${
+        style={{ '--sheet-h': `${sheetPct}%` } as CSSProperties}
+        className={`absolute inset-x-0 bottom-0 z-20 flex h-[var(--sheet-h)] flex-col bg-slate-900/95 text-white shadow-2xl transition-transform duration-300 ease-out sm:inset-x-auto sm:inset-y-0 sm:right-0 sm:top-0 sm:h-full sm:w-80 sm:rounded-none ${
+          sheetPct > 98 ? '' : 'rounded-t-2xl'
+        } ${
           isOpen ? 'translate-y-0 sm:translate-x-0' : 'translate-y-full sm:translate-x-full sm:translate-y-0'
         }`}
       >
-        <div className="flex flex-none items-center justify-center pt-2 sm:hidden">
-          <div className="h-1 w-10 rounded-full bg-white/30" />
+        <div
+          role="slider"
+          aria-label="Resize recent events panel"
+          aria-orientation="vertical"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(sheetPct)}
+          tabIndex={0}
+          onPointerDown={onHandlePointerDown}
+          onPointerMove={onHandlePointerMove}
+          onPointerUp={onHandlePointerUp}
+          onPointerCancel={onHandlePointerUp}
+          onLostPointerCapture={() => {
+            dragRef.current = null
+          }}
+          onKeyDown={onHandleKeyDown}
+          className="flex flex-none touch-none cursor-grab items-center justify-center py-3 select-none active:cursor-grabbing sm:hidden"
+        >
+          <div className="h-1.5 w-10 rounded-full bg-white/30" />
         </div>
 
         <div className="flex flex-none items-center justify-between px-4 pt-2 pb-3 sm:pt-4">
