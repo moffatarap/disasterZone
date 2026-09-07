@@ -7,9 +7,10 @@
 // wasn't feasible from a static frontend with no backend proxy. A bundled
 // photo per volcano works consistently for all of them instead.
 //
-// Northland has no entry - no suitable photo found (it's a diffuse field of
-// small scoria cones, not a single distinct landmark), and the popup simply
-// omits the image for it rather than force an unrelated one.
+// GeoNet's "Northland" is the Kaikohe-Bay of Islands volcanic field - a
+// diffuse scatter of small basaltic cones, not one landmark. It's
+// represented here by Te Ahuahu, the most prominent extinct cone in the
+// field.
 //
 // Attribution (required by the CC licenses; included for the public-domain
 // ones too as good practice) is shown as a caption under the image.
@@ -24,6 +25,7 @@ import aucklandvolcanicfield from '../assets/media/img/volcanoes/aucklandvolcani
 import kermadecislands from '../assets/media/img/volcanoes/kermadecislands.jpg'
 import mayorisland from '../assets/media/img/volcanoes/mayorisland.jpg'
 import ngauruhoe from '../assets/media/img/volcanoes/ngauruhoe.jpg'
+import northland from '../assets/media/img/volcanoes/northland.jpg'
 import okataina from '../assets/media/img/volcanoes/okataina.jpg'
 import rotorua from '../assets/media/img/volcanoes/rotorua.jpg'
 import ruapehu from '../assets/media/img/volcanoes/ruapehu.jpg'
@@ -68,6 +70,12 @@ export const VOLCANO_IMAGES: Record<string, VolcanoImage> = {
     credit: 'Eusebius',
     licenseName: 'CC BY 3.0',
     licenseUrl: 'https://creativecommons.org/licenses/by/3.0',
+  },
+  northland: {
+    src: northland,
+    credit: 'Moriori',
+    licenseName: 'Public domain',
+    licenseUrl: null,
   },
   okataina: {
     src: okataina,
