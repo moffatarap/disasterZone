@@ -37,13 +37,13 @@ export function SeverityKey({
         onClick={() => setExpanded((current) => !current)}
         aria-expanded={expanded}
         aria-label="Toggle map key"
-        className="absolute top-3 right-3 z-[8] flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/95 text-white/80 shadow-xl ring-1 ring-white/10 transition-colors hover:bg-slate-800"
+        className="absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/95 text-white/80 shadow-xl ring-1 ring-white/10 transition-colors hover:bg-slate-800"
       >
         i
       </button>
 
       <div
-        className={`absolute top-16 right-3 z-[8] rounded-lg bg-slate-900/95 px-3.5 py-2.5 text-white shadow-xl ring-1 ring-white/10 ${
+        className={`absolute top-16 right-3 z-[5] rounded-lg bg-slate-900/95 px-3.5 py-2.5 text-white shadow-xl ring-1 ring-white/10 ${
           expanded ? 'block' : 'hidden'
         }`}
       >
