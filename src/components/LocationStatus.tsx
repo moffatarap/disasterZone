@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import locationIcon from '../assets/media/img/locationIcon-01.svg'
 import { searchAddresses, type ForwardGeocodeResult } from '../api/nominatim'
 
 interface LocationStatusProps {
@@ -11,6 +10,11 @@ interface LocationStatusProps {
   onSubmitAddress: (address: string) => void
   onSelectSuggestion: (result: ForwardGeocodeResult) => void
   onClearManual: () => void
+  /**
+   * Ask the browser for a fresh one-shot GPS fix (the "Use my location" item).
+   * `onSuccess` runs only if a position comes back.
+   */
+  onRequestLocation: (onSuccess?: () => void) => void
   isSubmitting: boolean
   notFound: boolean
 }
@@ -19,11 +23,79 @@ interface LocationStatusProps {
 const SEARCH_DEBOUNCE_MS = 450
 const MIN_QUERY_LENGTH = 3
 
+const ICON_CLASS = 'h-4 w-4 flex-none'
+
+// A crosshair - the address came from the device's geolocation. A pin - the
+// address was typed by hand. Same weight and colour; the shape is the only
+// difference, which replaces the old "Manual" word tag.
+function CrosshairIcon({ className = '', title }: { className?: string; title?: string }) {
+  return (
+    <svg
+      className={`${ICON_CLASS} ${className}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      role={title ? 'img' : undefined}
+      aria-hidden={title ? undefined : true}
+    >
+      {title ? <title>{title}</title> : null}
+      <circle cx="12" cy="12" r="7" />
+      <line x1="12" y1="1" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="23" />
+      <line x1="1" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="23" y2="12" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function PinIcon({ className = '', title }: { className?: string; title?: string }) {
+  return (
+    <svg
+      className={`${ICON_CLASS} ${className}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      role={title ? 'img' : undefined}
+      aria-hidden={title ? undefined : true}
+    >
+      {title ? <title>{title}</title> : null}
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  )
+}
+
+function PencilIcon({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      className={`${ICON_CLASS} ${className}`}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  )
+}
+
 // A persistent full-width bar pinned to the bottom of the map. It always
 // shows the current location state (locating / an address / unavailable) and
-// always offers "Change" - a manual address can override a GPS fix, which
-// matters for anyone on a VPN whose device location is wrong. The map's zoom
-// and attribution controls are lifted clear of it (see DisasterMap).
+// always offers "Change", which opens a two-item menu: re-request the device
+// location, or type an address. A typed address can override a working GPS
+// fix, which matters for anyone on a VPN whose device location is wrong. The
+// map's zoom and attribution controls are lifted clear of it (see DisasterMap).
 export function LocationStatus({
   address,
   isManualAddress,
@@ -32,9 +104,11 @@ export function LocationStatus({
   onSubmitAddress,
   onSelectSuggestion,
   onClearManual,
+  onRequestLocation,
   isSubmitting,
   notFound,
 }: LocationStatusProps) {
+  const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [suggestions, setSuggestions] = useState<ForwardGeocodeResult[]>([])
@@ -44,6 +118,9 @@ export function LocationStatus({
   // Set when a free-text address is submitted, so the effect below can close
   // the editor once the async lookup lands (unless it came back not-found).
   const pendingSubmit = useRef(false)
+  const changeButtonRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const editorRef = useRef<HTMLDivElement>(null)
 
   const trimmedQuery = inputValue.trim()
   // Derived, not stored - so the effect below never has to clear stale
@@ -75,6 +152,46 @@ export function LocationStatus({
     }
   }, [isSubmitting, notFound])
 
+  // Both the menu and the editor are dismissed by clicking away (including on
+  // the map) or pressing Escape - the same lightweight, non-modal pattern used
+  // elsewhere in the app. Escape returns focus to the "Change" button.
+  useEffect(() => {
+    if (!menuOpen && !editing) return
+
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target as Node
+      // Let the "Change" button's own click handle the toggle - otherwise a
+      // pointerdown here closes the menu and the click immediately reopens it.
+      if (!editing && changeButtonRef.current?.contains(target)) return
+      const root = editing ? editorRef.current : menuRef.current
+      if (root && !root.contains(target)) {
+        if (editing) closeEditor()
+        else setMenuOpen(false)
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+      if (editing) closeEditor()
+      else setMenuOpen(false)
+      changeButtonRef.current?.focus()
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [menuOpen, editing])
+
+  // Move focus into the menu when it opens so it's keyboard-operable.
+  useEffect(() => {
+    if (!menuOpen) return
+    menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus()
+  }, [menuOpen])
+
+  // Declared below the effects on purpose: keeps the async-submit effect above
+  // from tripping the "no setState in an effect body" lint rule.
   function closeEditor() {
     setEditing(false)
     setInputValue('')
@@ -94,28 +211,47 @@ export function LocationStatus({
     closeEditor()
   }
 
+  function handleUseMyLocation() {
+    setMenuOpen(false)
+    // Drop the manual override only once a real fix lands - if geolocation
+    // fails, the typed address stays put rather than falling back to nothing.
+    onRequestLocation(onClearManual)
+  }
+
+  function handleEnterAddress() {
+    setMenuOpen(false)
+    setEditing(true)
+  }
+
   const mainText =
     address ??
     (locationError
-      ? 'Location unavailable - add an address'
+      ? `${locationError} - add an address`
       : isLocating
         ? 'Finding your location…'
         : 'No location set - add an address')
 
   const showSpinner = isLocating && !address && !locationError && !editing
 
+  const menuItemClass =
+    'flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-normal text-white/90 transition-colors hover:bg-white/10 hover:text-white'
+
   return (
     <div className="absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
       {editing ? (
-        <div className="relative">
+        <div ref={editorRef} className="relative">
           {visibleSuggestions.length > 0 && (
-            <ul className="absolute inset-x-0 bottom-full mb-2 max-h-56 overflow-y-auto rounded-lg bg-slate-900/98 p-1 shadow-xl ring-1 ring-white/10">
+            /* -left-4/-right-4 cancels the card's px-4 so the dropdown spans
+               the full width of the bar. Rows carry a deep left indent (pl-6)
+               so their text lines up with the input's text below (bar px-4 +
+               input p-3). */
+            <ul className="absolute -left-4 -right-4 bottom-full mb-2 max-h-56 overflow-y-auto rounded-lg bg-slate-900/98 p-1 shadow-xl ring-1 ring-white/10">
               {visibleSuggestions.map((result) => (
                 <li key={`${result.lat},${result.lng}`}>
                   <button
                     type="button"
                     onClick={() => handleSelectSuggestion(result)}
-                    className="line-clamp-2 w-full rounded-md px-2 py-2 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                    className="line-clamp-2 w-full rounded-md py-3 pr-3 pl-6 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
                   >
                     {/* full string here so near-identical candidates are
                         distinguishable, even though we show only the short
@@ -127,10 +263,10 @@ export function LocationStatus({
             </ul>
           )}
 
-          {/* One row, no placeholder or hint text - keeps the card the same
-              height as its collapsed state. autoFocus is deliberate: the bar
-              only enters this state on an explicit "Change" tap. notFound
-              shows as a red ring rather than a second line. */}
+          {/* No placeholder or hint text. autoFocus is deliberate: the bar only
+              enters this state from an explicit "Enter address" menu pick.
+              notFound shows as a red ring rather than a second line. There's no
+              cancel button - click away or press Escape. */}
           <form onSubmit={handleSubmit} className="flex min-h-8 items-center gap-2">
             <input
               type="text"
@@ -140,65 +276,69 @@ export function LocationStatus({
               aria-invalid={notFound || undefined}
               autoComplete="off"
               autoFocus
-              className={`min-w-0 flex-1 rounded-md bg-white/10 px-3 py-1.5 text-sm text-white focus:bg-white/15 focus:outline-none ${
+              className={`min-w-0 flex-1 rounded-lg bg-white/5 p-3 text-sm text-white transition-colors focus:bg-white/10 focus:outline-none ${
                 notFound ? 'ring-1 ring-red-400' : ''
               }`}
             />
             <button
               type="submit"
               disabled={isSubmitting || !inputValue.trim()}
-              className="flex-none rounded-md bg-sky-500 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-sky-400 disabled:opacity-50"
+              className="flex-none rounded-lg bg-sky-500 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-sky-400 disabled:opacity-50"
             >
-              {isSubmitting ? '…' : 'Use'}
-            </button>
-            <button
-              type="button"
-              onClick={closeEditor}
-              aria-label="Cancel address entry"
-              className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              ✕
+              {isSubmitting ? '…' : 'Submit'}
             </button>
           </form>
         </div>
       ) : (
-        <div className="flex min-h-8 items-center gap-2.5">
+        <div className="relative flex min-h-8 items-center gap-2.5">
           {showSpinner ? (
             <span
               aria-hidden="true"
               className="h-4 w-4 flex-none animate-spin rounded-full border-2 border-white/25 border-t-white/80"
             />
+          ) : isManualAddress && address ? (
+            <PinIcon className="text-white" title="Address you entered" />
+          ) : address ? (
+            <CrosshairIcon className="text-white" title="Address from your device location" />
           ) : (
-            <img src={locationIcon} alt="" className="h-4 w-4 flex-none" />
+            <PinIcon className="text-white/70" />
           )}
 
           <p className="min-w-0 flex-1 truncate text-sm">
-            {isManualAddress && address && (
-              <span className="mr-1.5 text-[10px] font-semibold tracking-wide text-white/40 uppercase">
-                Manual
-              </span>
-            )}
             <span className={address ? undefined : 'text-white/70'}>{mainText}</span>
           </p>
 
-          <div className="flex flex-none items-center gap-3 text-xs font-semibold">
-            {isManualAddress && (
-              <button
-                type="button"
-                onClick={onClearManual}
-                className="text-white/55 transition-colors hover:text-white hover:underline"
-              >
+          <button
+            ref={changeButtonRef}
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            className="flex-none text-xs font-semibold text-sky-400 hover:underline"
+          >
+            {address ? 'Change' : 'Set address'}
+          </button>
+
+          {/* Sized to its content, right edge flush with the bar (like the
+              autocomplete's -right-4 edge). bottom-full mb-2 gives it the same
+              gap above the bar as the autocomplete list has above the input. */}
+          {menuOpen && (
+            <div
+              ref={menuRef}
+              role="menu"
+              aria-label="Location options"
+              className="absolute -right-4 bottom-full mb-2 w-max min-w-[12rem] rounded-lg bg-slate-900/98 p-1 shadow-xl ring-1 ring-white/10"
+            >
+              <button type="button" role="menuitem" onClick={handleUseMyLocation} className={menuItemClass}>
+                <CrosshairIcon className="text-white/70" />
                 Use my location
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="text-sky-400 hover:underline"
-            >
-              {address ? 'Change' : 'Set address'}
-            </button>
-          </div>
+              <button type="button" role="menuitem" onClick={handleEnterAddress} className={menuItemClass}>
+                <PencilIcon className="text-white/70" />
+                Enter address
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

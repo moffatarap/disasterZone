@@ -380,6 +380,11 @@ Once a user types an address, it isn't silently overridden if geolocation
 later succeeds - they made a deliberate choice. It persists across reloads
 and only clears when they explicitly clear it.
 
+The "Use my location" menu item is that explicit clear, but it only drops the
+typed address once a fresh fix actually lands. If the geolocation request
+fails (denied, timeout, insecure context), the typed address stays - falling
+back to "no address" would punish the user for trying.
+
 ### "New" vs "latest" are two separate ideas
 
 - **New** = arrived while *this* browser tab was open (a ping on the marker, a

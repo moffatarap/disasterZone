@@ -34,7 +34,7 @@ const RECENT_QUAKE_WINDOW_MS = 48 * 60 * 60 * 1000
 const MAX_HIGHLIGHTED_QUAKES = 5
 
 function App() {
-  const { location, error: locationError, loading: isLocating } = useGeolocation()
+  const { location, error: locationError, loading: isLocating, requestLocation } = useGeolocation()
   const {
     manualLocation,
     submit: submitManualAddress,
@@ -228,6 +228,7 @@ function App() {
           onSubmitAddress={submitManualAddress}
           onSelectSuggestion={selectManualSuggestion}
           onClearManual={clearManualLocation}
+          onRequestLocation={requestLocation}
           isSubmitting={isSubmitting}
           notFound={notFound}
         />
