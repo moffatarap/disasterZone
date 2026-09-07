@@ -89,7 +89,11 @@ export function useGeolocation(): GeolocationState {
         }))
         return
       }
-      setState((current) => ({ ...current, loading: true }))
+      // Clear the previous error as well as flagging the load: the bar's
+      // spinner is suppressed while an error is showing, so leaving a stale
+      // one here would make this button look completely inert in exactly the
+      // denied/timed-out state it exists to recover from.
+      setState((current) => ({ ...current, error: null, loading: true }))
       navigator.geolocation.getCurrentPosition(
         (position) => {
           applyPosition(position)

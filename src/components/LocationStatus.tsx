@@ -136,9 +136,11 @@ export function LocationStatus({
 
   useEffect(() => {
     const trimmed = inputValue.trim()
+    // Bumped before the length guard too, so a query abandoned by deleting
+    // back below the minimum can't still land and repopulate the list.
+    const requestId = ++latestRequestId.current
     if (trimmed.length < MIN_QUERY_LENGTH) return
 
-    const requestId = ++latestRequestId.current
     const timer = setTimeout(() => {
       searchAddresses(trimmed)
         .then((results) => {
@@ -283,7 +285,14 @@ export function LocationStatus({
             <input
               type="text"
               value={inputValue}
-              onChange={(event) => setInputValue(event.target.value)}
+              onChange={(event) => {
+                const value = event.target.value
+                setInputValue(value)
+                // Drop the old list once the query is too short to search, so
+                // retyping doesn't flash the previous query's results during
+                // the next debounce.
+                if (value.trim().length < MIN_QUERY_LENGTH) setSuggestions([])
+              }}
               aria-label="Address"
               aria-invalid={notFound || undefined}
               autoComplete="off"
