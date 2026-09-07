@@ -51,6 +51,22 @@ async function open(vp, { geo = true, query = '' } = {}) {
 }
 
 const shot = (page, name) => page.screenshot({ path: `${OUT}/${name}.png`, fullPage: false })
+
+/** Selects an event and returns true if one was available.
+ *
+ *  Goes through the Recent Events list rather than hunting for a marker: once
+ *  the map centres on the user at zoom 9 there may be no pin on screen at all,
+ *  and marker DOM order says nothing about what's visible. Picking from the
+ *  list is a real user path and always resolves to a selectable event. */
+async function selectFirstEvent(page) {
+  const row = page
+    .locator('aside[aria-label="Recent events"] button')
+    .filter({ hasText: /Magnitude/ })
+    .first()
+  if ((await row.count()) === 0) return false
+  await row.click()
+  return true
+}
 const bar = (page) => page.locator('div.absolute.bottom-2').first()
 const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set address)$/ })
 
@@ -87,7 +103,11 @@ const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set addre
   check('map key toggle exists', (await keyToggle.count()) === 1)
   await keyToggle.click()
   await page.waitForTimeout(300)
-  const keyText = await page.locator('body').innerText()
+  // Scoped to the key panel itself. Reading document.body here would let event
+  // titles satisfy these - "New Plymouth" alone breaks the hazard assertion.
+  const keyPanel = page.locator('main div').filter({ has: page.locator('h2', { hasText: 'KEY' }) }).last()
+  check('map key panel opens', await keyPanel.isVisible())
+  const keyText = await keyPanel.innerText()
   check('map key offers the fault-lines toggle', /fault/i.test(keyText))
   check('map key offers the inactive-volcanoes toggle', /inactive volcano/i.test(keyText))
   check(
@@ -171,11 +191,18 @@ const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set addre
 // --------------------------------------------------------- flow: event popup
 for (const vp of ['desktop', 'mobile']) {
   const { ctx, page } = await open(vp)
-  const marker = page.locator('img[alt^="earthquake"]').first()
-  await marker.click()
+  if (vp === 'mobile') {
+    await page.getByRole('button', { name: 'Show and hide the list of recent events' }).click()
+    await page.waitForTimeout(600)
+  }
+  if (!(await selectFirstEvent(page))) {
+    console.log(`SKIP  [${vp}] GeoNet feed is empty - no event to open`)
+    await ctx.close()
+    continue
+  }
   await page.waitForTimeout(2600)
   const popup = page.locator('.maplibregl-popup-content')
-  check(`[${vp}] clicking a marker opens the event popup`, (await popup.count()) === 1)
+  check(`[${vp}] selecting an event opens its popup`, (await popup.count()) === 1)
   const text = await popup.innerText()
   check(`[${vp}] popup shows a magnitude`, /Magnitude/i.test(text))
   check(`[${vp}] popup shows a depth`, /Depth/i.test(text))
@@ -209,18 +236,27 @@ for (const vp of ['desktop', 'mobile']) {
   const { ctx, page } = await open('desktop')
   const aside = page.locator('aside[aria-label="Recent events"]')
   const listText = await aside.innerText()
-  check('recent events lists ranked quakes', /\bMagnitude\b/.test(listText))
-  check('recent events separates older entries', /OLDER/i.test(listText))
-
   const before = await page.locator('img[alt^="earthquake"]').count()
-  await page.getByRole('button', { name: /^Earthquake$/ }).click()
-  await page.waitForTimeout(600)
-  const after = await page.locator('img[alt^="earthquake"]').count()
-  check('a kind filter hides those markers', after < before, `${before} -> ${after}`)
-  await shot(page, 'desktop-08-filtered')
-  await page.getByRole('button', { name: /^Earthquake$/ }).click()
-  await page.waitForTimeout(600)
-  check('un-filtering brings them back', (await page.locator('img[alt^="earthquake"]').count()) === before)
+
+  // GeoNet's felt feed can legitimately be empty in a quiet spell (see
+  // docs/DECISIONS.md), so these assert only against data that is actually
+  // present rather than failing the whole run for want of an earthquake.
+  if (before === 0) {
+    console.log('SKIP  no live earthquakes right now - list and filter checks skipped')
+  } else {
+    check('recent events lists ranked quakes', /\bMagnitude\b/.test(listText))
+    if (/OLDER/i.test(listText)) check('recent events separates older entries', true)
+    else console.log('SKIP  fewer than 6 quakes in the feed - no OLDER divider to check')
+
+    await page.getByRole('button', { name: /^Earthquake$/ }).click()
+    await page.waitForTimeout(600)
+    const after = await page.locator('img[alt^="earthquake"]').count()
+    check('a kind filter hides those markers', after < before, `${before} -> ${after}`)
+    await shot(page, 'desktop-08-filtered')
+    await page.getByRole('button', { name: /^Earthquake$/ }).click()
+    await page.waitForTimeout(600)
+    check('un-filtering brings them back', (await page.locator('img[alt^="earthquake"]').count()) === before)
+  }
   await ctx.close()
 }
 
@@ -230,7 +266,10 @@ for (const vp of ['desktop', 'mobile']) {
   await page.waitForTimeout(3000)
   const toast = page.locator('[role="status"]')
   check(`[${vp}] demo query raises a new-event toast`, (await toast.count()) >= 1)
-  check(`[${vp}] the new event is badged in the list`, /NEW/i.test(await page.locator('body').innerText()))
+  // Scoped to the badge element: /NEW/i over the body matches the locality
+  // "New Plymouth", so that check could never fail.
+  const badge = page.locator('aside[aria-label="Recent events"] span', { hasText: /^New$/ })
+  check(`[${vp}] the new event is badged in the list`, (await badge.count()) >= 1)
   await shot(page, `${vp}-09-toast`)
 
   const tb = await toast.first().boundingBox()
