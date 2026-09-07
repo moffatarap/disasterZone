@@ -103,11 +103,19 @@ export function DisasterMap({
     }
   }, [userLocation])
 
+  // Depend on the identity of the *selection*, not the event object: App
+  // derives selectedEvent with filteredEvents.find(), which returns a fresh
+  // object on every GeoNet poll. Keying the effect on that re-ran this - and
+  // re-centred the map under an open popup - once a minute.
+  const selectedEventId = selectedEvent?.id ?? null
+  const selectedLng = selectedEvent?.location.lng ?? null
+  const selectedLat = selectedEvent?.location.lat ?? null
+
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    if (!selectedEvent) {
+    if (selectedEventId === null || selectedLng === null || selectedLat === null) {
       // Popup closed - drop any headroom a mobile select applied so panning
       // and pinch-zoom re-centre normally.
       if (map.getPadding().top !== 0) {
@@ -125,11 +133,11 @@ export function DisasterMap({
       : 0
 
     map.flyTo({
-      center: [selectedEvent.location.lng, selectedEvent.location.lat],
+      center: [selectedLng, selectedLat],
       zoom: 9,
       padding: { top: topPadding, bottom: 0, left: 0, right: 0 },
     })
-  }, [selectedEvent])
+  }, [selectedEventId, selectedLng, selectedLat])
 
   // Earthquakes only (see computeStackedCircleSuppressions); recomputed only
   // when the event list changes.
