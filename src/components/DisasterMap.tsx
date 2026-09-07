@@ -91,6 +91,12 @@ export function DisasterMap({
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const lastCenteredOn = useRef<UserLocation | null>(null)
+  // The Map is created asynchronously, so mapRef.current is still null while
+  // the first effects run. Both camera effects depend on this so they re-run
+  // once there's actually a map to drive - otherwise a location restored from
+  // localStorage (a saved manual address, or a cached fix when the watch only
+  // errors) never changes identity again and the map stays NZ-wide forever.
+  const [mapLoaded, setMapLoaded] = useState(false)
   const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
 
   // Fetched once, on first toggle-on - most sessions never enable this.
@@ -112,17 +118,28 @@ export function DisasterMap({
   useEffect(() => {
     const map = mapRef.current
     if (!userLocation || !map) return
+    // Never yank the camera off an event the user is reading. Their location
+    // is still recorded, so closing the popup doesn't drag them back either.
+    if (selectedEvent) {
+      lastCenteredOn.current = { lat: userLocation.lat, lng: userLocation.lng }
+      return
+    }
 
     const previous = lastCenteredOn.current
     if (previous && haversineDistanceKm(previous, userLocation) < RECENTER_THRESHOLD_KM) return
 
     lastCenteredOn.current = { lat: userLocation.lat, lng: userLocation.lng }
-    map.flyTo(
-      previous
-        ? { center: [userLocation.lng, userLocation.lat] }
-        : { center: [userLocation.lng, userLocation.lat], zoom: 9 },
-    )
-  }, [userLocation])
+    // Explicit zero padding: a popup that was open may have left the 460px
+    // headroom applied, which would push this centring far off-target.
+    map.flyTo({
+      center: [userLocation.lng, userLocation.lat],
+      padding: { top: 0, bottom: 0, left: 0, right: 0 },
+      ...(previous ? {} : { zoom: 9 }),
+    })
+    // selectedEvent is read only as a guard; re-running when it changes would
+    // re-centre on the user the moment a popup closes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation, mapLoaded])
 
   // Depend on the identity of the *selection*, not the event object: App
   // derives selectedEvent with filteredEvents.find(), which returns a fresh
@@ -157,7 +174,7 @@ export function DisasterMap({
       zoom: 9,
       padding: { top: topPadding, bottom: 0, left: 0, right: 0 },
     })
-  }, [selectedEventId, selectedLng, selectedLat])
+  }, [selectedEventId, selectedLng, selectedLat, mapLoaded])
 
   // Earthquakes only (see computeStackedCircleSuppressions); recomputed only
   // when the event list changes.
@@ -199,7 +216,10 @@ export function DisasterMap({
         dragRotate={false}
         pitchWithRotate={false}
         touchPitch={false}
-        onLoad={(event) => event.target.touchZoomRotate.disableRotation()}
+        onLoad={(event) => {
+          event.target.touchZoomRotate.disableRotation()
+          setMapLoaded(true)
+        }}
       >
         <NavigationControl position="bottom-left" showCompass={false} />
 
