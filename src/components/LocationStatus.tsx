@@ -128,6 +128,9 @@ export function LocationStatus({
   const changeButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+  // Set when the editor is dismissed by keyboard, so focus can be put back on
+  // the "Change" button once it re-renders.
+  const refocusChangeButton = useRef(false)
 
   const trimmedQuery = inputValue.trim()
   // Derived, not stored - so the effect below never has to clear stale
@@ -180,9 +183,16 @@ export function LocationStatus({
     }
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== 'Escape') return
-      if (editing) closeEditor()
-      else setMenuOpen(false)
-      changeButtonRef.current?.focus()
+      if (editing) {
+        // The "Change" button isn't rendered in the editing branch, so its ref
+        // is null right now - focus it from the effect below, once closing the
+        // editor has brought it back.
+        refocusChangeButton.current = true
+        closeEditor()
+      } else {
+        setMenuOpen(false)
+        changeButtonRef.current?.focus()
+      }
     }
 
     document.addEventListener('pointerdown', handlePointerDown)
@@ -198,6 +208,14 @@ export function LocationStatus({
     if (!menuOpen) return
     menuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus()
   }, [menuOpen])
+
+  // Escape out of the editor puts focus back on "Change", which only exists
+  // again once `editing` is false.
+  useEffect(() => {
+    if (editing || !refocusChangeButton.current) return
+    refocusChangeButton.current = false
+    changeButtonRef.current?.focus()
+  }, [editing])
 
   // Declared below the effects on purpose: keeps the async-submit effect above
   // from tripping the "no setState in an effect body" lint rule.
