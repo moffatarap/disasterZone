@@ -25,7 +25,7 @@ export function NewEventToast({ event, onView, onDismiss }: NewEventToastProps) 
     <div
       role="status"
       style={{ borderLeftColor: SEVERITY_COLORS[event.severity] }}
-      className="pointer-events-auto flex w-72 items-center gap-3 rounded-lg border-l-4 bg-slate-900/95 py-2.5 pr-2 pl-3 text-white shadow-xl"
+      className="pointer-events-auto flex w-full items-center gap-3 rounded-lg border-l-4 bg-slate-900/95 py-2.5 pr-2 pl-3 text-white shadow-xl"
     >
       <img src={ICONS_BY_KIND[event.kind][event.severity]} alt="" className="h-9 w-9 flex-none" />
 

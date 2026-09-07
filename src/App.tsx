@@ -209,7 +209,7 @@ function App() {
           onToggleInactiveVolcanoes={() => setShowInactiveVolcanoes((current) => !current)}
         />
 
-        <div className="pointer-events-none absolute top-3 left-1/2 z-[7] flex -translate-x-1/2 flex-col gap-2">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3">
           {visibleToastQueue.map((event) => (
             <NewEventToast
               key={event.id}
