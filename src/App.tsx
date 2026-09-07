@@ -209,13 +209,13 @@ function App() {
           onToggleInactiveVolcanoes={() => setShowInactiveVolcanoes((current) => !current)}
         />
 
-        {/* Toasts paint above the map key (z-5), but pr-16 keeps them clear of
-            its 44px toggle at top-3 right-3 so they never cover it - a toast
-            that overlapped would swallow the toggle's taps for its whole
-            8s life. They also stop short of the events rail at >= sm, or the
-            dismiss button ends up underneath it. */}
+        {/* Full width, painting over the map key (z-5). That does cover the
+            key's toggle and swallow its taps while a toast is up - accepted
+            deliberately: the toast auto-dismisses in 8s and full width is the
+            look we want. They still stop short of the events rail at >= sm,
+            or the dismiss button ends up underneath it. */}
         <div
-          className={`pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3 pr-16 ${
+          className={`pointer-events-none absolute inset-x-0 top-0 z-[7] flex flex-col gap-2 p-3 ${
             sidebarOpen ? 'sm:right-80' : ''
           }`}
         >
