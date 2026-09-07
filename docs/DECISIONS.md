@@ -228,9 +228,18 @@ add to the container's scrollable width.
 ### Touch targets
 
 Interactive controls are sized to a 44x44px minimum (WCAG 2.5.5 / Apple HIG):
-MapLibre's zoom/compass buttons (default 29px), the popup close button (small
-visible glyph, enlarged tap area centred via flex), and the map markers
-(invisible padding around a smaller icon).
+the popup close button (small visible glyph, enlarged tap area centred via
+flex) and the map markers (invisible padding around a smaller icon).
+MapLibre's zoom buttons (default 29px) are 40px on mobile - visually lighter
+there - and 44px from `sm:` up.
+
+### Map chrome follows the dark popup palette
+
+The map key and the zoom control are styled to match the event popup card:
+`bg-slate-900/95`, `ring-1 ring-white/10`, `shadow-xl`, white text. The zoom
+glyphs ship as dark-grey SVGs, so they're forced white with
+`brightness-0 invert`; the map-key legend icons (also dark-grey fills) get
+the same treatment, which flattens them to clean white silhouettes.
 
 ### Events sidebar isn't a modal
 

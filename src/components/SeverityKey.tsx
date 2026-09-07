@@ -30,29 +30,31 @@ export function SeverityKey({ showFaultLines, onToggleFaultLines }: SeverityKeyP
         onClick={() => setExpanded((current) => !current)}
         aria-expanded={expanded}
         aria-label="Toggle map key"
-        className="absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-md"
+        className="absolute top-3 right-3 z-[5] flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/95 text-white/80 shadow-xl ring-1 ring-white/10 transition-colors hover:bg-slate-800"
       >
         i
       </button>
 
       <div
-        className={`absolute top-16 right-3 z-[5] rounded-lg bg-white/95 px-3.5 py-2.5 shadow-md ${
+        className={`absolute top-16 right-3 z-[5] rounded-lg bg-slate-900/95 px-3.5 py-2.5 text-white shadow-xl ring-1 ring-white/10 ${
           expanded ? 'block' : 'hidden'
         }`}
       >
         {/* KEY is a top-level section (h2); INTENSITY nests under it (h3).
             See docs/DECISIONS.md on heading levels. */}
-        <h2 className="mb-1.5 text-xs tracking-wide text-slate-500">KEY</h2>
+        <h2 className="mb-1.5 text-xs tracking-wide text-white/50">KEY</h2>
         <ul className="flex flex-col gap-1">
           {KIND_ENTRIES.map((entry) => (
             <li key={entry.label} className="flex items-center gap-1.5 text-sm">
-              <img src={entry.icon} alt="" className="h-8 w-8" />
+              {/* brightness-0 invert -> flat white silhouette; the icons' own
+                  fill is dark-grey, invisible on the slate card otherwise. */}
+              <img src={entry.icon} alt="" className="h-8 w-8 brightness-0 invert" />
               <span>{entry.label}</span>
             </li>
           ))}
         </ul>
 
-        <h3 className="mt-3 mb-1.5 border-t border-slate-100 pt-2.5 text-xs tracking-wide text-slate-500">
+        <h3 className="mt-3 mb-1.5 border-t border-white/10 pt-2.5 text-xs tracking-wide text-white/50">
           INTENSITY
         </h3>
         <ul className="flex flex-col gap-1">
@@ -67,18 +69,18 @@ export function SeverityKey({ showFaultLines, onToggleFaultLines }: SeverityKeyP
           ))}
         </ul>
 
-        <p className="mt-1.5 max-w-[160px] text-[10px] leading-snug text-slate-400">
+        <p className="mt-1.5 max-w-[160px] text-[10px] leading-snug text-white/50">
           Quakes: how strongly it was felt. Volcanoes: official alert level.
         </p>
 
         {/* Fault lines are optional reference context, not part of the hazard
             legend, so the toggle sits below its own divider. */}
-        <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-slate-100 pt-2.5 text-xs text-slate-600">
+        <label className="mt-3 flex cursor-pointer items-center gap-2 border-t border-white/10 pt-2.5 text-xs text-white/80">
           <input
             type="checkbox"
             checked={showFaultLines}
             onChange={onToggleFaultLines}
-            className="h-3.5 w-3.5 rounded border-slate-300 text-sky-500 focus:ring-2 focus:ring-sky-400"
+            className="h-3.5 w-3.5 rounded border-white/25 bg-white/10 text-sky-500 focus:ring-2 focus:ring-sky-400"
           />
           Show fault lines
         </label>

@@ -112,12 +112,14 @@ export function DisasterMap({
   )
 
   return (
-    // Restyling library-rendered controls: the zoom/compass buttons are grown
-    // to a 44x44px touch target (WCAG 2.5.5), and the attribution link gets an
-    // underline so it's distinguishable without colour (WCAG 1.4.1 - it
-    // measured 2.02:1 over the map). `!` is needed because maplibre-gl.css
-    // ships unlayered rules that outrank Tailwind's @layer utilities.
-    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-group_button]:!h-11 [&_.maplibregl-ctrl-group_button]:!w-11">
+    // Restyling library-rendered controls to match the dark popup card: the
+    // zoom control gets slate-900/ring/shadow and its glyphs are forced white
+    // (brightness-0 then invert). Buttons are a 40px touch target on mobile,
+    // 44px (WCAG 2.5.5) from sm: up. The attribution link gets an underline so
+    // it's distinguishable without colour (WCAG 1.4.1 - it measured 2.02:1
+    // over the map). `!` is needed because maplibre-gl.css ships unlayered
+    // rules that outrank Tailwind's @layer utilities.
+    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-group]:!overflow-hidden [&_.maplibregl-ctrl-group]:!rounded-lg [&_.maplibregl-ctrl-group]:!bg-slate-900/95 [&_.maplibregl-ctrl-group]:!shadow-xl [&_.maplibregl-ctrl-group]:!ring-1 [&_.maplibregl-ctrl-group]:!ring-white/10 [&_.maplibregl-ctrl-group_button]:!h-10 [&_.maplibregl-ctrl-group_button]:!w-10 sm:[&_.maplibregl-ctrl-group_button]:!h-11 sm:[&_.maplibregl-ctrl-group_button]:!w-11 [&_.maplibregl-ctrl-group_button+button]:!border-t [&_.maplibregl-ctrl-group_button+button]:!border-white/10 [&_.maplibregl-ctrl-group_button:hover]:!bg-white/10 [&_.maplibregl-ctrl-icon]:!brightness-0 [&_.maplibregl-ctrl-icon]:!invert">
       <Map
         ref={mapRef}
         initialViewState={DEFAULT_VIEW}
