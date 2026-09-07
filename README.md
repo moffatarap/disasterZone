@@ -58,13 +58,26 @@ The site lives under `/disasterZone/`, so `vite.config.ts` sets
 `import.meta.env.BASE_URL`. If the repository is renamed, update `base` to
 match.
 
-### Local HTTPS (optional)
+### Dev server port and local HTTPS
 
-`npm run dev` serves over plain HTTP on `localhost`, which is a secure
-context, so geolocation works in local development with no certificate. Only
-if you need to reach the dev server from another device by IP do you need
-HTTPS locally; drop a cert/key in `.certs/` (gitignored) and point your
-server at it.
+`vite.config.ts` pins the dev server to **port 8080** (`strictPort`, so a
+clash fails loudly instead of drifting to another port).
+
+It also auto-enables HTTPS on the LAN when a cert/key pair is present:
+
+- **No certs** (fresh clone, CI): plain HTTP on `http://localhost:8080/`.
+  `localhost` is a secure context, so geolocation works with no certificate.
+- **Certs in `.certs/`** (`localhost.key` + `localhost.crt`, gitignored):
+  the server switches to HTTPS and binds all interfaces, so another device on
+  the same network can reach it at `https://<this-machine-ip>:8080/`. A phone
+  needs HTTPS for the Geolocation API - plain `http://<ip>` won't do.
+
+The bundled `.certs/` cert is signed by a local CA (`.certs/ca.crt`) and
+lists `localhost`, `127.0.0.1` and the dev machine's LAN IP in its SAN. On
+another device either click past the certificate warning (the connection is
+still real TLS, which is what the secure-context check wants) or install
+`.certs/ca.crt` as a trusted CA to clear it. Regenerate the cert with
+`.certs/san.cnf` if the machine's IP changes.
 
 Note: the `gh-pages` branch is unrelated to hosting - it only holds the
 archived 2016-2018 original (also tagged `legacy-v1`).
