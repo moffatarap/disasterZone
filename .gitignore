@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Self-signed TLS cert/key for local HTTPS hosting - machine-specific
-# (bound to this LAN IP), regenerate per-machine, never commit.
+# Locally generated TLS certs (optional, for running the dev server over
+# HTTPS) - never committed.
 .certs/
 
 # Editor directories and files

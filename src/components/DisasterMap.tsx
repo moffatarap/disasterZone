@@ -21,30 +21,18 @@ interface DisasterMapProps {
   showFaultLines: boolean
 }
 
-// GNS Science's NZ Active Faults Database (1:250,000 scale), fetched from
-// their public ArcGIS feature service and flattened into one static file
-// (500 named faults, merged from ~10,000 digitized segments) rather than
-// queried live - the geometry barely changes, and this avoids depending on
-// an external service the same way the basemap already avoids CARTO's key
-// requirement. At ~500KB gzipped it's meaningfully heavier than any other
-// asset here, so it's fetched lazily on first toggle-on (see the effect
-// below), not bundled into the initial page load.
-const FAULT_LINES_URL = '/data/nz-active-faults.geojson'
+// GNS Science's NZ Active Faults Database (1:250,000), flattened to one
+// static file (~500KB gzipped) so no live service is needed. Fetched lazily
+// on first toggle-on, not at page load - most sessions never enable it.
+// BASE_URL prefix so it resolves under the Pages project path.
+const FAULT_LINES_URL = `${import.meta.env.BASE_URL}data/nz-active-faults.geojson`
 
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
 
-// Esri's free "World Dark Gray Canvas" basemap - no API key/billing, unlike
-// the original's Google Maps setup - chosen (over plain OSM's bright default
-// green/yellow styling) to match the app's dark navy chrome, and it makes
-// the severity-coloured markers/circles read more vividly against it.
-// (CARTO's equivalent dark tiles now require an API key - verified by
-// actually inspecting a fetched tile's image content, not just its HTTP
-// status, since they return a 200 "API KEY REQUIRED" watermark tile instead
-// of an error.) Esri splits base terrain and place-name labels into two
-// separate raster layers, stacked here; note ArcGIS's tile URLs order
-// {z}/{y}/{x} (row before column) - reversed from every other provider's
-// standard {z}/{x}/{y} - easy to get backwards.
+// Esri "World Dark Gray Canvas" - free, no API key (see docs/DECISIONS.md).
+// Base terrain and place-name labels are two separate raster layers, stacked
+// below. Note: ArcGIS tile URLs order {z}/{y}/{x}, not the usual {z}/{x}/{y}.
 const ESRI_DARK_GRAY_BASE =
   'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
 const ESRI_DARK_GRAY_LABELS =
@@ -85,17 +73,14 @@ export function DisasterMap({
   const hasCenteredOnUser = useRef(false)
   const [faultLinesData, setFaultLinesData] = useState<GeoJSON.FeatureCollection | null>(null)
 
-  // Fetched once, the first time the toggle is switched on - not on initial
-  // load regardless of toggle state, since most sessions will never turn
-  // this on and shouldn't pay for it.
+  // Fetched once, on first toggle-on - most sessions never enable this.
   useEffect(() => {
     if (!showFaultLines || faultLinesData) return
     fetch(FAULT_LINES_URL)
       .then((response) => response.json())
       .then(setFaultLinesData)
       .catch(() => {
-        // Optional reference layer - a failed fetch just means the toggle
-        // silently shows nothing, not worth surfacing as an app error.
+        // Optional layer - a failed fetch just shows nothing.
       })
   }, [showFaultLines, faultLinesData])
 
@@ -115,38 +100,23 @@ export function DisasterMap({
     }
   }, [selectedEvent])
 
-  // Only earthquakes get suppressed (see computeStackedCircleSuppressions) -
-  // recomputed whenever the event list changes, not on every render.
+  // Earthquakes only (see computeStackedCircleSuppressions); recomputed only
+  // when the event list changes.
   const suppressedCircleIds = useMemo(() => computeStackedCircleSuppressions(events), [events])
 
-  // Applies at every zoom level, not just zoomed-out - the suppression
-  // distance is now a real epicenter-to-epicenter threshold (20-50km, see
-  // circleDensity.ts), not the old inflated-visual-radius test, so two
-  // genuinely nearby quakes still clutter each other's circles even zoomed
-  // in close. Selecting an event still always reveals its circle regardless.
+  // Suppression uses a real epicenter-to-epicenter distance (see
+  // circleDensity.ts), so it applies at every zoom level. Selecting an event
+  // always reveals its circle.
   const visibleCircleEvents = events.filter(
     (event) => event.id === selectedEvent?.id || !suppressedCircleIds.has(event.id),
   )
 
   return (
-    // MapLibre's own zoom/compass buttons default to 29x29px - grown here to
-    // a 44x44px touch target (WCAG 2.5.5) via a wrapper div, since <Map>
-    // doesn't forward className to its own container. The icon glyph inside
-    // stays its normal size (centered via background-position), same
-    // invisible-padding approach used for the map markers.
-    // `!` (important) is required: maplibre-gl.css sets width/height as plain,
-    // unlayered CSS, which always beats a Tailwind utility (Tailwind wraps
-    // utilities in @layer, and unlayered rules win over layered ones
-    // regardless of specificity) unless marked important.
-    //
-    // The attribution link gets the same treatment for a different reason:
-    // an axe-core audit flagged it as failing "distinguishable without
-    // relying on color" (WCAG 1.4.1) - MapLibre's default styles give it
-    // color:rgba(0,0,0,.75) and no underline, and against the semi-
-    // transparent attribution bar sitting over a dark map, that measured
-    // as low as 2.02:1 in this app with no other visual distinction from
-    // the surrounding text. An underline resolves it regardless of the
-    // exact background it ends up over.
+    // Restyling library-rendered controls: the zoom/compass buttons are grown
+    // to a 44x44px touch target (WCAG 2.5.5), and the attribution link gets an
+    // underline so it's distinguishable without colour (WCAG 1.4.1 - it
+    // measured 2.02:1 over the map). `!` is needed because maplibre-gl.css
+    // ships unlayered rules that outrank Tailwind's @layer utilities.
     <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-group_button]:!h-11 [&_.maplibregl-ctrl-group_button]:!w-11">
       <Map
         ref={mapRef}
