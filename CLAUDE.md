@@ -1,5 +1,12 @@
 # Working on this project
 
+## Always work on a branch
+
+Any update or edit — code, docs, config — goes on its own branch off the
+target branch, never committed straight to `main`. Branch, commit there, then
+merge (and push only when the user asks). One branch per logical piece of
+work; name it for what it does (`fix/…`, `feat/…`, `docs/…`, `chore/…`).
+
 ## UI changes require a mockup review first
 
 Any change to the UI — layout, components, styling, interaction, copy on a
