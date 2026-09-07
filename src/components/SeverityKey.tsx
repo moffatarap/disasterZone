@@ -53,9 +53,10 @@ export function SeverityKey({
         <ul className="flex flex-col gap-1">
           {KIND_ENTRIES.map((entry) => (
             <li key={entry.label} className="flex items-center gap-1.5 text-sm">
-              {/* brightness-0 invert -> flat white silhouette; the icons' own
-                  fill is dark-grey, invisible on the slate card otherwise. */}
-              <img src={entry.icon} alt="" className="h-8 w-8 brightness-0 invert" />
+              {/* `invert` (not brightness-0 invert): flips the dark-grey fill
+                  to light and the white inner linework to dark, so the
+                  seismograph / volcano detail still reads on the slate card. */}
+              <img src={entry.icon} alt="" className="h-8 w-8 invert" />
               <span>{entry.label}</span>
             </li>
           ))}
