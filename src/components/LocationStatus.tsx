@@ -17,6 +17,12 @@ interface LocationStatusProps {
   onRequestLocation: (onSuccess?: () => void) => void
   isSubmitting: boolean
   notFound: boolean
+  /**
+   * The events panel is a full-height rail at >= sm (z-20, 20rem wide) and
+   * this bar sits under it, so the bar has to end short of the rail or its
+   * only control - "Change" - is unreachable.
+   */
+  isSidebarOpen: boolean
 }
 
 // Debounced to stay under Nominatim's ~1 request/second policy.
@@ -107,6 +113,7 @@ export function LocationStatus({
   onRequestLocation,
   isSubmitting,
   notFound,
+  isSidebarOpen,
 }: LocationStatusProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -237,7 +244,12 @@ export function LocationStatus({
     'flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-normal text-white/90 transition-colors hover:bg-white/10 hover:text-white'
 
   return (
-    <div className="absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+    <div
+      className={`absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm ${
+        // 20rem rail + the bar's own 0.5rem gutter.
+        isSidebarOpen ? 'sm:right-[20.5rem]' : ''
+      }`}
+    >
       {editing ? (
         <div ref={editorRef} className="relative">
           {visibleSuggestions.length > 0 && (

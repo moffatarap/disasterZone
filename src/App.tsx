@@ -231,6 +231,7 @@ function App() {
           onRequestLocation={requestLocation}
           isSubmitting={isSubmitting}
           notFound={notFound}
+          isSidebarOpen={sidebarOpen}
         />
 
         <EventsSidebar
