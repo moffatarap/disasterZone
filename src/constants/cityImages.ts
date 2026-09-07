@@ -260,9 +260,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Taupo: {
     src: taupo,
-    credit: 'Phillip Capper',
-    licenseName: 'CC BY 2.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+    credit: 'QFSE Media',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
   },
   Whakatane: {
     src: whakatane,
