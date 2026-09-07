@@ -35,6 +35,35 @@ Notes:
   or resolved from the tool — address them in the mockup and summarise the
   outcomes in chat.
 
+## Every UI change ends with a full visual audit
+
+After **any** UI change — and before reporting it as done — run the exhaustive
+browser audit. Lint and typecheck do not substitute for it: they cannot see a
+clipped popup, an unreachable button, or a panel covering a control.
+
+```bash
+npm run dev          # in another terminal
+npm run audit        # drives real Chromium at 3 viewports
+```
+
+[`scripts/visual-audit.mjs`](scripts/visual-audit.mjs) walks the user flows,
+asserts the features [`docs/DECISIONS.md`](docs/DECISIONS.md) says must exist,
+and writes screenshots to `.audit/` (gitignored). It exits non-zero on failure.
+
+Rules:
+
+- **Look at the screenshots**, don't just read the pass count. Some faults only
+  show visually.
+- **The map is part of the audit** — markers, alert circles, popups, the key,
+  zoom/attribution chrome, and how each behaves at every viewport.
+- **A failure is the app's fault until proven otherwise.** Confirm the test is
+  right before "fixing" it; a wrong selector still means the check was wrong.
+- **If a change alters a user flow, stop and ask for review before adding or
+  amending flows in the suite.** The flows encode agreed behaviour, so changing
+  them is a product decision, not a test fix.
+- Keep the suite in step with the docs: a feature added to `docs/DECISIONS.md`
+  needs a matching assertion.
+
 ## Other
 
 - `npm run lint` must pass before a change is considered done.
