@@ -32,6 +32,15 @@ const FAULT_LINES_URL = `${import.meta.env.BASE_URL}data/nz-active-faults.geojso
 // New Zealand-wide overview shown before the user's location resolves.
 const DEFAULT_VIEW = { longitude: 174.7, latitude: -41.2, zoom: 5 }
 
+// Below this width the event popup (which grows upward from the marker) would
+// be clipped by <main>'s overflow-hidden (see App.tsx). Matches App.tsx's
+// MOBILE_BREAKPOINT_QUERY.
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 639px)'
+// Space reserved above the marker on mobile so the whole popup - photo
+// included - lands on screen. Roughly the height of an image popup; the pan
+// clamps it to the container so a short screen still shows the marker.
+const MOBILE_POPUP_HEADROOM_PX = 460
+
 // Esri "World Dark Gray Canvas" - free, no API key (see docs/DECISIONS.md).
 // Base terrain and place-name labels are two separate raster layers, stacked
 // below. Note: ArcGIS tile URLs order {z}/{y}/{x}, not the usual {z}/{x}/{y}.
@@ -95,12 +104,31 @@ export function DisasterMap({
   }, [userLocation])
 
   useEffect(() => {
-    if (selectedEvent) {
-      mapRef.current?.flyTo({
-        center: [selectedEvent.location.lng, selectedEvent.location.lat],
-        zoom: 9,
-      })
+    const map = mapRef.current
+    if (!map) return
+
+    if (!selectedEvent) {
+      // Popup closed - drop any headroom a mobile select applied so panning
+      // and pinch-zoom re-centre normally.
+      if (map.getPadding().top !== 0) {
+        map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 200 })
+      }
+      return
     }
+
+    // On mobile, pan the marker into the lower part of the view so the popup
+    // above it isn't clipped. Desktop has the height to spare and keeps
+    // centring the marker exactly.
+    const isMobile = window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
+    const topPadding = isMobile
+      ? Math.max(0, Math.min(MOBILE_POPUP_HEADROOM_PX, map.getContainer().clientHeight - 180))
+      : 0
+
+    map.flyTo({
+      center: [selectedEvent.location.lng, selectedEvent.location.lat],
+      zoom: 9,
+      padding: { top: topPadding, bottom: 0, left: 0, right: 0 },
+    })
   }, [selectedEvent])
 
   // Earthquakes only (see computeStackedCircleSuppressions); recomputed only
