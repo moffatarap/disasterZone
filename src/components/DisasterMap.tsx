@@ -22,6 +22,8 @@ interface DisasterMapProps {
   /** id -> 1-based recency rank for the newest few felt quakes. */
   latestQuakeRanks: Map<string, number>
   showFaultLines: boolean
+  /** The >= sm events rail (z-20, 20rem) otherwise buries the attribution. */
+  isSidebarOpen: boolean
 }
 
 // GNS Science's NZ Active Faults Database (1:250,000), flattened to one
@@ -88,6 +90,7 @@ export function DisasterMap({
   newEventIds,
   latestQuakeRanks,
   showFaultLines,
+  isSidebarOpen,
 }: DisasterMapProps) {
   const mapRef = useRef<MapRef>(null)
   const lastCenteredOn = useRef<UserLocation | null>(null)
@@ -200,7 +203,12 @@ export function DisasterMap({
     // full-width location bar (see LocationStatus). `!` is needed because
     // maplibre-gl.css ships unlayered rules that outrank Tailwind's @layer
     // utilities.
-    <div className="h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-bottom-left]:!bottom-16 [&_.maplibregl-ctrl-bottom-right]:!bottom-16 [&_.maplibregl-ctrl-group]:!overflow-hidden [&_.maplibregl-ctrl-group]:!rounded-lg [&_.maplibregl-ctrl-group]:!bg-slate-900/95 [&_.maplibregl-ctrl-group]:!shadow-xl [&_.maplibregl-ctrl-group]:!ring-1 [&_.maplibregl-ctrl-group]:!ring-white/10 [&_.maplibregl-ctrl-group_button]:!h-10 [&_.maplibregl-ctrl-group_button]:!w-10 sm:[&_.maplibregl-ctrl-group_button]:!h-11 sm:[&_.maplibregl-ctrl-group_button]:!w-11 [&_.maplibregl-ctrl-group_button+button]:!border-t [&_.maplibregl-ctrl-group_button+button]:!border-white/10 [&_.maplibregl-ctrl-group_button:hover]:!bg-white/10 [&_.maplibregl-ctrl-icon]:!brightness-0 [&_.maplibregl-ctrl-icon]:!invert">
+    <div className={`${
+      // The attribution lives bottom-right, where the events rail covers it
+      // completely at >= sm - the map credit has to stay reachable, so it ends
+      // short of the rail while it's open.
+      isSidebarOpen ? 'sm:[&_.maplibregl-ctrl-bottom-right]:!right-[21rem]' : ''
+    } h-full w-full [&_.maplibregl-ctrl-attrib_a]:!underline [&_.maplibregl-ctrl-bottom-left]:!bottom-16 [&_.maplibregl-ctrl-bottom-right]:!bottom-16 [&_.maplibregl-ctrl-group]:!overflow-hidden [&_.maplibregl-ctrl-group]:!rounded-lg [&_.maplibregl-ctrl-group]:!bg-slate-900/95 [&_.maplibregl-ctrl-group]:!shadow-xl [&_.maplibregl-ctrl-group]:!ring-1 [&_.maplibregl-ctrl-group]:!ring-white/10 [&_.maplibregl-ctrl-group_button]:!h-10 [&_.maplibregl-ctrl-group_button]:!w-10 sm:[&_.maplibregl-ctrl-group_button]:!h-11 sm:[&_.maplibregl-ctrl-group_button]:!w-11 [&_.maplibregl-ctrl-group_button+button]:!border-t [&_.maplibregl-ctrl-group_button+button]:!border-white/10 [&_.maplibregl-ctrl-group_button:hover]:!bg-white/10 [&_.maplibregl-ctrl-icon]:!brightness-0 [&_.maplibregl-ctrl-icon]:!invert`}>
       <Map
         ref={mapRef}
         initialViewState={DEFAULT_VIEW}
@@ -219,6 +227,15 @@ export function DisasterMap({
         onLoad={(event) => {
           event.target.touchZoomRotate.disableRotation()
           setMapLoaded(true)
+          // `compact` only makes the attribution collapsible - MapLibre still
+          // renders it expanded, so every fresh load put a strip of credit text
+          // over the map, and it became the "i" only once someone had clicked
+          // it. Collapse it here so it starts as the "i" the design expects;
+          // clicking still toggles it back open.
+          event.target
+            .getContainer()
+            .querySelector('.maplibregl-ctrl-attrib')
+            ?.classList.remove('maplibregl-compact-show')
         }}
       >
         <NavigationControl position="bottom-left" showCompass={false} />

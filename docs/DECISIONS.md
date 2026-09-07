@@ -257,7 +257,17 @@ editor state (input + autocomplete) grows the card above this floor.
   near-identical candidates stay distinguishable.
 - The map's zoom control and attribution are lifted `bottom-16` (in
   DisasterMap's control CSS) so the bar doesn't cover them. The attribution
-  is forced `compact` so it's just an "i" button, not a strip of text.
+  is `compact` so it's just an "i" button, not a strip of text - but note
+  `compact` alone only makes it *collapsible*: MapLibre still renders it open,
+  so `onLoad` strips `maplibregl-compact-show` to get the collapsed start
+  state. Without that, every fresh load showed a strip of credit text and it
+  became the "i" only once someone had clicked it.
+- The attribution sits bottom-right, exactly where the `>= sm` events rail is,
+  and the rail (z-20) buried it completely - from first load on desktop, where
+  the rail is open by default. Map credit has to stay reachable, so the
+  bottom-right control stack ends short of the rail while it's open.
+  `scripts/visual-audit.mjs` asserts the "i" is collapsed, uncovered, and
+  still expands on click.
 - The manual-entry autocomplete opens **upward** (`bottom-full`) since the
   input sits near the screen edge.
 - The mobile Recent Events sheet is `bottom-0` (z-20) and covers the bar when

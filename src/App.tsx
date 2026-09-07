@@ -200,6 +200,7 @@ function App() {
           newEventIds={newEventIds}
           latestQuakeRanks={latestQuakeRanks}
           showFaultLines={showFaultLines}
+          isSidebarOpen={sidebarOpen}
         />
 
         <SeverityKey
