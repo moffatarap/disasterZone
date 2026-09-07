@@ -296,9 +296,9 @@ export const CITY_IMAGES: Record<string, CityImage> = {
   },
   Turangi: {
     src: turangi,
-    credit: 'Brian New Zealand',
-    licenseName: 'CC BY 2.5',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.5',
+    credit: 'macronix',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
   },
   Ohakune: {
     src: ohakune,
