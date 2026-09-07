@@ -94,11 +94,6 @@ export function LocationStatus({
     closeEditor()
   }
 
-  function handleUseMyLocation() {
-    onClearManual()
-    closeEditor()
-  }
-
   const mainText =
     address ??
     (locationError
@@ -112,7 +107,7 @@ export function LocationStatus({
   return (
     <div className="absolute inset-x-2 bottom-2 z-[6] min-h-12 rounded-2xl bg-slate-900/95 px-4 py-2 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
       {editing ? (
-        <div className="relative flex flex-col gap-1.5">
+        <div className="relative">
           {visibleSuggestions.length > 0 && (
             <ul className="absolute inset-x-0 bottom-full mb-2 max-h-56 overflow-y-auto rounded-lg bg-slate-900/98 p-1 shadow-xl ring-1 ring-white/10">
               {visibleSuggestions.map((result) => (
@@ -132,22 +127,27 @@ export function LocationStatus({
             </ul>
           )}
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            {/* autoFocus is deliberate: the bar only enters this state on an
-                explicit "Change" / "Set address" tap. */}
+          {/* One row, no placeholder or hint text - keeps the card the same
+              height as its collapsed state. autoFocus is deliberate: the bar
+              only enters this state on an explicit "Change" tap. notFound
+              shows as a red ring rather than a second line. */}
+          <form onSubmit={handleSubmit} className="flex min-h-8 items-center gap-2">
             <input
               type="text"
               value={inputValue}
               onChange={(event) => setInputValue(event.target.value)}
-              placeholder="e.g. Lambton Quay, Wellington"
+              aria-label="Address"
+              aria-invalid={notFound || undefined}
               autoComplete="off"
               autoFocus
-              className="min-w-0 flex-1 rounded-md bg-white/10 px-3 py-2.5 text-sm text-white placeholder:text-white/55 focus:bg-white/15 focus:outline-none"
+              className={`min-w-0 flex-1 rounded-md bg-white/10 px-3 py-1.5 text-sm text-white focus:bg-white/15 focus:outline-none ${
+                notFound ? 'ring-1 ring-red-400' : ''
+              }`}
             />
             <button
               type="submit"
               disabled={isSubmitting || !inputValue.trim()}
-              className="flex-none rounded-md bg-sky-500 px-3.5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-400 disabled:opacity-50"
+              className="flex-none rounded-md bg-sky-500 px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-sky-400 disabled:opacity-50"
             >
               {isSubmitting ? '…' : 'Use'}
             </button>
@@ -155,28 +155,11 @@ export function LocationStatus({
               type="button"
               onClick={closeEditor}
               aria-label="Cancel address entry"
-              className="flex h-10 w-10 flex-none items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-8 w-8 flex-none items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
             >
               ✕
             </button>
           </form>
-
-          <div className="flex items-center justify-between gap-3 text-xs">
-            <span className={notFound ? 'text-red-300' : 'text-white/50'}>
-              {notFound
-                ? "Couldn't find that address - try being more specific."
-                : 'Type an address, then pick a match above.'}
-            </span>
-            {isManualAddress && (
-              <button
-                type="button"
-                onClick={handleUseMyLocation}
-                className="flex-none font-semibold text-sky-400 hover:underline"
-              >
-                Use my location
-              </button>
-            )}
-          </div>
         </div>
       ) : (
         <div className="flex min-h-8 items-center gap-2.5">
