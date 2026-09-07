@@ -84,6 +84,28 @@ const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set addre
     'attribution is compact (an "i" button, not a text strip)',
     (await page.locator('.maplibregl-ctrl-attrib.maplibregl-compact').count()) === 1,
   )
+  // `compact` alone only makes it collapsible; MapLibre still renders it open,
+  // so assert the collapsed start state, and that the toggle still works.
+  check(
+    'attribution starts collapsed, not expanded over the map',
+    (await page.locator('.maplibregl-ctrl-attrib.maplibregl-compact-show').count()) === 0,
+  )
+  // The map credit must stay reachable, so assert nothing is painted over it -
+  // the events rail buried it completely at >= sm.
+  const attribTop = await page.evaluate(() => {
+    const el = document.querySelector('.maplibregl-ctrl-attrib-button')
+    if (!el) return 'missing'
+    const r = el.getBoundingClientRect()
+    return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.className ?? 'none'
+  })
+  check('attribution "i" is not covered by other chrome', /maplibregl-ctrl-attrib/.test(String(attribTop)),
+    String(attribTop).slice(0, 60))
+  await page.locator('.maplibregl-ctrl-attrib-button').first().click()
+  await page.waitForTimeout(300)
+  check(
+    'attribution still expands when its "i" is clicked',
+    (await page.locator('.maplibregl-ctrl-attrib.maplibregl-compact-show').count()) === 1,
+  )
   check(
     'no compass control (map is locked to north)',
     (await page.locator('.maplibregl-ctrl-compass').count()) === 0,
