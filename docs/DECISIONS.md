@@ -340,8 +340,14 @@ coords) via `nominatim.openstreetmap.org`. Their usage policy caps this at
 - Reverse geocode coordinates are rounded to ~100m before use, so small GPS
   jitter reuses the cached query instead of re-hitting the endpoint every
   tick.
-- The address search box debounces (450ms) and requires 3+ characters rather
-  than firing per keystroke.
+- The address search box debounces (300ms) and requires 3+ characters rather
+  than firing per keystroke. A debounce only fires once typing pauses, so this
+  stays well inside the policy.
+- Suggestions are stored tagged with the query that produced them and are only
+  rendered when that tag matches the current input, so a slower response for an
+  earlier query can never be shown as an answer to the current one. While a
+  query has no results yet the list shows "Searching…" rather than the previous
+  query's addresses.
 - Forward geocoding is biased to NZ (`countrycodes=nz`) since a bare street
   name is otherwise ambiguous worldwide.
 

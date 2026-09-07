@@ -25,9 +25,13 @@ interface LocationStatusProps {
   isSidebarOpen: boolean
 }
 
-// Debounced to stay under Nominatim's ~1 request/second policy.
-const SEARCH_DEBOUNCE_MS = 450
+// Debounced to stay under Nominatim's ~1 request/second policy. A debounce
+// only fires once the user pauses, so this stays well inside the policy while
+// keeping the dropdown responsive.
+const SEARCH_DEBOUNCE_MS = 300
 const MIN_QUERY_LENGTH = 3
+
+const NO_SUGGESTIONS = { query: '', results: [] as ForwardGeocodeResult[] }
 
 const ICON_CLASS = 'h-4 w-4 flex-none'
 
@@ -118,7 +122,10 @@ export function LocationStatus({
   const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [suggestions, setSuggestions] = useState<ForwardGeocodeResult[]>([])
+  // Results carry the query that produced them, so a list fetched for an
+  // earlier query is never rendered against what's in the box now.
+  const [suggestions, setSuggestions] = useState(NO_SUGGESTIONS)
+  const [isSearching, setIsSearching] = useState(false)
   // Only the response matching the most recent query is applied (guards
   // against out-of-order responses).
   const latestRequestId = useRef(0)
@@ -133,9 +140,14 @@ export function LocationStatus({
   const refocusChangeButton = useRef(false)
 
   const trimmedQuery = inputValue.trim()
+  const isSearchable = trimmedQuery.length >= MIN_QUERY_LENGTH
   // Derived, not stored - so the effect below never has to clear stale
-  // suggestions when the query gets too short.
-  const visibleSuggestions = trimmedQuery.length >= MIN_QUERY_LENGTH ? suggestions : []
+  // suggestions when the query gets too short or moves on.
+  const hasCurrentResults = isSearchable && suggestions.query === trimmedQuery
+  const visibleSuggestions = hasCurrentResults ? suggestions.results : []
+  // Nothing to show for *this* query yet: say so rather than leaving the last
+  // query's list sitting there looking like an answer.
+  const showSearching = isSearchable && !hasCurrentResults && isSearching
 
   useEffect(() => {
     const trimmed = inputValue.trim()
@@ -147,10 +159,14 @@ export function LocationStatus({
     const timer = setTimeout(() => {
       searchAddresses(trimmed)
         .then((results) => {
-          if (latestRequestId.current === requestId) setSuggestions(results)
+          if (latestRequestId.current !== requestId) return
+          setSuggestions({ query: trimmed, results })
+          setIsSearching(false)
         })
         .catch(() => {
-          if (latestRequestId.current === requestId) setSuggestions([])
+          if (latestRequestId.current !== requestId) return
+          setSuggestions({ query: trimmed, results: [] })
+          setIsSearching(false)
         })
     }, SEARCH_DEBOUNCE_MS)
 
@@ -222,7 +238,8 @@ export function LocationStatus({
   function closeEditor() {
     setEditing(false)
     setInputValue('')
-    setSuggestions([])
+    setSuggestions(NO_SUGGESTIONS)
+    setIsSearching(false)
   }
 
   function handleSubmit(event: FormEvent) {
@@ -230,7 +247,8 @@ export function LocationStatus({
     if (!inputValue.trim()) return
     pendingSubmit.current = true
     onSubmitAddress(inputValue.trim())
-    setSuggestions([])
+    setSuggestions(NO_SUGGESTIONS)
+    setIsSearching(false)
   }
 
   function handleSelectSuggestion(result: ForwardGeocodeResult) {
@@ -272,26 +290,32 @@ export function LocationStatus({
     >
       {editing ? (
         <div ref={editorRef} className="relative">
-          {visibleSuggestions.length > 0 && (
+          {(visibleSuggestions.length > 0 || showSearching) && (
             /* -left-4/-right-4 cancels the card's px-4 so the dropdown spans
                the full width of the bar. Rows carry a deep left indent (pl-6)
                so their text lines up with the input's text below (bar px-4 +
                input p-3). */
             <ul className="absolute -left-4 -right-4 bottom-full mb-2 max-h-56 overflow-y-auto rounded-lg bg-slate-900/98 p-1 shadow-xl ring-1 ring-white/10">
-              {visibleSuggestions.map((result) => (
-                <li key={`${result.lat},${result.lng}`}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectSuggestion(result)}
-                    className="line-clamp-2 w-full rounded-md py-3 pr-3 pl-6 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    {/* full string here so near-identical candidates are
-                        distinguishable, even though we show only the short
-                        label once one is picked */}
-                    {result.full}
-                  </button>
-                </li>
-              ))}
+              {showSearching ? (
+                <li className="py-3 pr-3 pl-6 text-sm text-white/50">Searching…</li>
+              ) : (
+                visibleSuggestions.map((result) => (
+                  <li key={`${result.lat},${result.lng}`}>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectSuggestion(result)}
+                      className="block w-full rounded-md py-3 pr-3 pl-6 text-left text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      {/* full string here so near-identical candidates are
+                          distinguishable, even though we show only the short
+                          label once one is picked. line-clamp goes on this span,
+                          not the button - -webkit-box on the button itself
+                          fights its own box and the clamp silently no-ops. */}
+                      <span className="line-clamp-2">{result.full}</span>
+                    </button>
+                  </li>
+                ))
+              )}
             </ul>
           )}
 
@@ -306,10 +330,15 @@ export function LocationStatus({
               onChange={(event) => {
                 const value = event.target.value
                 setInputValue(value)
-                // Drop the old list once the query is too short to search, so
-                // retyping doesn't flash the previous query's results during
-                // the next debounce.
-                if (value.trim().length < MIN_QUERY_LENGTH) setSuggestions([])
+                const trimmed = value.trim()
+                if (trimmed.length < MIN_QUERY_LENGTH) {
+                  // Too short to search - drop the old list rather than letting
+                  // it reappear when a third character arrives.
+                  setSuggestions(NO_SUGGESTIONS)
+                  setIsSearching(false)
+                } else if (trimmed !== suggestions.query) {
+                  setIsSearching(true)
+                }
               }}
               aria-label="Address"
               aria-invalid={notFound || undefined}
