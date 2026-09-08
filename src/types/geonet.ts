@@ -12,7 +12,14 @@ export interface EarthquakeFeature {
     origintime: string
     depth: number
     magnitude: number
-    /** Lowercase severity word: weak | light | moderate | strong | severe */
+    /**
+     * Lowercase intensity word - normally one of
+     * `unnoticeable | weak | light | moderate | strong | severe | extreme`.
+     * This is an old, loosely-specified endpoint: treat the value as untrusted
+     * (it can be blank, or a word not in that list) and always normalise it
+     * through `earthquakeIntensityToSeverity`, which maps six of those to a
+     * severity tier and drops the rest.
+     */
     intensity: string
     status: string
     agency: string

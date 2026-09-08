@@ -103,8 +103,49 @@ reads the way it always has.
 ### `SEVERITY_LEVELS` stays in ascending order
 
 `volcanoLevelToSeverity` indexes into it positionally by GeoNet's 0-5 alert
-level, so the order is load-bearing. Display order (severe first, for the
-filter row and map key) is a separate reversed constant.
+level, so the order is load-bearing. Display order (most severe first - now
+`extreme` - for the filter row and map key) is a separate reversed constant.
+
+### `extreme` - the seventh tier, and dropping `unnoticeable`
+
+GeoNet's felt-intensity vocabulary is seven words -
+`unnoticeable, weak, light, moderate, strong, severe, extreme`. The original
+app and the first rebuild only handled the middle five; anything else fell
+through to `none` and was then filtered out of the map, the list and the
+filter chips with no way to see it - so a genuine `extreme` quake (the most
+destructive kind) would have rendered nowhere.
+
+The visible parts (the new filter chip, the map-key legend row, the `#8b1a9c`
+palette entry, the recoloured marker icons) went through the mockup-review loop
+first - published Artifact, iterated over its comments, approved before any
+`src/` change.
+
+- **`extreme` is now a real tier** at the top of `SEVERITY_LEVELS` (index 6).
+  It only arises from earthquakes - volcano alert levels stop at 5 - but the
+  colour and marker icons exist for every level so the `Record<SeverityLevel,
+  …>` maps stay total.
+- **Its colour is purple (`#8b1a9c`), not a darker red.** A deeper red muddies
+  into `severe` on the dark basemap; the distinct hue keeps "worse than severe"
+  legible at a glance. It's *not* in `DARK_TEXT_SEVERITIES` - `#8b1a9c` clears
+  4.5:1 against white (~7:1), so the popup badge keeps white text.
+- Radius (`SEVERITY_RADIUS_METERS.extreme = 70000`) and proximity-suppression
+  distance (`SEVERITY_PROXIMITY_SUPPRESSION_KM.extreme = 57.5`) continue the
+  ported ladder. Stylistic, like the rest of these numbers.
+- **`unnoticeable`, a missing/blank value, or an unknown word all map to
+  `none`.** `earthquakeIntensityToSeverity` never throws (a non-string is
+  treated as blank - this is an old, loosely-specified endpoint) and always
+  returns a tier; `none` is filtered out of the map, the list, the ranks and
+  the toasts, so these quakes are invisible. The event is still *built*,
+  though, so its id is in the new-event baseline - a later upward intensity
+  revision (GeoNet refines these for a few minutes) won't fire a spurious
+  "new" toast. Same treatment as a level-0 volcano.
+- **An unrecognised *word* is also logged.** Any non-blank value that isn't one
+  of the seven nor `unnoticeable` gets a `console.error` naming the raw value,
+  once per distinct value per session, so a new GeoNet vocabulary word (a real
+  `extreme`, say, if the scale ever shifts again) surfaces in logs instead of
+  silently reading as `none`. `scripts/visual-audit.mjs` keeps that specific
+  message out of its zero-console-errors gate but checks the *distinct* count
+  stays tiny - a burst means normalisation itself broke.
 
 ### The pale colour palette, and dark text on the light three
 

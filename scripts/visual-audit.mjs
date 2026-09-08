@@ -31,6 +31,10 @@ const check = (name, ok, detail = '') => {
 
 const browser = await chromium.launch()
 const consoleErrors = []
+// Intentional diagnostics for an unmapped GeoNet intensity word. Kept out of the
+// hard console gate (live-data-driven, not a UI regression); the distinct count
+// is checked at the end instead.
+const intensityDiagnostics = []
 
 async function open(vp, { geo = true, query = '' } = {}) {
   const ctx = await browser.newContext({
@@ -43,7 +47,13 @@ async function open(vp, { geo = true, query = '' } = {}) {
   const page = await ctx.newPage()
   page.on('pageerror', (e) => consoleErrors.push(`[${vp}] pageerror: ${e.message}`))
   page.on('console', (m) => {
-    if (m.type() === 'error') consoleErrors.push(`[${vp}] ${m.text()}`)
+    if (m.type() !== 'error') return
+    const text = m.text()
+    if (/Unrecognised GeoNet earthquake intensity/.test(text)) {
+      intensityDiagnostics.push(`[${vp}] ${text}`)
+      return
+    }
+    consoleErrors.push(`[${vp}] ${text}`)
   })
   await page.goto(BASE + query, { waitUntil: 'networkidle' })
   await page.waitForTimeout(2500)
@@ -117,6 +127,13 @@ const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set addre
   check('events panel is an <aside> landmark', (await page.locator('aside[aria-label="Recent events"]').count()) === 1)
   check('location bar is present with a Change control', (await changeBtn(page).count()) === 1)
 
+  // The seventh intensity tier - a genuine `extreme` quake used to fall
+  // through to `none` and render nowhere (see docs/DECISIONS.md).
+  check(
+    'severity filter offers an extreme chip',
+    (await page.getByRole('button', { name: /^extreme$/i }).count()) === 1,
+  )
+
   // Severity key: minimised by default, and its contents. The events rail
   // (z-20) deliberately covers the key (z-5), so close it first.
   await page.getByRole('button', { name: 'Close recent events' }).click()
@@ -132,6 +149,7 @@ const changeBtn = (page) => page.getByRole('button', { name: /^(Change|Set addre
   const keyText = await keyPanel.innerText()
   check('map key offers the fault-lines toggle', /fault/i.test(keyText))
   check('map key offers the inactive-volcanoes toggle', /inactive volcano/i.test(keyText))
+  check('map key lists the extreme intensity tier', /\bextreme\b/i.test(keyText))
   check(
     'unported hazards stay out of the key (fire/flood/hurricane/tornado)',
     !/\b(fire|flood|hurricane|tornado)\b/i.test(keyText),
@@ -337,6 +355,13 @@ for (const vp of ['desktop', 'mobile']) {
 }
 
 check('no console or page errors across the run', consoleErrors.length === 0, consoleErrors.slice(0, 5).join(' | '))
+// Count *distinct* messages, not raw hits: severity.ts dedupes per JS realm and
+// the audit opens ~10 contexts, so one genuinely-new GeoNet word shows up ~10
+// times. More than a couple of *distinct* ones means normalisation broke and
+// real quakes are being dropped.
+const distinctDiagnostics = new Set(intensityDiagnostics.map((s) => s.replace(/^\[[^\]]+\]\s*/, '')))
+check('unmapped-intensity diagnostics stay rare', distinctDiagnostics.size <= 2,
+  `${distinctDiagnostics.size}: ${[...distinctDiagnostics].slice(0, 3).join(' | ')}`)
 
 await browser.close()
 const failed = results.filter((r) => !r.ok)

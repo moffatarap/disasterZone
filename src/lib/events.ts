@@ -24,6 +24,9 @@ function describeEarthquakeLocation(name: string, distanceKm: number, bearing: C
 export function earthquakeToEvent(feature: EarthquakeFeature): DisasterEvent {
   const [lng, lat] = feature.geometry.coordinates
   const location = { lat, lng }
+  // `unnoticeable` / blank / unknown intensities resolve to `none` and App
+  // filters them out of every view - but the event is still built so it stays
+  // in the new-event baseline. See earthquakeIntensityToSeverity.
   const severity = earthquakeIntensityToSeverity(feature.properties.intensity)
   const magnitude = Math.round(feature.properties.magnitude * 10) / 10
   const { name: localityName, distanceKm, bearing } = nearestLocality(location)
