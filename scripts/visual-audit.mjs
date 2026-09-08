@@ -54,6 +54,10 @@ let browser
 let engine
 let OUT
 let consoleErrors = []
+// Intentional diagnostics for an unmapped GeoNet intensity word - kept out of
+// the hard console gate (live-data-driven, not a UI regression); the distinct
+// count is checked at the end of each engine's runSuite() instead.
+let intensityDiagnostics = []
 
 const check = (name, ok, detail = '') => {
   results.push({ name: `[${engine}] ${name}`, ok: !!ok, detail })
@@ -134,7 +138,15 @@ async function open(vp, { geo = true, query = '' } = {}) {
   const page = await ctx.newPage()
   page.on('pageerror', (e) => consoleErrors.push(`[${engine}/${vp}] pageerror: ${e.message}`))
   page.on('console', (m) => {
-    if (m.type() === 'error') consoleErrors.push(`[${engine}/${vp}] ${m.text()}`)
+    if (m.type() !== 'error') return
+    const text = m.text()
+    // Intentional diagnostic for a new/unmapped GeoNet intensity word - real,
+    // but driven by live upstream data, not a UI regression (see severity.ts).
+    if (/Unrecognised GeoNet earthquake intensity/.test(text)) {
+      intensityDiagnostics.push(`[${engine}/${vp}] ${text}`)
+      return
+    }
+    consoleErrors.push(`[${engine}/${vp}] ${text}`)
   })
   // 'load', not 'networkidle': a map app streams tiles and polls on a timer, so
   // it may never hit a network-idle window, and Playwright advises against it.
@@ -212,6 +224,13 @@ async function runSuite() {
     check('events panel is an <aside> landmark', (await page.locator('aside[aria-label="Recent events"]').count()) === 1)
     check('location bar is present with a Change control', (await changeBtn(page).count()) === 1)
 
+    // The seventh intensity tier - a genuine `extreme` quake used to fall
+    // through to `none` and render nowhere (see docs/DECISIONS.md).
+    check(
+      'severity filter offers an extreme chip',
+      (await page.getByRole('button', { name: /^extreme$/i }).count()) === 1,
+    )
+
     // Severity key: minimised by default, and its contents. The events rail
     // (z-20) deliberately covers the key (z-5), so close it first.
     await page.getByRole('button', { name: 'Close recent events' }).click()
@@ -227,6 +246,7 @@ async function runSuite() {
     const keyText = await keyPanel.innerText()
     check('map key offers the fault-lines toggle', /fault/i.test(keyText))
     check('map key offers the inactive-volcanoes toggle', /inactive volcano/i.test(keyText))
+    check('map key lists the extreme intensity tier', /\bextreme\b/i.test(keyText))
     check(
       'unported hazards stay out of the key (fire/flood/hurricane/tornado)',
       !/\b(fire|flood|hurricane|tornado)\b/i.test(keyText),
@@ -457,16 +477,24 @@ async function runSuite() {
   })
 
   check('no console or page errors across the run', consoleErrors.length === 0, consoleErrors.slice(0, 5).join(' | '))
+  // Count *distinct* messages, not raw hits: severity.ts dedupes per JS realm and
+  // each flow opens a fresh context, so one genuinely-new GeoNet word shows up
+  // many times. More than a couple of *distinct* ones means normalisation broke
+  // and real quakes are being dropped.
+  const distinctDiagnostics = new Set(intensityDiagnostics.map((s) => s.replace(/^\[[^\]]+\]\s*/, '')))
+  check('unmapped-intensity diagnostics stay rare', distinctDiagnostics.size <= 2,
+    `${distinctDiagnostics.size}: ${[...distinctDiagnostics].slice(0, 3).join(' | ')}`)
 }
 
 // Engines run one after another, not in parallel: they share the module-level
-// `browser`/`engine`/`OUT`/`consoleErrors` bindings, and on a single dev machine
+// `browser`/`engine`/`OUT`/`consoleErrors`/`intensityDiagnostics` bindings, and on a single dev machine
 // two headless browsers contending for CPU make the timing-based waits flakier.
 // A ~2x wall-clock audit that's reliable beats a fast one that isn't.
 for (const name of selectedEngines) {
   engine = name
   OUT = `${OUT_ROOT}/${name}`
   consoleErrors = []
+  intensityDiagnostics = []
   mkdirSync(OUT, { recursive: true })
   console.log(`\n======== ${name} ========`)
   browser = undefined
