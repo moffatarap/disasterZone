@@ -59,13 +59,18 @@ browser audit. Lint and typecheck do not substitute for it: they cannot see a
 clipped popup, an unreachable button, or a panel covering a control.
 
 ```bash
+npx playwright install chromium firefox   # once, after npm install
 npm run dev          # in another terminal
-npm run audit        # drives real Chromium at 3 viewports
+npm run audit        # drives real Chromium + Firefox at 3 viewports each
 ```
 
 [`scripts/visual-audit.mjs`](scripts/visual-audit.mjs) walks the user flows,
 asserts the features [`docs/DECISIONS.md`](docs/DECISIONS.md) says must exist,
-and writes screenshots to `.audit/` (gitignored). It exits non-zero on failure.
+and writes screenshots to `.audit/<engine>/` (gitignored). It runs both
+Chromium and Firefox by default (`--browser=chromium` / `--browser=firefox`
+to narrow) and exits non-zero if any check fails in any engine. A missing
+browser binary is reported as that engine's failure with the `playwright
+install` command to run.
 
 Rules:
 
