@@ -426,6 +426,38 @@ typed address once a fresh fix actually lands. If the geolocation request
 fails (denied, timeout, insecure context), the typed address stays - falling
 back to "no address" would punish the user for trying.
 
+### The initial location watch has a client-side timeout
+
+`useGeolocation` arms a `GEOLOCATION_TIMEOUT_MS` (40s) timer alongside the mount
+`watchPosition`. `PositionOptions.timeout` (20s) only counts once a request is
+genuinely in flight; it does nothing while the permission prompt sits
+unanswered, and some engines (Firefox under Playwright, notably) invoke
+*neither* callback in that state, leaving the bar on "Finding your location…"
+with no way out. The backstop writes a code-3 error *only if still loading* (a
+result landing in the same tick wins); the first watch callback
+(`applyPosition` / `applyError`) cancels it, so once the watch is working it
+can never fire.
+
+`requestLocation` ("Use my location") is deliberately *not* backstopped -
+`getCurrentPosition` honours its own `timeout`, so a stalled one-shot lands in
+the error callback (code 3) by itself, and layering a second timer over the
+same `loading` flag / ambient watch produced a string of new edge cases each
+time it was tried. The one residual: if a user taps "Use my location" while the
+initial permission prompt is *still unanswered* and then never answers it, the
+mount backstop still surfaces an error but `LocationStatus`'s spinner stays
+until `getCurrentPosition` calls back - which it does the moment the prompt is
+answered. A permanently-ignored prompt is out of scope.
+
+Accepted trade-off: a genuine fix that takes longer than 40s (a very cold GPS
+acquire after a slowly-answered prompt) shows "Location request timed out"
+briefly before it lands and self-heals.
+
+`scripts/visual-audit.mjs` exercises the backstop: a `geo: 'hang'` context
+stubs geolocation to never call back and sets `window.__dzGeoTimeoutMs` (the
+only non-production reader of that global) to shrink the 40s to 1.5s, then
+asserts the bar leaves "Finding your location…" for an error state with an "add
+an address" affordance.
+
 ### "New" vs "latest" are two separate ideas
 
 - **New** = arrived while *this* browser tab was open (a ping on the marker, a

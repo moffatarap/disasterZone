@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { readJSON, writeJSON } from '../lib/browserStorage'
 
 export interface UserLocation {
@@ -36,6 +36,25 @@ const LAST_GPS_LOCATION_KEY = 'disasterZone.lastGpsLocation'
 
 const POSITION_OPTIONS: PositionOptions = { enableHighAccuracy: true, timeout: 20_000 }
 
+// Client-side backstop for the initial watchPosition. `POSITION_OPTIONS.timeout`
+// only starts counting once a request is in flight; while the permission prompt
+// sits unanswered it does nothing, and some engines (notably Firefox under
+// automation) never invoke either callback in that state, so without this the
+// bar can sit on "Finding your location…" forever with no way to reach "add an
+// address". Comfortably past the 20s in-flight timeout so a spec-compliant
+// browser's own error wins first. requestLocation ("Use my location") isn't
+// backstopped here - getCurrentPosition honours its own `timeout`. See
+// docs/DECISIONS.md.
+//
+// `window.__dzGeoTimeoutMs` overrides it - the only reader is scripts/visual-audit.mjs,
+// which sets it (via addInitScript, before this module loads) so the audit can
+// exercise the backstop without a 40-second wait. Unset in production.
+function geoTimeoutMs(): number {
+  const override = (globalThis as { __dzGeoTimeoutMs?: unknown }).__dzGeoTimeoutMs
+  return typeof override === 'number' && override > 0 ? override : 40_000
+}
+const GEOLOCATION_TIMEOUT_MS = geoTimeoutMs()
+
 // GeolocationPositionError codes -> readable text. Note: a page served over
 // HTTPS with an untrusted certificate is treated by browsers as insecure, so
 // getCurrentPosition fails with code 1 (denied) no matter the OS/site
@@ -53,22 +72,40 @@ export function useGeolocation(): GeolocationState {
     loading: isGeolocationSupported,
   }))
 
-  const applyPosition = useCallback((position: GeolocationPosition) => {
-    const location = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
+  // The mount backstop timer. The first watch result cancels it (applyPosition /
+  // applyError), so once the watch is working it can never fire.
+  const startupTimeoutRef = useRef<number | null>(null)
+  const clearStartupTimeout = useCallback(() => {
+    if (startupTimeoutRef.current !== null) {
+      window.clearTimeout(startupTimeoutRef.current)
+      startupTimeoutRef.current = null
     }
-    writeJSON(LAST_GPS_LOCATION_KEY, location)
-    setState({ location, error: null, loading: false })
   }, [])
 
-  const applyError = useCallback((positionError: GeolocationPositionError) => {
-    setState((current) => ({
-      location: current.location,
-      error: GEOLOCATION_ERROR_TEXT[positionError.code] ?? positionError.message,
-      loading: false,
-    }))
-  }, [])
+  const applyPosition = useCallback(
+    (position: GeolocationPosition) => {
+      clearStartupTimeout()
+      const location = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      }
+      writeJSON(LAST_GPS_LOCATION_KEY, location)
+      setState({ location, error: null, loading: false })
+    },
+    [clearStartupTimeout],
+  )
+
+  const applyError = useCallback(
+    (positionError: GeolocationPositionError) => {
+      clearStartupTimeout()
+      setState((current) => ({
+        location: current.location,
+        error: GEOLOCATION_ERROR_TEXT[positionError.code] ?? positionError.message,
+        loading: false,
+      }))
+    },
+    [clearStartupTimeout],
+  )
 
   useEffect(() => {
     if (!isGeolocationSupported) {
@@ -76,8 +113,21 @@ export function useGeolocation(): GeolocationState {
     }
 
     const watchId = navigator.geolocation.watchPosition(applyPosition, applyError, POSITION_OPTIONS)
-    return () => navigator.geolocation.clearWatch(watchId)
-  }, [applyPosition, applyError])
+    // Fires only if the initial watch never produces a result - the permission
+    // prompt sits unanswered and the engine calls back on neither path. Guarded
+    // on `loading` so a result landing in the same tick still wins.
+    startupTimeoutRef.current = window.setTimeout(() => {
+      startupTimeoutRef.current = null
+      setState((current) =>
+        current.loading ? { ...current, error: GEOLOCATION_ERROR_TEXT[3], loading: false } : current,
+      )
+    }, GEOLOCATION_TIMEOUT_MS)
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId)
+      clearStartupTimeout()
+    }
+  }, [applyPosition, applyError, clearStartupTimeout])
 
   const requestLocation = useCallback(
     (options?: { onSuccess?: () => void; onError?: () => void }) => {
@@ -99,6 +149,8 @@ export function useGeolocation(): GeolocationState {
       // one here would make this button look completely inert in exactly the
       // denied/timed-out state it exists to recover from.
       setState((current) => ({ ...current, error: null, loading: true }))
+      // No custom backstop: getCurrentPosition honours POSITION_OPTIONS.timeout,
+      // so a stalled one-shot lands in the error callback (code 3) on its own.
       navigator.geolocation.getCurrentPosition(
         (position) => {
           applyPosition(position)
