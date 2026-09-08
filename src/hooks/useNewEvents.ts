@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { DisasterEvent } from '../types/event'
 
 const MAX_TOASTS = 3
@@ -43,7 +43,10 @@ export function useNewEvents(events: DisasterEvent[], isReady: boolean): NewEven
     setToastQueue((current) => [...arrived, ...current].slice(0, MAX_TOASTS))
   }, [events, isReady])
 
-  function acknowledge(id: string) {
+  // Stable identity: NewEventToast keys its auto-dismiss timer on this, and the
+  // app re-renders constantly while watchPosition streams fixes - a fresh
+  // function every render would reset the countdown before it could ever fire.
+  const acknowledge = useCallback((id: string) => {
     setNewEventIds((current) => {
       if (!current.has(id)) return current
       const next = new Set(current)
@@ -51,7 +54,7 @@ export function useNewEvents(events: DisasterEvent[], isReady: boolean): NewEven
       return next
     })
     setToastQueue((current) => current.filter((event) => event.id !== id))
-  }
+  }, [])
 
   return { newEventIds, toastQueue, acknowledge }
 }
